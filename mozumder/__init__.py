@@ -1,0 +1,67 @@
+default_app_config = 'mozumder.apps.MozumderAppConfig'
+
+UNKNOWN = '0'
+GET = '1'
+HEAD = '2'
+POST = '3'
+PUT = '4'
+DELETE = '5'
+CONNECT = '6'
+OPTIONS = '7'
+TRACE = '8'
+PATCH = '9'
+METHOD_CHOICES = (
+    (UNKNOWN, 'UNKNOWN'),
+    (GET, 'GET'),
+    (HEAD, 'HEAD'),
+    (POST, 'POST'),
+    (PUT, 'PUT'),
+    (DELETE, 'DELETE'),
+    (CONNECT, 'CONNECT'),
+    (OPTIONS, 'OPTIONS'),
+    (TRACE, 'TRACE'),
+    (PATCH, 'PATCH'),
+)
+METHOD_CHOICES_LOOKUP = dict([i[1],i[0]] for i in METHOD_CHOICES)
+METHOD_CHOICES_DICT = dict(METHOD_CHOICES)
+
+
+UNCOMPRESSED = '0'
+GZIP = '1'
+SDCH = '2'
+BROTLI = '3'
+DEFLATE = '4'
+COMPRESSION_CHOICES = (
+    (UNCOMPRESSED, 'None'),
+    (GZIP, 'gzip'),
+    (SDCH, 'SDCH'),
+    (BROTLI, 'Brotli'),
+    (DEFLATE, 'deflate'),
+)
+COMPRESSION_CHOICES_LOOKUP = dict([i[1],i[0]] for i in COMPRESSION_CHOICES)
+COMPRESSION_CHOICES_DICT = dict(COMPRESSION_CHOICES)
+
+HTTP09 = '9'
+HTTP1 = '1'
+HTTP11 = '2'
+HTTP2 = '3'
+PROTOCOL_CHOICES = (
+    (UNKNOWN, 'Unknown'),
+    (HTTP09, 'HTTP/1.0'),
+    (HTTP1, 'HTTP/1.0'),
+    (HTTP11, 'HTTP/1.1'),
+    (HTTP2, 'HTTP/2'),
+)
+PROTOCOL_CHOICES_LOOKUP = dict([i[1],i[0]] for i in PROTOCOL_CHOICES)
+PROTOCOL_CHOICES_DICT = dict(PROTOCOL_CHOICES)
+
+BLACK = '#000'
+RED = '#dd4646'
+GREEN = '#70bf2b'
+BLUE = '#1C00CF'
+YELLOW = '#D3CB51'
+PURPLE = '#AA0D91'
+ORANGE = '#FBAC4C'
+GRAY = '#7E7E7E'
+LIGHTGRAY = '#A8A8A8'
+
