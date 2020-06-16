@@ -5,9 +5,9 @@ from django.db import connection
 import psycopg2
 from uwsgi import mule_get_msg
 
-from mozumder.management.utilities.logger import LogWriter
+from .utilities.logger import LogWriter
 
-logger = logging.getLogger("django")
+message_log = logging.getLogger("django")
 
 _lock=threading.Lock()
 cursor = connection.cursor().connection.cursor(
@@ -20,7 +20,7 @@ def listener():
         cursor=cursor,
         lock=_lock
     )
-    logger.info("uWSGI Log Mule Process started & listening")
+    message_log.info("uWSGI Log Mule Process started & listening")
     while True:
         msg = mule_get_msg()
         logwriter.threaded_write(msg)

@@ -26,9 +26,7 @@
 		EC5449B624946CB2000BB8A2 /* middleware.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = middleware.py; sourceTree = "<group>"; };
 		EC5449B824946CEF000BB8A2 /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		EC5449BD24946DC5000BB8A2 /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
-		EC5449BE24946DD4000BB8A2 /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		EC5449BF24946E05000BB8A2 /* logging.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logging.py; sourceTree = "<group>"; };
-		EC5449C024946E18000BB8A2 /* logging.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logging.py; sourceTree = "<group>"; };
 		EC5449C2249471A7000BB8A2 /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		EC5449C4249471DC000BB8A2 /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		EC5449C5249471F3000BB8A2 /* component.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = component.py; sourceTree = "<group>"; };
@@ -46,9 +44,7 @@
 		EC5449D3249474E4000BB8A2 /* errors.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = errors.py; sourceTree = "<group>"; };
 		EC5449D424947514000BB8A2 /* generic.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = generic.py; sourceTree = "<group>"; };
 		EC5449D52494754C000BB8A2 /* zip.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = zip.py; sourceTree = "<group>"; };
-		EC5449D62494759A000BB8A2 /* logging.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logging.py; sourceTree = "<group>"; };
 		EC5449D724947625000BB8A2 /* signals.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = signals.py; sourceTree = "<group>"; };
-		EC5449D824947673000BB8A2 /* log.sql */ = {isa = PBXFileReference; lastKnownFileType = text; path = log.sql; sourceTree = "<group>"; };
 		EC5449D9249476FB000BB8A2 /* logger.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logger.py; sourceTree = "<group>"; };
 		EC5449DA249477AF000BB8A2 /* logging_mule.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logging_mule.py; sourceTree = "<group>"; };
 		ECBCB0A824980A6E0097C2FA /* README.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.rst; sourceTree = "<group>"; };
@@ -56,26 +52,54 @@
 		ECBCB0AA249817C90097C2FA /* setup.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = setup.cfg; sourceTree = "<group>"; };
 		ECBCB0AB249818A20097C2FA /* setup.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
 		ECBCB0AC249818D40097C2FA /* MANIFEST.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = MANIFEST.in; sourceTree = "<group>"; };
+		ECBCB0AF2498795C0097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB0B0249879740097C2FA /* admin.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = admin.py; sourceTree = "<group>"; };
+		ECBCB0B12498798E0097C2FA /* apps.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = apps.py; sourceTree = "<group>"; };
+		ECBCB0B4249879CA0097C2FA /* logging.sql */ = {isa = PBXFileReference; lastKnownFileType = text; path = logging.sql; sourceTree = "<group>"; };
+		ECBCB0B924987AC00097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB0BB24988A8E0097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB0BC24988B0B0097C2FA /* views.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = views.py; sourceTree = "<group>"; };
+		ECBCB0BE249891F50097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB0BF2498920F0097C2FA /* admin.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = admin.py; sourceTree = "<group>"; };
+		ECBCB0C02498923A0097C2FA /* iso15924-utf8-20190819.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "iso15924-utf8-20190819.txt"; sourceTree = "<group>"; };
+		ECBCB0C3249892740097C2FA /* iso-639-3_20200130.tab */ = {isa = PBXFileReference; lastKnownFileType = text; path = "iso-639-3_20200130.tab"; sourceTree = "<group>"; };
+		ECBCB0C4249892CB0097C2FA /* iso-639-3_Name_Index_20200130.tab */ = {isa = PBXFileReference; lastKnownFileType = text; path = "iso-639-3_Name_Index_20200130.tab"; sourceTree = "<group>"; };
+		ECBCB0C5249892E90097C2FA /* iso-639-3_Retirements_20200130.tab */ = {isa = PBXFileReference; lastKnownFileType = text; path = "iso-639-3_Retirements_20200130.tab"; sourceTree = "<group>"; };
+		ECBCB0C6249892FD0097C2FA /* iso-639-3-macrolanguages_20200130.tab */ = {isa = PBXFileReference; lastKnownFileType = text; path = "iso-639-3-macrolanguages_20200130.tab"; sourceTree = "<group>"; };
+		ECBCB0C7249893230097C2FA /* apps.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = apps.py; sourceTree = "<group>"; };
+		ECBCB0C9249893600097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB0CB2498937D0097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB0CC249893910097C2FA /* import_country_codes.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = import_country_codes.py; sourceTree = "<group>"; };
+		ECBCB0CD249893A20097C2FA /* import_iso_script_codes.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = import_iso_script_codes.py; sourceTree = "<group>"; };
+		ECBCB0CF249893DB0097C2FA /* import_sil_language_data.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = import_sil_language_data.py; sourceTree = "<group>"; };
+		ECBCB0D0249893F00097C2FA /* import_subdivisions.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = import_subdivisions.py; sourceTree = "<group>"; };
+		ECBCB0D22498956F0097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB0D5249895B50097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB0D6249895C40097C2FA /* countries.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = countries.py; sourceTree = "<group>"; };
+		ECBCB0D7249895D00097C2FA /* language.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = language.py; sourceTree = "<group>"; };
+		ECBCB0D8249895E40097C2FA /* locale.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = locale.py; sourceTree = "<group>"; };
+		ECBCB0D9249895F00097C2FA /* scripts.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = scripts.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		EC54499724935D54000BB8A2 = {
 			isa = PBXGroup;
 			children = (
+				EC54499E24946640000BB8A2 /* mozumder */,
+				ECBCB0AE2498770C0097C2FA /* analytics */,
+				ECBCB0BD249891D30097C2FA /* i18n */,
+				ECBCB0AD2498191D0097C2FA /* docs */,
 				ECBCB0AC249818D40097C2FA /* MANIFEST.in */,
 				ECBCB0A824980A6E0097C2FA /* README.rst */,
 				ECBCB0A92498175D0097C2FA /* LICENSE */,
 				ECBCB0AA249817C90097C2FA /* setup.cfg */,
 				ECBCB0AB249818A20097C2FA /* setup.py */,
-				EC54499E24946640000BB8A2 /* mozumder */,
-				ECBCB0AD2498191D0097C2FA /* docs */,
 			);
 			sourceTree = "<group>";
 		};
 		EC54499E24946640000BB8A2 /* mozumder */ = {
 			isa = PBXGroup;
 			children = (
-				EC5449BC24946DB3000BB8A2 /* admin */,
 				EC54499F249466C2000BB8A2 /* __init__.py */,
 				EC5449A024946722000BB8A2 /* apps.py */,
 				EC5449A124946770000BB8A2 /* db */,
@@ -84,7 +108,6 @@
 				EC5449B624946CB2000BB8A2 /* middleware.py */,
 				EC5449B724946CDB000BB8A2 /* migrations */,
 				EC5449BB24946D9F000BB8A2 /* models */,
-				EC5449D724947625000BB8A2 /* signals.py */,
 				EC5449C12494716F000BB8A2 /* template */,
 				EC5449CF249473F3000BB8A2 /* tests.py */,
 				EC5449D02494740A000BB8A2 /* views */,
@@ -113,7 +136,6 @@
 			isa = PBXGroup;
 			children = (
 				EC5449A5249467DE000BB8A2 /* utilities.sql */,
-				EC5449D824947673000BB8A2 /* log.sql */,
 			);
 			path = sql;
 			sourceTree = "<group>";
@@ -156,8 +178,6 @@
 				EC5449AF249468F3000BB8A2 /* __init__.py */,
 				EC5449B4249469DF000BB8A2 /* cache_mule.py */,
 				EC5449B524946A1F000BB8A2 /* invalidator.py */,
-				EC5449D9249476FB000BB8A2 /* logger.py */,
-				EC5449DA249477AF000BB8A2 /* logging_mule.py */,
 			);
 			path = utilities;
 			sourceTree = "<group>";
@@ -174,18 +194,8 @@
 			isa = PBXGroup;
 			children = (
 				EC5449BD24946DC5000BB8A2 /* __init__.py */,
-				EC5449BF24946E05000BB8A2 /* logging.py */,
 			);
 			path = models;
-			sourceTree = "<group>";
-		};
-		EC5449BC24946DB3000BB8A2 /* admin */ = {
-			isa = PBXGroup;
-			children = (
-				EC5449BE24946DD4000BB8A2 /* __init__.py */,
-				EC5449C024946E18000BB8A2 /* logging.py */,
-			);
-			path = admin;
 			sourceTree = "<group>";
 		};
 		EC5449C12494716F000BB8A2 /* template */ = {
@@ -229,7 +239,6 @@
 				EC5449D22494746A000BB8A2 /* base.py */,
 				EC5449D3249474E4000BB8A2 /* errors.py */,
 				EC5449D424947514000BB8A2 /* generic.py */,
-				EC5449D62494759A000BB8A2 /* logging.py */,
 				EC5449D52494754C000BB8A2 /* zip.py */,
 			);
 			path = views;
@@ -240,6 +249,139 @@
 			children = (
 			);
 			path = docs;
+			sourceTree = "<group>";
+		};
+		ECBCB0AE2498770C0097C2FA /* analytics */ = {
+			isa = PBXGroup;
+			children = (
+				EC5449D724947625000BB8A2 /* signals.py */,
+				ECBCB0AF2498795C0097C2FA /* __init__.py */,
+				ECBCB0B0249879740097C2FA /* admin.py */,
+				ECBCB0B12498798E0097C2FA /* apps.py */,
+				ECBCB0B2249879A30097C2FA /* include */,
+				ECBCB0BA24988A810097C2FA /* migrations */,
+				ECBCB0B824987AA10097C2FA /* models */,
+				ECBCB0B724987A610097C2FA /* utilities */,
+				ECBCB0BC24988B0B0097C2FA /* views.py */,
+			);
+			path = analytics;
+			sourceTree = "<group>";
+		};
+		ECBCB0B2249879A30097C2FA /* include */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0B3249879B70097C2FA /* sql */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		ECBCB0B3249879B70097C2FA /* sql */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0B4249879CA0097C2FA /* logging.sql */,
+			);
+			path = sql;
+			sourceTree = "<group>";
+		};
+		ECBCB0B724987A610097C2FA /* utilities */ = {
+			isa = PBXGroup;
+			children = (
+				EC5449D9249476FB000BB8A2 /* logger.py */,
+				EC5449DA249477AF000BB8A2 /* logging_mule.py */,
+			);
+			path = utilities;
+			sourceTree = "<group>";
+		};
+		ECBCB0B824987AA10097C2FA /* models */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0B924987AC00097C2FA /* __init__.py */,
+				EC5449BF24946E05000BB8A2 /* logging.py */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
+		ECBCB0BA24988A810097C2FA /* migrations */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0BB24988A8E0097C2FA /* __init__.py */,
+			);
+			path = migrations;
+			sourceTree = "<group>";
+		};
+		ECBCB0BD249891D30097C2FA /* i18n */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0D3249895870097C2FA /* models */,
+				ECBCB0D1249895620097C2FA /* migrations */,
+				ECBCB0C12498924E0097C2FA /* fixtures */,
+				ECBCB0BE249891F50097C2FA /* __init__.py */,
+				ECBCB0BF2498920F0097C2FA /* admin.py */,
+				ECBCB0C7249893230097C2FA /* apps.py */,
+			);
+			path = i18n;
+			sourceTree = "<group>";
+		};
+		ECBCB0C12498924E0097C2FA /* fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0C8249893500097C2FA /* management */,
+				ECBCB0C22498925B0097C2FA /* iso-639-3_Code_Tables_20200130 */,
+				ECBCB0C02498923A0097C2FA /* iso15924-utf8-20190819.txt */,
+			);
+			path = fixtures;
+			sourceTree = "<group>";
+		};
+		ECBCB0C22498925B0097C2FA /* iso-639-3_Code_Tables_20200130 */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0C3249892740097C2FA /* iso-639-3_20200130.tab */,
+				ECBCB0C4249892CB0097C2FA /* iso-639-3_Name_Index_20200130.tab */,
+				ECBCB0C5249892E90097C2FA /* iso-639-3_Retirements_20200130.tab */,
+				ECBCB0C6249892FD0097C2FA /* iso-639-3-macrolanguages_20200130.tab */,
+			);
+			path = "iso-639-3_Code_Tables_20200130";
+			sourceTree = "<group>";
+		};
+		ECBCB0C8249893500097C2FA /* management */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0CA249893640097C2FA /* commands */,
+				ECBCB0C9249893600097C2FA /* __init__.py */,
+			);
+			path = management;
+			sourceTree = "<group>";
+		};
+		ECBCB0CA249893640097C2FA /* commands */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0CB2498937D0097C2FA /* __init__.py */,
+				ECBCB0CC249893910097C2FA /* import_country_codes.py */,
+				ECBCB0CD249893A20097C2FA /* import_iso_script_codes.py */,
+				ECBCB0CF249893DB0097C2FA /* import_sil_language_data.py */,
+				ECBCB0D0249893F00097C2FA /* import_subdivisions.py */,
+			);
+			path = commands;
+			sourceTree = "<group>";
+		};
+		ECBCB0D1249895620097C2FA /* migrations */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0D22498956F0097C2FA /* __init__.py */,
+			);
+			path = migrations;
+			sourceTree = "<group>";
+		};
+		ECBCB0D3249895870097C2FA /* models */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0D5249895B50097C2FA /* __init__.py */,
+				ECBCB0D6249895C40097C2FA /* countries.py */,
+				ECBCB0D7249895D00097C2FA /* language.py */,
+				ECBCB0D8249895E40097C2FA /* locale.py */,
+				ECBCB0D9249895F00097C2FA /* scripts.py */,
+			);
+			path = models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

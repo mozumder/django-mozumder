@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseServerError
-from ..models import AccessLog
-from ..signals import log_response
-
-# Create your views here.
+from .models import AccessLog
+from .signals import log_response
 
 class LoggingResponseBase():
 

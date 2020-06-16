@@ -9,7 +9,7 @@ from django.core.cache import cache
 from django.conf import settings
 
 pp = pprint.PrettyPrinter(indent=4)
-logger = logging.getLogger("cache")
+cache_log = logging.getLogger("cache")
 
 class CacheInvalidator:
 
@@ -81,7 +81,7 @@ class CacheInvalidator:
         curs.execute("listen cache;")
 
 #        print("Waiting for Postgres notifications on channel 'cache'")
-        logger.info("Waiting for Postgres notifications on channel 'cache'")
+        cache_log.info("Waiting for Postgres notifications on channel 'cache'")
 
         notifications = set()
         while 1:
@@ -90,7 +90,7 @@ class CacheInvalidator:
                 while conn.notifies:
                     notify = conn.notifies.pop(0)
 #                    if settings.BENCHMARK:
-                    logger.debug("Got channel notification: %s" % notify.payload)
+                    cache_log.debug("Got channel notification: %s" % notify.payload)
                     notifications.add(notify.payload)
             
             #
@@ -145,9 +145,9 @@ class CacheInvalidator:
 
                 if cache_keys:
                     result = cache.delete_many(cache_keys)
-                    logger.info("  Deleted %i Cache items" % len(cache_keys))
+                    cache_log.info("  Deleted %i Cache items" % len(cache_keys))
                     for key in cache_keys:
-                        logger.debug("  - %s" % key)
+                        cache_log.debug("  - %s" % key)
                 notifications = set()
 
 

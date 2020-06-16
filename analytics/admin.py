@@ -4,8 +4,6 @@ from django.urls import reverse
 
 from .models import *
 
-# Register your models here.
-
 @admin.register(IP)
 class IPAdmin(admin.ModelAdmin):
     list_display = ['id', 'address','bot','latitude','longitude',]
@@ -31,7 +29,7 @@ class IPAdmin(admin.ModelAdmin):
 class HostNameAdmin(admin.ModelAdmin):
     def domain_link(self, obj):
         if obj.domain:
-            url = reverse('admin:mozumder_domain_change', args = [obj.domain.id])
+            url = reverse('admin:analytics_domain_change', args = [obj.domain.id])
             html = format_html("<a href='{}'>{}</a>", url, obj.domain.__str__())
         else:
             html = format_html("-")
@@ -219,7 +217,7 @@ class UserAgentAdmin(admin.ModelAdmin):
     list_display = ['id', 'bot', 'browser_link', 'os_link', 'device_link', 'user_agent_string',]
     def browser_link(self, obj):
         if obj.browser:
-            url = reverse('admin:mozumder_browser_change', args = [obj.browser.id])
+            url = reverse('admin:analytics_browser_change', args = [obj.browser.id])
             html = format_html("<a href='{}'>{}</a>", url, obj.browser.__str__())
         else:
             html = format_html("-")
@@ -228,7 +226,7 @@ class UserAgentAdmin(admin.ModelAdmin):
     browser_link.short_description = 'Browser'
     def os_link(self, obj):
         if obj.os:
-            url = reverse('admin:mozumder_os_change', args = [obj.os.id])
+            url = reverse('admin:analytics_os_change', args = [obj.os.id])
             html = format_html("<a href='{}'>{}</a>", url, obj.os.__str__())
         else:
             html = format_html("-")
@@ -237,7 +235,7 @@ class UserAgentAdmin(admin.ModelAdmin):
     os_link.short_description = 'Operating System'
     def device_link(self, obj):
         if obj.device:
-            url = reverse('admin:mozumder_device_change', args = [obj.device.id])
+            url = reverse('admin:analytics_device_change', args = [obj.device.id])
             html = format_html("<a href='{}'>{}</a>", url, obj.device.__str__())
         else:
             html = format_html("-")
@@ -286,7 +284,7 @@ class SessionLogAdmin(admin.ModelAdmin):
 class AccessLogAdmin(admin.ModelAdmin):
     def ip_link(self, obj):
         if obj.ip:
-            url = reverse('admin:mozumder_ip_change', args = [obj.ip.id])
+            url = reverse('admin:analytics_ip_change', args = [obj.ip.id])
             html = format_html("<a href='{}'>{}</a>", url, obj.ip.__str__())
         else:
             html = format_html("-")
@@ -295,7 +293,7 @@ class AccessLogAdmin(admin.ModelAdmin):
     ip_link.short_description = 'IP'
     def domain_link(self, obj):
         if obj.ip.host:
-            url = reverse('admin:mozumder_hostname_change', args = [obj.ip.host.id])
+            url = reverse('admin:analytics_hostname_change', args = [obj.ip.host.id])
             html = format_html("<a href='{}'>{}</a>", url, obj.ip.host.domain_name())
         else:
             html = format_html("-")
@@ -304,7 +302,7 @@ class AccessLogAdmin(admin.ModelAdmin):
     domain_link.short_description = 'Domain'
     def ua_link(self, obj):
         if obj.user_agent:
-            url = reverse('admin:mozumder_useragent_change', args = [obj.user_agent.id])
+            url = reverse('admin:analytics_useragent_change', args = [obj.user_agent.id])
             html = format_html("<a href='{}'>{}</a>", url, obj.user_agent.__str__())
         else:
             html = format_html("-")
@@ -325,7 +323,7 @@ class AccessLogAdmin(admin.ModelAdmin):
         else:
             color = BLACK
         if obj.request_url:
-            url = reverse('admin:mozumder_url_change', args = [obj.request_url.id])
+            url = reverse('admin:analytics_url_change', args = [obj.request_url.id])
             html = format_html("<span style='color: {};'><a href='{}'>{}</a></span>", color, url, obj.request_url.__str__()[:40])
         else:
             html = format_html("-")
@@ -351,7 +349,7 @@ class AccessLogAdmin(admin.ModelAdmin):
     direction_link.short_description = ''
     def referer_url_link(self, obj):
         if obj.referer_url:
-            url = reverse('admin:mozumder_url_change', args = [obj.referer_url.id])
+            url = reverse('admin:analytics_url_change', args = [obj.referer_url.id])
             html = format_html("<a href='{}'>{}</a>", url, obj.referer_url.__str__()[:40])
         else:
             html = format_html("*")

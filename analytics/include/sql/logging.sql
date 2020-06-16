@@ -30,7 +30,7 @@ prepare log(
 as
     with ip as (
         insert into
-                mozumder_ip
+                analytics_ip
             (
                 address,
                 bot,
@@ -47,7 +47,7 @@ as
     ),
     request_url as (
         insert into
-                mozumder_url
+                analytics_url
             (
                 name,
                 scheme,
@@ -64,7 +64,7 @@ as
     ),
     request_content_type as (
         insert into
-                mozumder_mime
+                analytics_mime
             (
                 mime_type_string
             )
@@ -77,7 +77,7 @@ as
     ),
     referer_url as (
         insert into
-                mozumder_url
+                analytics_url
             (
                 name,
                 scheme,
@@ -94,7 +94,7 @@ as
     ),
     user_agent as (
         insert into
-                mozumder_useragent
+                analytics_useragent
             (
                 user_agent_string,
                 bot,
@@ -111,7 +111,7 @@ as
     ),
     accept_type as (
         insert into
-                mozumder_accept
+                analytics_accept
             (
                 accept_string
             )
@@ -124,7 +124,7 @@ as
     ),
     accept_language as (
         insert into
-                mozumder_language
+                analytics_language
             (
                 language_string
             )
@@ -137,7 +137,7 @@ as
     ),
     accept_encoding as (
         insert into
-                mozumder_encoding
+                analytics_encoding
             (
                 encoding_string
             )
@@ -150,7 +150,7 @@ as
     ),
     response_content_type as (
         insert into
-                mozumder_mime
+                analytics_mime
             (
                 mime_type_string
             )
@@ -163,7 +163,7 @@ as
     ),
     session_log as (
         insert into
-                mozumder_sessionlog
+                analytics_sessionlog
             (
                 session_key,
                 start_time,
@@ -184,7 +184,7 @@ as
         returning id
     )
     insert into
-        mozumder_accesslog
+        analytics_accesslog
     (
         timestamp,
         ip_id,
@@ -218,19 +218,19 @@ as
 
         $1,
         (
-            select id from mozumder_ip where mozumder_ip.address = $2
+            select id from analytics_ip where analytics_ip.address = $2
             union
             select id from ip
         ),
         $3,
         $4,
         (
-            select id from mozumder_url where mozumder_url.name = $5
+            select id from analytics_url where analytics_url.name = $5
             union
             select id from request_url
         ),
         (
-            select id from mozumder_mime where mozumder_mime.mime_type_string = $6
+            select id from analytics_mime where analytics_mime.mime_type_string = $6
             union
             select id from request_content_type
         ),
@@ -239,33 +239,33 @@ as
         $25,
         $26,
         (
-            select id from mozumder_url where mozumder_url.name = $9
+            select id from analytics_url where analytics_url.name = $9
             union
             select id from referer_url
         ),
         (
-            select id from mozumder_useragent where mozumder_useragent.user_agent_string = $10
+            select id from analytics_useragent where analytics_useragent.user_agent_string = $10
             union
             select id from user_agent
         ),
         $11,
         (
-            select id from mozumder_accept where mozumder_accept.accept_string = $12
+            select id from analytics_accept where analytics_accept.accept_string = $12
             union
             select id from accept_type
         ),
         (
-            select id from mozumder_language where mozumder_language.language_string = $13
+            select id from analytics_language where analytics_language.language_string = $13
             union
             select id from accept_language
         ),
         (
-            select id from mozumder_encoding where mozumder_encoding.encoding_string = $14
+            select id from analytics_encoding where analytics_encoding.encoding_string = $14
             union
             select id from accept_encoding
         ),
         (
-            select id from mozumder_mime where mozumder_mime.mime_type_string = $15
+            select id from analytics_mime where analytics_mime.mime_type_string = $15
             union
             select id from response_content_type
         ),
@@ -278,7 +278,7 @@ as
         $22,
         $23,
         (
-            select id from mozumder_sessionlog where mozumder_sessionlog.session_key = $18
+            select id from analytics_sessionlog where analytics_sessionlog.session_key = $18
             union
             select id from session_log
         ),
@@ -293,15 +293,15 @@ prepare get_domain(
 )
 as
     select
-        mozumder_domain.name
+        analytics_domain.name
     from
-        mozumder_hostname
+        analytics_hostname
     left outer join
-        mozumder_domain
+        analytics_domain
     on
-        mozumder_domain.id = mozumder_hostname.domain_id
+        analytics_domain.id = analytics_hostname.domain_id
     where
-        mozumder_hostname.id = $1
+        analytics_hostname.id = $1
 ;
 
 prepare get_host(
@@ -309,22 +309,22 @@ prepare get_host(
 )
 as
     select
-        mozumder_hostname.id as host_id,
-        mozumder_hostname.name as hostname,
+        analytics_hostname.id as host_id,
+        analytics_hostname.name as hostname,
         domain_id,
-        mozumder_domain.name as domainname
+        analytics_domain.name as domainname
     from
-        mozumder_ip
+        analytics_ip
     left outer join
-        mozumder_hostname
+        analytics_hostname
     on
-        mozumder_hostname.id = mozumder_ip.host_id
+        analytics_hostname.id = analytics_ip.host_id
     left outer join
-        mozumder_domain
+        analytics_domain
     on
-        mozumder_domain.id = mozumder_hostname.domain_id
+        analytics_domain.id = analytics_hostname.domain_id
     where
-        mozumder_ip.id = $1
+        analytics_ip.id = $1
 ;
 prepare create_domain(
     varchar(80),
@@ -332,7 +332,7 @@ prepare create_domain(
 )
 as
     insert into
-            mozumder_domain
+            analytics_domain
         (
             name,
             bot,
@@ -356,7 +356,7 @@ prepare update_domain(
 as
     with domainname as (
         insert into
-                mozumder_domain
+                analytics_domain
             (
                 name,
                 bot,
@@ -372,17 +372,17 @@ as
         returning id
     )
     update
-        mozumder_hostname
+        analytics_hostname
     set
         domain_id = t.id
     from
         (
-            select id from mozumder_domain where mozumder_domain.name = $2
+            select id from analytics_domain where analytics_domain.name = $2
             union
             select id from domainname
         ) as t
     where
-        mozumder_hostname.id = $1
+        analytics_hostname.id = $1
 ;
 
 prepare create_host(
@@ -391,7 +391,7 @@ prepare create_host(
 )
 as
     insert into
-            mozumder_hostname
+            analytics_hostname
         (
             name,
             domain_id,
@@ -412,7 +412,7 @@ prepare update_host_domain(
     integer
 )
 as
-    update mozumder_hostname
+    update analytics_hostname
     set domain_id = $2
     where id = $1
 ;
@@ -426,7 +426,7 @@ prepare update_host(
 as
     with hostname as (
         insert into
-                mozumder_hostname
+                analytics_hostname
             (
                 name,
                 domain_id,
@@ -442,18 +442,18 @@ as
         returning id
     )
     update
-        mozumder_ip
+        analytics_ip
     set
         host_id = t.id,
         bot = $4
     from
         (
-            select id from mozumder_hostname where mozumder_hostname.name = $3
+            select id from analytics_hostname where analytics_hostname.name = $3
             union
             select id from hostname
         ) as t
     where
-        mozumder_ip.id = $1
+        analytics_ip.id = $1
 ;
 
 prepare get_user_agent(
@@ -461,13 +461,13 @@ prepare get_user_agent(
 )
 as
     select
-        mozumder_useragent.browser_id,
-        mozumder_useragent.os_id,
-        mozumder_useragent.device_id
+        analytics_useragent.browser_id,
+        analytics_useragent.os_id,
+        analytics_useragent.device_id
     from
-        mozumder_useragent
+        analytics_useragent
     where
-        mozumder_useragent.id = $1
+        analytics_useragent.id = $1
 ;
 
 prepare update_browser(
@@ -480,7 +480,7 @@ prepare update_browser(
 as
     with browser as (
         insert into
-                mozumder_browser
+                analytics_browser
             (
                 family,
                 major_version,
@@ -500,21 +500,21 @@ as
         returning id
     )
     update
-        mozumder_useragent
+        analytics_useragent
     set
         browser_id = t.id
     from
         (
-            select id from mozumder_browser where
-                mozumder_browser.family = $2
-                and mozumder_browser.major_version = $3
-                and mozumder_browser.minor_version = $4
-                and mozumder_browser.patch = $5
+            select id from analytics_browser where
+                analytics_browser.family = $2
+                and analytics_browser.major_version = $3
+                and analytics_browser.minor_version = $4
+                and analytics_browser.patch = $5
             union
             select id from browser
         ) as t
     where
-        mozumder_useragent.id = $1 ;
+        analytics_useragent.id = $1 ;
 ;
 
 prepare update_os(
@@ -528,7 +528,7 @@ prepare update_os(
 as
     with os as (
         insert into
-                mozumder_os
+                analytics_os
             (
                 family,
                 major_version,
@@ -550,22 +550,22 @@ as
         returning id
     )
     update
-        mozumder_useragent
+        analytics_useragent
     set
         os_id = t.id
     from
         (
-            select id from mozumder_os where
-                mozumder_os.family = $2
-                and mozumder_os.major_version = $3
-                and mozumder_os.minor_version = $4
-                and mozumder_os.patch = $5
-                and mozumder_os.minor_patch = $6
+            select id from analytics_os where
+                analytics_os.family = $2
+                and analytics_os.major_version = $3
+                and analytics_os.minor_version = $4
+                and analytics_os.patch = $5
+                and analytics_os.minor_patch = $6
             union
             select id from os
         ) as t
     where
-        mozumder_useragent.id = $1 ;
+        analytics_useragent.id = $1 ;
 ;
 
 
@@ -583,7 +583,7 @@ prepare update_device(
 as
     with device as (
         insert into
-                mozumder_device
+                analytics_device
             (
                 family,
                 brand,
@@ -611,20 +611,20 @@ as
         returning id
     )
     update
-        mozumder_useragent
+        analytics_useragent
     set
         device_id = t.id
     from
         (
-            select id from mozumder_device where
-                mozumder_device.family = $2
-                and mozumder_device.brand = $3
-                and mozumder_device.model = $4
+            select id from analytics_device where
+                analytics_device.family = $2
+                and analytics_device.brand = $3
+                and analytics_device.model = $4
             union
             select id from device
         ) as t
     where
-        mozumder_useragent.id = $1 ;
+        analytics_useragent.id = $1 ;
 ;
 
 prepare record_timestamp(
@@ -632,7 +632,7 @@ prepare record_timestamp(
 )
 as
 update
-    mozumder_accesslog
+    analytics_accesslog
 set
     log_timestamp = current_timestamp
 where

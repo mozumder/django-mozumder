@@ -16,9 +16,8 @@ import psycopg2
 
 from user_agents import parse as parse_ua
 
-from mozumder.__init__ import *
-from mozumder.signals import *
-
+from ..__init__ import *
+from ..signals import *
 
 try:
     import uwsgi

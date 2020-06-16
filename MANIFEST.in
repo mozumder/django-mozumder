@@ -1,4 +1,6 @@
 include LICENSE
 include README.rst
 recursive-include mozumder/include/sql *
+recursive-include analytics/include/sql *
+recursive-include i18n/fixtures *
 recursive-include docs *

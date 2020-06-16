@@ -15,18 +15,8 @@ from django.db.backends.signals import connection_created
 from django.db.utils import ProgrammingError, OperationalError
 import psycopg2
 
-from mozumder.management.utilities.logger import LogWriter
-from mozumder.signals import log_response
-
-try:
-    import uwsgi
-    import uwsgidecorators
-    uwsgi_mode = True
-except:
-    uwsgi_mode = False
-
-dblogger = logging.getLogger("database")
-logger = logging.getLogger(__name__)
+db_log = logging.getLogger("database")
+message_log = logging.getLogger("django")
 
 class PreparedAppConfig(AppConfig):
     def execute_sql_files(self,command):
@@ -38,10 +28,10 @@ class PreparedAppConfig(AppConfig):
             try:
                 file = open(file_name, 'r')
             except FileNotFoundError:
-                dblogger.debug('No SQL file: %s' % file_name)
+                db_log.debug('No SQL file: %s' % file_name)
                 pass
             except (OSError, IOError) as e:
-                dblogger.error('Error reading SQL file: %s' % file_name)
+                db_log.error('Error reading SQL file: %s' % file_name)
                 raise e
             else:
                 sql_commands=file.read().strip()
@@ -49,12 +39,12 @@ class PreparedAppConfig(AppConfig):
                     cursor = connection.cursor()
                     try:
                         cursor.execute(sql_commands)
-                        dblogger.info(f"Executed statements from file {file_name}")
+                        db_log.info(f"Executed statements from file {file_name}")
                     except (OperationalError, ProgrammingError) as e:
                         type, value, tb = sys.exc_info()
-                        dblogger.error(f"Failed running SQL command: {sql_commands}!")
-                        dblogger.error(f'- Specifically, {value}')
-                        dblogger.error("- Please review the most recent stack entries:\n" + "".join(traceback.format_list(traceback.extract_tb(tb, limit=5))))
+                        db_log.error(f"Failed running SQL command: {sql_commands}!")
+                        db_log.error(f'- Specifically, {value}')
+                        db_log.error("- Please review the most recent stack entries:\n" + "".join(traceback.format_list(traceback.extract_tb(tb, limit=5))))
                         logger.error(f'Caught Database error {value} while trying to exectute sql file {file_name}')
                         logger.error(f'- Ignoring and continuing')
                     cursor.close()
@@ -72,10 +62,10 @@ class PreparedAppConfig(AppConfig):
                 try:
                     file = open(dir+'/prepared_statements/'+file_name, 'r')
                 except FileNotFoundError:
-                    dblogger.info('No SQL prepared statements file: %s' % file_name)
+                    db_log.info('No SQL prepared statements file: %s' % file_name)
                     pass
                 except (OSError, IOError) as e:
-                    dblogger.error('Error reading SQL prepared statements file: %s' % file_name)
+                    db_log.error('Error reading SQL prepared statements file: %s' % file_name)
                     raise e
                 else:
                     sql_prepare=file.read().strip()
@@ -83,12 +73,12 @@ class PreparedAppConfig(AppConfig):
                         cursor = connection.cursor()
                         try:
                             cursor.execute(sql_prepare)
-                            dblogger.info(f"Prepared statements from file {file_name}")
+                            db_log.info(f"Prepared statements from file {file_name}")
                         except (OperationalError, ProgrammingError) as e:
                             type, value, tb = sys.exc_info()
-                            dblogger.error(f"Failed preparing statements statements with {type.__name__}!")
-                            dblogger.error(f'- Specifically, {value}')
-                            dblogger.error("- Please review the most recent stack entries:\n" + "".join(traceback.format_list(traceback.extract_tb(tb, limit=5))))
+                            db_log.error(f"Failed preparing statements statements with {type.__name__}!")
+                            db_log.error(f'- Specifically, {value}')
+                            db_log.error("- Please review the most recent stack entries:\n" + "".join(traceback.format_list(traceback.extract_tb(tb, limit=5))))
                             logger.error(f'Caught Database error {value} while trying to exectute sql file {file_name}')
                             logger.error(f'- Ignoring and continuing')
                         cursor.close()
@@ -105,16 +95,16 @@ class PreparedAppConfig(AppConfig):
                 base_name = base.__name__
                 if base_name == 'MaterializedViewModel':
                     try:
-                        dblogger.info(f"Preparing sql statements for model {model.__name__}")
+                        db_log.info(f"Preparing sql statements for model {model.__name__}")
                         model.objects.prepare(self.cursor)
-                        dblogger.info(f"- Prepared!")
+                        db_log.info(f"- Prepared!")
                     except (OperationalError, ProgrammingError) as e:
                         type, value, tb = sys.exc_info()
-                        dblogger.error(f"Failed initial prepare statements for model {model.__name__} with {type.__name__}!")
-                        dblogger.error(f'- Specifically, {value}')
-                        dblogger.error("- Please review the most recent stack entries:\n" + "".join(traceback.format_list(traceback.extract_tb(tb, limit=5))))
-                        logger.error(f'Caught Database error {value} while preparing statements for model {model.__name__}')
-                        logger.error(f'- Ignoring and continuing')
+                        db_log.error(f"Failed initial prepare statements for model {model.__name__} with {type.__name__}!")
+                        db_log.error(f'- Specifically, {value}')
+                        db_log.error("- Please review the most recent stack entries:\n" + "".join(traceback.format_list(traceback.extract_tb(tb, limit=5))))
+                        message_log.error(f'Caught Database error {value} while preparing statements for model {model.__name__}')
+                        message_log.error(f'- Ignoring and continuing')
 
         self.execute_sql_files('prepare')
 
@@ -137,32 +127,10 @@ class MozumderAppConfig(PreparedAppConfig):
     def db_connected(self,sender, connection, **kwargs):
         self._lock = threading.Lock()
         super().db_connected(sender, connection, **kwargs)
-        lock = apps.get_app_config('mozumder')._lock
-        self.logwriter = LogWriter(self.cursor, lock)
-
-        try:
-            MULTIPROCESS = settings.MULTIPROCESS
-        except:
-            MULTIPROCESS = False
-        if MULTIPROCESS:
-            logger.info('Multi process mode!')
-            lock = multiprocessing.Lock()
-            if uwsgi_mode:
-                logger.info('UWSGI mode!')
-                log_response.connect(self.logwriter.log_uwsgi, dispatch_uid="log_response")
-            else:
-                logger.info('Runserver mode =^(')
-                log_process = multiprocessing.Process(name='Logging', target=LogWriter.log_process_listener, args=(LogWriter.e,LogWriter.q))
-                log_process.daemon=True
-                log_process.start()
-                log_response.connect(self.logwriter.log_multiprocess, dispatch_uid="log_response")
-        else:
-#            logger.debug('Single Processor mode =^(')
-            log_response.connect(self.logwriter.log, dispatch_uid="log_response")
 
     def ready(self):
         """
-        Each Mozumder apps does the following upon startup:
+        Each Mozumder app does the following upon startup:
           1. Minimize HTML, CSS, JS
           2. Read prepared SQL statements once database is connected
           3. Load templates into memory
@@ -171,5 +139,5 @@ class MozumderAppConfig(PreparedAppConfig):
         if hasattr(self, 'dbConnectSignal'):
             connection_created.connect(self.db_connected, dispatch_uid=self.dbConnectSignal)
         if hasattr(self, 'Makefile'):
-            logger.debug('Running Make')
+            message_log.debug('Running Make')
             result = call(["make","-j","8","-f", self.Makefile])
