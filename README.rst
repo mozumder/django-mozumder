@@ -2,10 +2,12 @@
 django-mozumder
 ===============
 
-django-mozumder is a Django app containing various utilities to enhance Django. This includes a templating system based on Python, updated views that compress the cache to effectively increase cache size by 10x and page generation times, a system to manage materialized views to reduce page generation times, as well as logging & analytics and internationaliztion & localization (i18n/l10n) utility models.
+django-mozumder is a Django app containing various utilities to enhance Django with Postgres and Redis. This includes a templating system based on Python, updated views that compress the cache to effectively increase cache size by 10x and page generation times, a system to manage materialized views to reduce page generation times, as well as logging & analytics and internationaliztion & localization (i18n/l10n) utility models.
 
 Quick setup
 -----------
+
+Start with a Django project with a Postgres database and Redis cache.
 
 1. Install package using ``pip``
 
@@ -30,4 +32,5 @@ Quick setup
 ::
 
     $ ./manage.py migrate
+
 

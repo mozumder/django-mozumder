@@ -79,12 +79,14 @@
 		ECBCB0D7249895D00097C2FA /* language.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = language.py; sourceTree = "<group>"; };
 		ECBCB0D8249895E40097C2FA /* locale.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = locale.py; sourceTree = "<group>"; };
 		ECBCB0D9249895F00097C2FA /* scripts.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = scripts.py; sourceTree = "<group>"; };
+		ECBCB0DA249968FB0097C2FA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		EC54499724935D54000BB8A2 = {
 			isa = PBXGroup;
 			children = (
+				ECBCB0DA249968FB0097C2FA /* .gitignore */,
 				EC54499E24946640000BB8A2 /* mozumder */,
 				ECBCB0AE2498770C0097C2FA /* analytics */,
 				ECBCB0BD249891D30097C2FA /* i18n */,

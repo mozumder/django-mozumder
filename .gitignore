@@ -1,0 +1,11 @@
+uwsgi.ini
+settings.ini
+.env
+local.env
+local.py
+*pyc
+scratch.*
+log/
+venv/
+dist/
+django_mozumder.egg-info/
