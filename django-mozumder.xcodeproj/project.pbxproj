@@ -51,13 +51,24 @@
 		EC5449D824947673000BB8A2 /* log.sql */ = {isa = PBXFileReference; lastKnownFileType = text; path = log.sql; sourceTree = "<group>"; };
 		EC5449D9249476FB000BB8A2 /* logger.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logger.py; sourceTree = "<group>"; };
 		EC5449DA249477AF000BB8A2 /* logging_mule.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logging_mule.py; sourceTree = "<group>"; };
+		ECBCB0A824980A6E0097C2FA /* README.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.rst; sourceTree = "<group>"; };
+		ECBCB0A92498175D0097C2FA /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		ECBCB0AA249817C90097C2FA /* setup.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = setup.cfg; sourceTree = "<group>"; };
+		ECBCB0AB249818A20097C2FA /* setup.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = setup.py; sourceTree = "<group>"; };
+		ECBCB0AC249818D40097C2FA /* MANIFEST.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = MANIFEST.in; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		EC54499724935D54000BB8A2 = {
 			isa = PBXGroup;
 			children = (
+				ECBCB0AC249818D40097C2FA /* MANIFEST.in */,
+				ECBCB0A824980A6E0097C2FA /* README.rst */,
+				ECBCB0A92498175D0097C2FA /* LICENSE */,
+				ECBCB0AA249817C90097C2FA /* setup.cfg */,
+				ECBCB0AB249818A20097C2FA /* setup.py */,
 				EC54499E24946640000BB8A2 /* mozumder */,
+				ECBCB0AD2498191D0097C2FA /* docs */,
 			);
 			sourceTree = "<group>";
 		};
@@ -222,6 +233,13 @@
 				EC5449D52494754C000BB8A2 /* zip.py */,
 			);
 			path = views;
+			sourceTree = "<group>";
+		};
+		ECBCB0AD2498191D0097C2FA /* docs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = docs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
