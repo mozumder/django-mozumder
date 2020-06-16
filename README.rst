@@ -10,11 +10,13 @@ Quick setup
 1. Install package using PIP
 
 ::
+
     $ pip install django-mozumder
 
 2. Add ``mozumder`` to your Django project's ``INSTALLED_APPS`` setting:
 
 ::
+
     INSTALLED_APPS = [
         ...
         'mozumder',
@@ -26,5 +28,6 @@ Quick setup
 3. In your Django Project, create the database tables for logging and i18n/l10n using migrate
 
 ::
+
     $ ./manage.py migrate
 
