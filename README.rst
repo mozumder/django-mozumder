@@ -2,12 +2,12 @@
 django-mozumder
 ===============
 
-djang-mozumder is a Django app containing various utilities to enhance Django. This includes a templating system based on Python, updated views that compress the cache to effectively increase cache size by 10x and page generation times, a system to manage materialized views to reduce page generation times, as well as logging & analytics and internationaliztion & localization (i18n/l10n) utility models.
+django-mozumder is a Django app containing various utilities to enhance Django. This includes a templating system based on Python, updated views that compress the cache to effectively increase cache size by 10x and page generation times, a system to manage materialized views to reduce page generation times, as well as logging & analytics and internationaliztion & localization (i18n/l10n) utility models.
 
 Quick setup
 -----------
 
-1. Install package using PIP
+1. Install package using ``pip``
 
 ::
 
@@ -25,7 +25,7 @@ Quick setup
         ...
     ]
 
-3. In your Django Project, create the database tables for logging and i18n/l10n using migrate
+3. In your Django project, create the database tables for logging and i18n/l10n using the migrate command:
 
 ::
 
