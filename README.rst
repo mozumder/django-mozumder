@@ -7,7 +7,11 @@ djang-mozumder is a Django app containing various utilities to enhance Django. T
 Quick setup
 -----------
 
-1. Add "mozumder" to your INSTALLED_APPS setting like this::
+1. Install package using PIP
+
+    $ pip install django-mozumder
+
+2. Add ``mozumder`` to your Django project's ``INSTALLED_APPS`` setting:
 
     INSTALLED_APPS = [
         ...
@@ -17,4 +21,7 @@ Quick setup
         ...
     ]
 
-2. Run ``python manage.py migrate`` to create the database models for logging and i18n/l10n.
+3. In your Django Project, create the database tables for logging and i18n/l10n using migrate
+
+    $ ./manage.py migrate
+
