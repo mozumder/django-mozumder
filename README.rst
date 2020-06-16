@@ -12,7 +12,7 @@ Quick setup
     INSTALLED_APPS = [
         ...
         'mozumder',
-        'anayltics', # Optional logging views
+        'analytics', # Optional logging views
         'i18n', # Optional internationalization/localization models
         ...
     ]
