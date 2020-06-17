@@ -13,7 +13,7 @@ from django.db import connection
 from django.conf import settings
 from django.db.backends.signals import connection_created
 from django.db.utils import ProgrammingError, OperationalError
-import psycopg2
+import psycopg2.extras
 
 db_log = logging.getLogger("database")
 message_log = logging.getLogger("django")
@@ -118,7 +118,7 @@ class PreparedAppConfig(AppConfig):
 
 
 class MozumderAppConfig(PreparedAppConfig):
-    name = 'Mozumder'
+    name = 'mozumder'
     verbose_name = 'Django Mozumder'
     dbConnectSignal = 'prepareMozumderDb'
     sql_dirs = (

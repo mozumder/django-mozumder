@@ -1,4 +1,3 @@
-from .logging import *
 from django.utils.text import slugify as django_slugify
 
 def slugify(text):

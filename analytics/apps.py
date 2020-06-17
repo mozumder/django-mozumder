@@ -31,7 +31,7 @@ class AnalyticsConfig(PreparedAppConfig):
 
     def db_connected(self,sender, connection, **kwargs):
         super().db_connected(sender, connection, **kwargs)
-        lock = apps.get_app_config('unchained')._lock
+        lock = apps.get_app_config('mozumder')._lock
         self.logwriter = LogWriter(self.cursor, lock)
 
         try:

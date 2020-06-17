@@ -80,6 +80,10 @@
 		ECBCB0D8249895E40097C2FA /* locale.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = locale.py; sourceTree = "<group>"; };
 		ECBCB0D9249895F00097C2FA /* scripts.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = scripts.py; sourceTree = "<group>"; };
 		ECBCB0DA249968FB0097C2FA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		ECBCB0DB249976A10097C2FA /* requirements.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = requirements.txt; sourceTree = "<group>"; };
+		ECBCB0DD2499A29D0097C2FA /* mozumder-admin.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "mozumder-admin.py"; sourceTree = "<group>"; };
+		ECBCB0DE2499A78B0097C2FA /* 0001_initial.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = 0001_initial.py; sourceTree = "<group>"; };
+		ECBCB0DF2499A8120097C2FA /* 0001_initial.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = 0001_initial.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -94,6 +98,7 @@
 				ECBCB0AC249818D40097C2FA /* MANIFEST.in */,
 				ECBCB0A824980A6E0097C2FA /* README.rst */,
 				ECBCB0A92498175D0097C2FA /* LICENSE */,
+				ECBCB0DB249976A10097C2FA /* requirements.txt */,
 				ECBCB0AA249817C90097C2FA /* setup.cfg */,
 				ECBCB0AB249818A20097C2FA /* setup.py */,
 			);
@@ -102,6 +107,7 @@
 		EC54499E24946640000BB8A2 /* mozumder */ = {
 			isa = PBXGroup;
 			children = (
+				ECBCB0DC2499A1B50097C2FA /* bin */,
 				EC54499F249466C2000BB8A2 /* __init__.py */,
 				EC5449A024946722000BB8A2 /* apps.py */,
 				EC5449A124946770000BB8A2 /* db */,
@@ -307,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				ECBCB0BB24988A8E0097C2FA /* __init__.py */,
+				ECBCB0DE2499A78B0097C2FA /* 0001_initial.py */,
 			);
 			path = migrations;
 			sourceTree = "<group>";
@@ -314,6 +321,7 @@
 		ECBCB0BD249891D30097C2FA /* i18n */ = {
 			isa = PBXGroup;
 			children = (
+				ECBCB0C8249893500097C2FA /* management */,
 				ECBCB0D3249895870097C2FA /* models */,
 				ECBCB0D1249895620097C2FA /* migrations */,
 				ECBCB0C12498924E0097C2FA /* fixtures */,
@@ -327,7 +335,6 @@
 		ECBCB0C12498924E0097C2FA /* fixtures */ = {
 			isa = PBXGroup;
 			children = (
-				ECBCB0C8249893500097C2FA /* management */,
 				ECBCB0C22498925B0097C2FA /* iso-639-3_Code_Tables_20200130 */,
 				ECBCB0C02498923A0097C2FA /* iso15924-utf8-20190819.txt */,
 			);
@@ -370,6 +377,7 @@
 			isa = PBXGroup;
 			children = (
 				ECBCB0D22498956F0097C2FA /* __init__.py */,
+				ECBCB0DF2499A8120097C2FA /* 0001_initial.py */,
 			);
 			path = migrations;
 			sourceTree = "<group>";
@@ -384,6 +392,14 @@
 				ECBCB0D9249895F00097C2FA /* scripts.py */,
 			);
 			path = models;
+			sourceTree = "<group>";
+		};
+		ECBCB0DC2499A1B50097C2FA /* bin */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0DD2499A29D0097C2FA /* mozumder-admin.py */,
+			);
+			path = bin;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

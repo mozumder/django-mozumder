@@ -7,8 +7,8 @@ from django.contrib.sessions.models import Session
 
 from user_agents import parse as parse_ua
 
-from . import *
-from .apps import *
+from .. import *
+from ..apps import *
 
 global streaming_length
 streaming_length = 0
