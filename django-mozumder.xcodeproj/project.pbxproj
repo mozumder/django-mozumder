@@ -99,6 +99,8 @@
 		ECBCB0F0249AD9950097C2FA /* test.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "test.py-tpl"; sourceTree = "<group>"; };
 		ECBCB0F1249AD9A20097C2FA /* views.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "views.py-tpl"; sourceTree = "<group>"; };
 		ECBCB0F2249C73E70097C2FA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		ECBCB0F4249D41470097C2FA /* requirements.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = requirements.txt; sourceTree = "<group>"; };
+		ECBCB0F5249D5BE70097C2FA /* .env-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".env-tpl"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -418,6 +420,8 @@
 				ECBCB0E4249AD7F70097C2FA /* project_name */,
 				ECBCB0E8249AD84E0097C2FA /* manage.py-tpl */,
 				ECBCB0F2249C73E70097C2FA /* .gitignore */,
+				ECBCB0F4249D41470097C2FA /* requirements.txt */,
+				ECBCB0F5249D5BE70097C2FA /* .env-tpl */,
 			);
 			path = project_template;
 			sourceTree = "<group>";
