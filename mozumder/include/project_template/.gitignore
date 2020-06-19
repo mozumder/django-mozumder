@@ -1,0 +1,11 @@
+uwsgi.ini
+settings.ini
+.env
+local.env
+local.py
+*pyc
+scratch.*
+static/
+log/
+venv/
+
