@@ -15,19 +15,26 @@ Start with a Django project with a Postgres database and Redis cache.
 
     $ pip install django-mozumder
 
-2. Add ``mozumder`` to your Django project's ``INSTALLED_APPS`` setting:
+2. Create project directory structure
+
+::
+
+    $ mozumder-admin --db_url \
+        postgresql://db_username:db_password@db_hostname/db_databasename startproject 
+
+3. Add ``mozumder`` to your Django project's ``INSTALLED_APPS`` setting:
 
 ::
 
     INSTALLED_APPS = [
         ...
         'mozumder',
-        'analytics', # Optional logging views
-        'i18n', # Optional internationalization/localization models
+        'mozumder.analytics', # Optional logging views
+        'mozumder.i18n', # Optional internationalization/localization models
         ...
     ]
 
-3. In your Django project, create the database tables for logging and i18n/l10n using the migrate command:
+4. In your Django project, create the database tables for logging and i18n/l10n using the migrate command:
 
 ::
 
