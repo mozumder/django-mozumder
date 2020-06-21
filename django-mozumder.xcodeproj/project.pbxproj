@@ -116,6 +116,7 @@
 		ECBCB126249EE5790097C2FA /* icon-192.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-192.png"; sourceTree = "<group>"; };
 		ECBCB127249EE5790097C2FA /* icon-144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-144.png"; sourceTree = "<group>"; };
 		ECBCB128249EE5790097C2FA /* icon-150.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-150.png"; sourceTree = "<group>"; };
+		ECBCB129249EE67C0097C2FA /* .gitignore-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".gitignore-tpl"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -437,6 +438,7 @@
 				ECBCB0E8249AD84E0097C2FA /* manage.py-tpl */,
 				ECBCB0F4249D41470097C2FA /* requirements.txt */,
 				ECBCB0F5249D5BE70097C2FA /* .env-tpl */,
+				ECBCB129249EE67C0097C2FA /* .gitignore-tpl */,
 			);
 			path = project_template;
 			sourceTree = "<group>";
