@@ -101,6 +101,22 @@
 		ECBCB0F2249C73E70097C2FA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		ECBCB0F4249D41470097C2FA /* requirements.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = requirements.txt; sourceTree = "<group>"; };
 		ECBCB0F5249D5BE70097C2FA /* .env-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".env-tpl"; sourceTree = "<group>"; };
+		ECBCB0FA249E9B3A0097C2FA /* robots.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = robots.txt; sourceTree = "<group>"; };
+		ECBCB0FB249E9B5A0097C2FA /* browserconfig.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = browserconfig.xml; sourceTree = "<group>"; };
+		ECBCB102249EA6730097C2FA /* manifest.json-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "manifest.json-tpl"; sourceTree = "<group>"; };
+		ECBCB103249EDEED0097C2FA /* icon-144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-144.png"; sourceTree = "<group>"; };
+		ECBCB104249EDEED0097C2FA /* icon-70.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-70.png"; sourceTree = "<group>"; };
+		ECBCB105249EDEED0097C2FA /* icon-96.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-96.png"; sourceTree = "<group>"; };
+		ECBCB106249EDEEE0097C2FA /* icon-16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-16.png"; sourceTree = "<group>"; };
+		ECBCB107249EDEEE0097C2FA /* icon-150.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-150.png"; sourceTree = "<group>"; };
+		ECBCB108249EDEEE0097C2FA /* icon-192.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-192.png"; sourceTree = "<group>"; };
+		ECBCB109249EDEEE0097C2FA /* icon-48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-48.png"; sourceTree = "<group>"; };
+		ECBCB10A249EDEEE0097C2FA /* icon-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-512.png"; sourceTree = "<group>"; };
+		ECBCB10B249EDEEE0097C2FA /* icon-310.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-310.png"; sourceTree = "<group>"; };
+		ECBCB10C249EDEEF0097C2FA /* icon-32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-32.png"; sourceTree = "<group>"; };
+		ECBCB10D249EDEEF0097C2FA /* icon-36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-36.png"; sourceTree = "<group>"; };
+		ECBCB10E249EDEEF0097C2FA /* icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-72.png"; sourceTree = "<group>"; };
+		ECBCB10F249EDEEF0097C2FA /* icon-180.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-180.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -417,6 +433,7 @@
 		ECBCB0E1249AD7A40097C2FA /* project_template */ = {
 			isa = PBXGroup;
 			children = (
+				ECBCB0F7249E9AFE0097C2FA /* static */,
 				ECBCB0E4249AD7F70097C2FA /* project_name */,
 				ECBCB0E8249AD84E0097C2FA /* manage.py-tpl */,
 				ECBCB0F2249C73E70097C2FA /* .gitignore */,
@@ -458,6 +475,37 @@
 				ECBCB0EC249AD8DA0097C2FA /* settings.py-tpl */,
 			);
 			path = project_name;
+			sourceTree = "<group>";
+		};
+		ECBCB0F7249E9AFE0097C2FA /* static */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB0FA249E9B3A0097C2FA /* robots.txt */,
+				ECBCB0FB249E9B5A0097C2FA /* browserconfig.xml */,
+				ECBCB102249EA6730097C2FA /* manifest.json-tpl */,
+				ECBCB0F8249E9B0C0097C2FA /* icon */,
+			);
+			path = static;
+			sourceTree = "<group>";
+		};
+		ECBCB0F8249E9B0C0097C2FA /* icon */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB106249EDEEE0097C2FA /* icon-16.png */,
+				ECBCB10C249EDEEF0097C2FA /* icon-32.png */,
+				ECBCB10D249EDEEF0097C2FA /* icon-36.png */,
+				ECBCB109249EDEEE0097C2FA /* icon-48.png */,
+				ECBCB104249EDEED0097C2FA /* icon-70.png */,
+				ECBCB10E249EDEEF0097C2FA /* icon-72.png */,
+				ECBCB105249EDEED0097C2FA /* icon-96.png */,
+				ECBCB103249EDEED0097C2FA /* icon-144.png */,
+				ECBCB107249EDEEE0097C2FA /* icon-150.png */,
+				ECBCB10F249EDEEF0097C2FA /* icon-180.png */,
+				ECBCB108249EDEEE0097C2FA /* icon-192.png */,
+				ECBCB10B249EDEEE0097C2FA /* icon-310.png */,
+				ECBCB10A249EDEEE0097C2FA /* icon-512.png */,
+			);
+			path = icon;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

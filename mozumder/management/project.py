@@ -2,6 +2,7 @@
 import sys
 import os
 from os.path import join, getsize
+from shutil import copyfile
 import argparse
 from urllib.parse import urlparse
 
@@ -66,13 +67,59 @@ def create():
         default='media',
         help='Django log directory. Default to: media')
     parser.add_argument(
+        '--static_url',
+        action='store',
+        default='static',
+        help='Static files URL path. Default to: static')
+    parser.add_argument(
+        '--media_url',
+        action='store',
+        default='media',
+        help='Media files URL path. Default to: media')
+    parser.add_argument(
+        '--admin_url',
+        action='store',
+        default='admin',
+        help='Admin URL path. Default to: admin')
+    parser.add_argument(
         '--virtualenv_dir',
         action='store',
         default='venv',
         help='Python virtualenv directory. Default to: venv')
+    parser.add_argument(
+        '--site_name',
+        action='store',
+        default='Mozumder Website',
+        help='Full Name of site. Default: "Mozumder Website"')
+    parser.add_argument(
+        '--site_short_name',
+        action='store',
+        default='Mozumder',
+        help='Short Name of site. Default: Mozumder')
+    parser.add_argument(
+        '--site_description',
+        action='store',
+        default='A new website',
+        help='Site description. Default: "A new website"')
+    parser.add_argument(
+        '--site_lang',
+        action='store',
+        default='en-US',
+        help='Site default language. Default: en-US')
+    parser.add_argument(
+        '--site_theme_color',
+        action='store',
+        default='black',
+        help='Site theme color. Default: black')
+    parser.add_argument(
+        '--site_background_color',
+        action='store',
+        default='pink',
+        help='Site theme color. Default: pink')
 
     parser_startproject = subparsers.add_parser('startproject', help='Create a new Mozumder project')
     parser_uwsgi = subparsers.add_parser('createuwsgi', help='Create a UWSGI Vassal .ini file')
+    parser_uwsgi = subparsers.add_parser('createh2o', help='Create h2o config file')
 
     parser_startproject.set_defaults(func=startproject)
 
@@ -125,6 +172,37 @@ def create():
         default=8,
         type=int,
         help='Number of threads per UWSGI process to run. Default 8.')
+
+    parser_startproject.add_argument(
+        '--create_h2o',
+        action='store_true',
+        default=False,
+        help='Create h2o config file.')
+    parser_uwsgi.set_defaults(func=createh2o)
+
+    parser.add_argument(
+        '--hostname',
+        action='store',
+        help='Full Host name for HTTP server. Example: www.example.com')
+    parser.add_argument(
+        '--domainname',
+        action='store',
+        help='Top-level domain name for this server. This will be permanently redirected to the server hostname. Example: example.com')
+    parser.add_argument(
+        '--redirects',
+        action='store',
+        help='List of additional domains that will be temporarily redirected to this HTTP host. Example: host1.example.com host2.example.com')
+    parser.add_argument(
+        '--letsencrypt_dir',
+        action='store',
+        default='/usr/local/etc/letsencrypt/live',
+        help='Letsencrypt live key directory. Default to: /usr/local/etc/letsencrypt/live')
+    parser.add_argument(
+        '--h2o_log_dir',
+        action='store',
+        default='/var/log/h2o',
+        help='H2O log directory. Default to: /var/log/uwsgi')
+
     args = parser.parse_args()
 
     args.func(args)
@@ -157,6 +235,9 @@ def process_args(args):
 
     static_dir = args.static_dir
     media_dir = args.media_dir
+    static_url = args.static_url
+    media_url = args.media_url
+    admin_url = args.admin_url
     log_dir = args.log_dir
     log_file = os.path.join(log_dir, f'{project_name}.log')
     error_log_file = os.path.join(log_dir, f'{project_name}.error.log')
@@ -174,24 +255,39 @@ def process_args(args):
     log_path = os.path.join(target_root,log_dir)
     venv_path = os.path.join(target_root,venv_dir)
     static_path = os.path.join(target_root,static_dir)
+    media_path = os.path.join(target_root,media_dir)
+
+    uwsgi_run_dir = args.uwsgi_run_dir
+    uwsgi_log_dir = args.uwsgi_log_dir
+    
+    site_name = args.site_name
+    site_short_name = args.site_short_name
+    site_description = args.site_description
+    site_lang = args.site_lang
+    site_theme_color = args.site_theme_color
+    site_background_color = args.site_background_color
 
     return project_name, db_host, db_port, db_name, db_username, \
-        db_password, allowed_hosts, static_dir, media_dir, \
-        log_dir, log_file, error_log_file, access_log_file, \
-        cache_log_file, db_log_file, venv_dir, secret_key, \
-        django_version, docs_version, source_root, \
+        db_password, allowed_hosts, static_dir, media_dir, static_url, \
+        media_url, admin_url, log_dir, log_file, error_log_file, \
+        access_log_file, cache_log_file, db_log_file, venv_dir, \
+        secret_key, django_version, docs_version, source_root, \
         source_root_length, target_root, access_rights, log_path, \
-        venv_path, static_path
+        venv_path, static_path, media_path, uwsgi_run_dir, uwsgi_log_dir, \
+        site_name, site_short_name, site_description, site_lang, \
+        site_theme_color, site_background_color
 
 def startproject(args):
 
     project_name, db_host, db_port, db_name, db_username, \
-        db_password, allowed_hosts, static_dir, media_dir, \
-        log_dir, log_file, error_log_file, access_log_file, \
-        cache_log_file, db_log_file, venv_dir, secret_key, \
-        django_version, docs_version, source_root, \
+        db_password, allowed_hosts, static_dir, media_dir, static_url, \
+        media_url, admin_url, log_dir, log_file, error_log_file, \
+        access_log_file, cache_log_file, db_log_file, venv_dir, \
+        secret_key, django_version, docs_version, source_root, \
         source_root_length, target_root, access_rights, log_path, \
-        venv_path, static_path = \
+        venv_path, static_path, media_path, uwsgi_run_dir, uwsgi_log_dir, \
+        site_name, site_short_name, site_description, site_lang, \
+        site_theme_color, site_background_color = \
         process_args(args)
 
     db_admin_url = args.db_admin_url
@@ -224,13 +320,6 @@ def startproject(args):
     else:
         print (f"Created Python virtualenv directory {venv_path}")
 
-    try:
-        os.mkdir(static_path, access_rights)
-    except OSError:
-        print (f"Creation of static files directory {static_path} failed")
-    else:
-        print (f"Created static files directory {static_path}")
-
     media_path = os.path.join(target_root,media_dir)
     try:
         os.mkdir(media_path, access_rights)
@@ -255,40 +344,47 @@ def startproject(args):
                 os.mkdir(path,mode=0o755)
             except OSError:
                 print (f"Creation of the directory {path} failed")
+            else:
+                print (f"Created directory {path}")
         for name in files:
             source_filename = os.path.join(root, name)
-            f = open(source_filename, "r")
-            status = os.stat(source_filename).st_mode & 0o777
             if name[-4:] == '-tpl':
+                f = open(source_filename, "r")
                 fstring_from_file = 'f"""'+f.read()+'"""'
+                f.close()
                 # Evaluate F-String
                 compiled_fstring = compile(fstring_from_file, source_filename, 'eval')
                 formatted_output = eval(compiled_fstring)
                 name = name[:-4]
+                target_filename = os.path.join(target_path, name)
+                # Write evaluated F-String
+                f = open(target_filename, "w")
+                f.write(formatted_output)
+                f.close()
+                status = os.stat(source_filename).st_mode & 0o777
+                os.chmod(target_filename,status)
             else:
-                fstring_from_file = f.read()
-                formatted_output = fstring_from_file
-            f.close()
+                target_filename = os.path.join(target_path, name)
+                copyfile(source_filename, target_filename)
             
-            # Write evaluated F-String
-            target_filename = os.path.join(target_path, name)
-            f = open(target_filename, "w")
-            f.write(formatted_output)
-            f.close()
-            os.chmod(target_filename,status)
 
     if args.create_uwsgi == True:
         createuwsgi(args,use_secret_key=secret_key)
-        
+
+    if args.create_h2o == True:
+        createh2o(args)
+
 def createuwsgi(args, use_secret_key=None):
 
     project_name, db_host, db_port, db_name, db_username, \
-        db_password, allowed_hosts, static_dir, media_dir, \
-        log_dir, log_file, error_log_file, access_log_file, \
-        cache_log_file, db_log_file, venv_dir, secret_key, \
-        django_version, docs_version, source_root, \
+        db_password, allowed_hosts, static_dir, media_dir, static_url, \
+        media_url, admin_url, log_dir, log_file, error_log_file, \
+        access_log_file, cache_log_file, db_log_file, venv_dir, \
+        secret_key, django_version, docs_version, source_root, \
         source_root_length, target_root, access_rights, log_path, \
-        venv_path, static_path = \
+        venv_path, static_path, media_path, uwsgi_run_dir, uwsgi_log_dir, \
+        site_name, site_short_name, site_description, site_lang, \
+        site_theme_color, site_background_color = \
         process_args(args)
     
     venv = os.path.join(venv_path,project_name)
@@ -298,14 +394,12 @@ def createuwsgi(args, use_secret_key=None):
     processes = args.uwsgi_processes
     threads = args.uwsgi_threads
     
-    uwsgi_run_dir = args.uwsgi_run_dir
-    uwsgi_log_dir = args.uwsgi_log_dir
     http_socket = ''
     for http_socket_host in args.uwsgi_http_sockets:
         http_socket += 'http-socket     = ' + http_socket_host + '\n'
 
     target_filename = os.path.join(target_root, 'uwsgi.ini')
-    f = open(target_filename, "w")
+    f = open(target_filename, 'w')
     f.write(
 f"""[uwsgi]
 home            = {venv}
@@ -358,5 +452,164 @@ threaded-logger = true
 enable-threads  = true
 no-threads-wait = true
 procname-prefix = %(app).
+""")
+    f.close()
+
+def createh2o(args):
+
+    project_name, db_host, db_port, db_name, db_username, \
+        db_password, allowed_hosts, static_dir, media_dir, static_url, \
+        media_url, admin_url, log_dir, log_file, error_log_file, \
+        access_log_file, cache_log_file, db_log_file, venv_dir, \
+        secret_key, django_version, docs_version, source_root, \
+        source_root_length, target_root, access_rights, log_path, \
+        venv_path, static_path, media_path, uwsgi_run_dir, uwsgi_log_dir, \
+        site_name, site_short_name, site_description, site_lang, \
+        site_theme_color, site_background_color = \
+        process_args(args)
+
+    domainname = args.domainname
+    hostname = args.hostname
+    redirects = args.redirects
+    letsencrypt_dir = args.letsencrypt_dir
+    h2o_log_dir = args.h2o_log_dir
+    h2o_access_log = os.path.join(h2o_log_dir,project_name + '.log')
+    well_known_dir = os.path.join(target_root,'.well-known')
+    uwsgi_fcgi_socket = os.path.join(uwsgi_run_dir,project_name + '.fastcgi.sock')
+
+    robots_txt_file = os.path.join(static_path,'robots.txt')
+    manifest_json_file = os.path.join(static_path,'manifest.json')
+    browserconfig_xml_file = os.path.join(static_path,'browserconfig.xml')
+    icon_path = os.path.join(static_path,'icon')
+    favicon_ico_file = os.path.join(icon_path,'icon-16.png')
+    android_icon_192x192_png_file = os.path.join(icon_path,'icon-192.png')
+    apple_icon_180x180_png_file = os.path.join(icon_path,'icon-180.png')
+    favicon_16x16_png_file = os.path.join(icon_path,'icon-16.png')
+    favicon_32x32_png_file = os.path.join(icon_path,'icon-32.png')
+    favicon_96x96_png_file = os.path.join(icon_path,'icon-96.png')
+
+    first_temp_redirect = ''
+    additional_temp_redirects = ''
+    domain_redirect = ''
+    if redirects:
+        first = True
+        for redirect in redirects:
+            if first:
+                first = False
+                # first item
+                first_temp_redirect = f""""{redirect}:80": &temp_redirect
+  <<: *default_redirect
+  paths: &temp_paths
+    "/":
+      redirect:
+        status: 302
+        url:    "https://{hostname}/\""""
+            else:
+                # other items
+                additional_temp_redirects += f'"{redirect}:80": *temp_redirect\n'
+    if domainname != None:
+        domain_redirect = '"{domainname}:80": *default_redirect'
+
+    cipher = """minimum-version: TLSv1.2
+cipher-suite: ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
+cipher-preference: server"""
+    certificates_file = os.path.join(letsencrypt_dir, domainname, "fullchain.pem")
+    key_file = os.path.join(letsencrypt_dir, domainname, "privkey.pem")
+
+    first_temp_ssl_redirect = ''
+    additional_temp_ssl_redirects = ''
+    domain_ssl_redirect = ''
+    if redirects:
+        first = True
+        for redirect in redirects:
+            if first:
+                first = False
+                # first item
+                first_temp_ssl_redirect = f""""{redirect}:443": &temp_ssl_redirect
+  <<: *ssl_redirect
+  paths: &temp_paths
+    "/":
+      redirect:
+        status: 302
+        url:    "https://{hostname}/\""""
+            else:
+                # other items
+                additional_temp_ssl_redirects += f'"{redirect}:443": *temp_redirect\n'
+    if domainname != None:
+        domain_ssl_redirect = '"{domainname}:80": *default_redirect'
+
+    target_filename = os.path.join(target_root, 'h2o.conf')
+    f = open(target_filename, "w")
+    f.write(f"""{hostname}:80": &default_redirect
+  listen:
+    port: 80
+  paths: &default_paths
+    "/":
+      redirect:
+        status: 301
+        url:    "https://{hostname}/"
+    "/.well-known": &well_known
+      file.dir: {well_known_dir}
+{first_temp_redirect}
+{additional_temp_redirects}
+{domain_redirect}
+
+"{domainname}:443": &ssl_redirect
+  <<: *default_redirect
+  listen: &default_ssl
+    port: 443
+    ssl:
+      {cipher}
+      certificate-file: {certificate_file}
+      key-file:         {key_file}
+{first_temp_ssl_redirect}
+{additional_temp_ssl_redirects}
+"{hostname}:443":
+  access-log:
+    path: {h2o_access_log}
+    format: "%{{%Y-%m-%d %H:%M:%S}}t.%{{msec_frac}}t %h:%{{remote}}p %H %{{Referer}}i %m %U%q %s %bb %{{duration}}xs (%{{connect-time}}xs, %{{request-total-time}}xs, %{{process-time}}xs, %{{response-time}}xs) \"%{{user-agent}}i\""
+  listen: *default_ssl
+  paths:
+    <<: *default_paths
+    "/": &{project_name}_socket
+      fastcgi.connect:
+        port: {uwsgi_fcgi_socket}
+        type: unix
+    "/{static_url}":
+      file.dir: {static_path}
+      expires: 30 day
+      file.send-compressed: ON
+    "/{media_url}":
+      file.dir: {media_path}
+      expires: 30 day
+    "/{admin_url}": *{project_name}_socket
+    /robots.txt: &default_file
+      file.file: {robots_txt_file}
+      file.send-compressed: ON
+      expires: 30 day
+    /manifest.json:
+      <<: *default_file
+      file.file: {manifest_json_file}
+    /browserconfig.xml:
+      <<: *default_file
+      file.file: {browserconfig_xml_file}
+    /favicon.ico:
+      <<: *default_file
+      file.file: {favicon_ico_file}
+    /android-icon-192x192.png:
+      <<: *default_file
+      file.file: {android_icon_192x192_png_file}
+    /apple-icon-180x180.png:
+      <<: *default_file
+      file.file: {apple_icon_180x180_png_file}
+    /favicon-16x16.png:
+      <<: *default_file
+      file.file: {favicon_16x16_png_file}
+    /favicon-32x32.png:
+      <<: *default_file
+      file.file: {favicon_32x32_png_file}
+    /favicon-96x96.png:
+      <<: *default_file
+      file.file: {favicon_96x96_png_file}
 """)
     f.close()
