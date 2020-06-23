@@ -1,0 +1,5 @@
+CREATE ROLE '{db_username}' WITH LOGIN PASSWORD 'db_password';
+CREATE DATABASE {db_name} WITH OWNER {db_username};
+\c {db_name}
+CREATE EXTENSION pgcrypto;
+

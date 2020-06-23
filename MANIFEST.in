@@ -1,6 +1,6 @@
 include LICENSE
 include README.rst
 recursive-include mozumder/include *
-recursive-include analytics/include *
-recursive-include i18n/fixtures *
+recursive-include mozumder/analytics/include *
+recursive-include mozumder/i18n/fixtures *
 recursive-include docs *

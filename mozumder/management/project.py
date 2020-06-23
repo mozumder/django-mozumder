@@ -2,6 +2,7 @@
 import sys
 import os
 from os.path import join, getsize
+import subprocess
 from shutil import copyfile
 import argparse
 from urllib.parse import urlparse
@@ -16,6 +17,10 @@ def create():
     parser = argparse.ArgumentParser(
         description='Create a new Mozumder project.')
     subparsers = parser.add_subparsers(help='Create new project, or create UWSGI vassals file', dest='subparser_name')
+    parser_startproject = subparsers.add_parser('startproject', help='Create a new Mozumder project')
+    parser_uwsgi = subparsers.add_parser('createuwsgi', help='Create a UWSGI Vassal .ini file')
+    parser_uwsgi = subparsers.add_parser('createh2o', help='Create h2o config file')
+
     parser.add_argument(
         'project_name',
         action='store',
@@ -117,12 +122,35 @@ def create():
         default='pink',
         help='Site theme color. Default: pink')
 
-    parser_startproject = subparsers.add_parser('startproject', help='Create a new Mozumder project')
-    parser_uwsgi = subparsers.add_parser('createuwsgi', help='Create a UWSGI Vassal .ini file')
-    parser_uwsgi = subparsers.add_parser('createh2o', help='Create h2o config file')
+    parser.add_argument(
+        '--hostname',
+        action='store',
+        help='Full Host name for HTTP server. Example: www.example.com')
+    parser.add_argument(
+        '--domainname',
+        action='store',
+        help='Top-level domain name for this server. This will be permanently redirected to the server hostname. Example: example.com')
+    parser.add_argument(
+        '--redirects',
+        action='store',
+        help='List of additional domains that will be temporarily redirected to this HTTP host. Example: host1.example.com host2.example.com')
+    parser.add_argument(
+        '--letsencrypt_dir',
+        action='store',
+        default='/usr/local/etc/letsencrypt/live',
+        help='Letsencrypt live key directory. Default to: /usr/local/etc/letsencrypt/live')
+    parser.add_argument(
+        '--h2o_log_dir',
+        action='store',
+        default='/var/log/h2o',
+        help='H2O log directory. Default to: /var/log/uwsgi')
 
     parser_startproject.set_defaults(func=startproject)
 
+    parser_startproject.add_argument(
+        '--create_db',
+        action='store_true',
+        help='Create Postgres user and database')
     parser_startproject.add_argument(
         '--db_admin_url',
         action='store',
@@ -179,29 +207,6 @@ def create():
         default=False,
         help='Create h2o config file.')
     parser_uwsgi.set_defaults(func=createh2o)
-
-    parser.add_argument(
-        '--hostname',
-        action='store',
-        help='Full Host name for HTTP server. Example: www.example.com')
-    parser.add_argument(
-        '--domainname',
-        action='store',
-        help='Top-level domain name for this server. This will be permanently redirected to the server hostname. Example: example.com')
-    parser.add_argument(
-        '--redirects',
-        action='store',
-        help='List of additional domains that will be temporarily redirected to this HTTP host. Example: host1.example.com host2.example.com')
-    parser.add_argument(
-        '--letsencrypt_dir',
-        action='store',
-        default='/usr/local/etc/letsencrypt/live',
-        help='Letsencrypt live key directory. Default to: /usr/local/etc/letsencrypt/live')
-    parser.add_argument(
-        '--h2o_log_dir',
-        action='store',
-        default='/var/log/h2o',
-        help='H2O log directory. Default to: /var/log/uwsgi')
 
     args = parser.parse_args()
 
@@ -373,6 +378,15 @@ def startproject(args):
 
     if args.create_h2o == True:
         createh2o(args)
+        
+    if args.create_db == True:
+        psql_pw = db_admin_password if db_admin_password else ''
+        psql_command = f"CREATE ROLE {db_username} WITH LOGIN PASSWORD '{db_password}'; CREATE DATABASE {db_name} WITH OWNER {db_username};"
+        command = f'PGPASSWORD={psql_pw} psql -U {db_admin_username} -c "{psql_command}"'
+        os.system(command)
+        psql_command = f"CREATE EXTENSION pgcrypto;"
+        command = f'PGPASSWORD={psql_pw} psql -U {db_admin_username} -d {db_name} -c "{psql_command}"'
+        os.system(command)
 
 def createuwsgi(args, use_secret_key=None):
 
@@ -467,6 +481,7 @@ def createh2o(args):
         site_name, site_short_name, site_description, site_lang, \
         site_theme_color, site_background_color = \
         process_args(args)
+        
 
     domainname = args.domainname
     hostname = args.hostname
@@ -488,6 +503,11 @@ def createh2o(args):
     favicon_32x32_png_file = os.path.join(icon_path,'icon-32.png')
     favicon_96x96_png_file = os.path.join(icon_path,'icon-96.png')
 
+    if domainname == None:
+        raise Exception('Need a domain name when creating H2O config file. Please set --domainname')
+    if hostname == None:
+        raise Exception('Need a host name when creating H2O config file. Please set --hostname')
+
     first_temp_redirect = ''
     additional_temp_redirects = ''
     domain_redirect = ''
@@ -508,12 +528,12 @@ def createh2o(args):
                 # other items
                 additional_temp_redirects += f'"{redirect}:80": *temp_redirect\n'
     if domainname != None:
-        domain_redirect = '"{domainname}:80": *default_redirect'
+        domain_redirect = f'"{domainname}:80": *default_redirect'
 
     cipher = """minimum-version: TLSv1.2
 cipher-suite: ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
 cipher-preference: server"""
-    certificates_file = os.path.join(letsencrypt_dir, domainname, "fullchain.pem")
+    certificate_file = os.path.join(letsencrypt_dir, domainname, "fullchain.pem")
     key_file = os.path.join(letsencrypt_dir, domainname, "privkey.pem")
 
     first_temp_ssl_redirect = ''
@@ -536,7 +556,7 @@ cipher-preference: server"""
                 # other items
                 additional_temp_ssl_redirects += f'"{redirect}:443": *temp_redirect\n'
     if domainname != None:
-        domain_ssl_redirect = '"{domainname}:80": *default_redirect'
+        domain_ssl_redirect = f'"{domainname}:80": *default_redirect'
 
     target_filename = os.path.join(target_root, 'h2o.conf')
     f = open(target_filename, "w")

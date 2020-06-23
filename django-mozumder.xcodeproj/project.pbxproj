@@ -117,6 +117,7 @@
 		ECBCB127249EE5790097C2FA /* icon-144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-144.png"; sourceTree = "<group>"; };
 		ECBCB128249EE5790097C2FA /* icon-150.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-150.png"; sourceTree = "<group>"; };
 		ECBCB129249EE67C0097C2FA /* .gitignore-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".gitignore-tpl"; sourceTree = "<group>"; };
+		ECBCB12A24A17B2F0097C2FA /* createdb.psql */ = {isa = PBXFileReference; lastKnownFileType = text; path = createdb.psql; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -439,6 +440,7 @@
 				ECBCB0F4249D41470097C2FA /* requirements.txt */,
 				ECBCB0F5249D5BE70097C2FA /* .env-tpl */,
 				ECBCB129249EE67C0097C2FA /* .gitignore-tpl */,
+				ECBCB12A24A17B2F0097C2FA /* createdb.psql */,
 			);
 			path = project_template;
 			sourceTree = "<group>";
