@@ -4,16 +4,30 @@ django-mozumder
 
 django-mozumder is a set of utilities to enhance Django with Postgres and Redis. It was designed to serve a celebrity-oriented website that sees bursts of web traffic. The goal was to reduce non-cached page generation times from 1-2 seconds down to the 1-2 milliseconds range on a single CPU core, speeding up a Django site by 1000x.
 
+Python-based Templates
+----------------------
+
 The first change is a new component-based templating system built directly with Python instead of through Django's pseudo-HTML templates (or Jinja templates). This component-based template system handles CSS and JS minification, as well as precomputing HTTP Content-Security-Policy header hashes, improving security.
+
+
+Prepared Statements and Compressed Views
+----------------------------------------
 
 The next major change is a new view system that uses Postgres prepared statements. Postgres prepared statements are pre-compiled SQL queries that eliminate parsing, compiling, and query optimization steps on each SQL query. This saves about 15ms per query.  Additionaly, these new views ties in with the new component-based templates to compress template components before caching. This effectively increases the cache size by 10x, and eliminates the Gzip compression step on page reads through a new response generator. This saves an addition 10-15ms per page read.
 
+Materialized View Models
+------------------------
+
 The final major change are tools to faciliate database materialized view models, including generating prepared statements from new materialized model fields and cache invalidation for live updating of materialized view models. Materialized views are database models that pre-render elements of the view into database fields. For example, database joins can be eliminated by storing joined fields into a table. Eliminating SQL JOIN statements can save another 15ms or so for each join on a decent sized table.
 
-Also included are apps for logging, to speed up the site to eliminate the need for third-party logging & analytics, as well as an app for internationalization and localization (i18n/l11n).
+Logging & Internationalization
+------------------------------
 
+Also included are apps for database logging, to speed up the site by eliminating the need for third-party logging & analytics Javascript, as well as an app for internationalization and localization (i18n/l11n) models to faciliate multi-lingual sites.
+
+===========
 Quick setup
------------
+===========
 
 Requirements: Have Python 3.8, Postgres, and Redis installed.
 
@@ -67,16 +81,4 @@ Let's start with a Django Blogging app that includes the following models:
         height = models.PositiveIntegerField()
         file = models.ImageField()
 
-
-Python-based Templates
-----------------------
-
-Materialized Views
-------------------
-
-Postgres Prepared Statements
-----------------------------
-
-Zlib compressed cache
----------------------
 
