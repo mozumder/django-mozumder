@@ -384,6 +384,9 @@ def startproject(args):
         psql_command = f"CREATE ROLE {db_username} WITH LOGIN PASSWORD '{db_password}'; CREATE DATABASE {db_name} WITH OWNER {db_username};"
         command = f'PGPASSWORD={psql_pw} psql -U {db_admin_username} -c "{psql_command}"'
         os.system(command)
+        psql_command = f"CREATE ROLE {db_username} WITH LOGIN PASSWORD '{db_password}'; CREATE DATABASE {db_name} WITH OWNER {db_username};"
+        command = f'PGPASSWORD={psql_pw} psql -U {db_admin_username} -c "{psql_command}"'
+        os.system(command)
         psql_command = f"CREATE EXTENSION pgcrypto;"
         command = f'PGPASSWORD={psql_pw} psql -U {db_admin_username} -d {db_name} -c "{psql_command}"'
         os.system(command)

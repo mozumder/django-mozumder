@@ -55,8 +55,8 @@ Let's start with a Django Blogging app that includes the following models:
         original = models.ForeignKey('Photo', related_name='original_file', on_delete=models.CASCADE)
         small = models.ForeignKey('Photo', related_name='small_file', on_delete=models.CASCADE)
         medium = models.ForeignKey('Photo', related_name='medium_file', on_delete=models.CASCADE)
-        large = models.ForeignKey('Photo', related_name='thumbnail_file', on_delete=models.CASCADE)
-        thumbnail = models.ForeignKey('Photo', related_name='original_file', on_delete=models.CASCADE)
+        large = models.ForeignKey('Photo', related_name='large_file', on_delete=models.CASCADE)
+        thumbnail = models.ForeignKey('Photo', related_name='thumbnail_file', on_delete=models.CASCADE)
 
     class ImageFile(models.Model):
         width = models.PositiveIntegerField()
