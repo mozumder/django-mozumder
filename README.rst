@@ -7,7 +7,7 @@ django-mozumder is a Django app containing various utilities to enhance Django w
 Quick setup
 -----------
 
-Start with a Django project with a Postgres database and Redis cache.
+Requirements: Have Python 3.8, Postgres, and Redis installed.
 
 1. Install package using ``pip``
 
@@ -15,26 +15,13 @@ Start with a Django project with a Postgres database and Redis cache.
 
     $ pip install django-mozumder
 
-2. Create project directory structure
+2. Create project directory structure with ``mozumder-admin``
 
 ::
 
-    $ mozumder-admin --db_url \
-        postgresql://db_username:db_password@db_hostname/db_databasename startproject 
+    $ mozumder-admin --db_url postgresql://db_username:db_password@db_hostname/db_databasename --domainname example.com --hostname www.example.com startproject --create_db mysite
 
-3. Add ``mozumder`` to your Django project's ``INSTALLED_APPS`` setting:
-
-::
-
-    INSTALLED_APPS = [
-        ...
-        'mozumder',
-        'mozumder.analytics', # Optional logging views
-        'mozumder.i18n', # Optional internationalization/localization models
-        ...
-    ]
-
-4. In your Django project, create the database tables for logging and i18n/l10n using the migrate command:
+3. In your project, create the database tables for logging and i18n/l10n using the migrate command:
 
 ::
 
