@@ -2,10 +2,13 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import mozumder
+import inspect
 
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'example.settings')
+    sys.path.insert(0, os.path.dirname(inspect.getfile(mozumder)))
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
