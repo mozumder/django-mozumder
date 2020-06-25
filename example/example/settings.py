@@ -38,8 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mozumder',
-    'mozumder.analytics',
-    'mozumder.i18n',
 ]
 
 MIDDLEWARE = [
