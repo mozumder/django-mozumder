@@ -7,5 +7,6 @@ local.py
 scratch.*
 log/
 venv/
+build/
 dist/
 django_mozumder.egg-info/

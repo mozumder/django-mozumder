@@ -2,7 +2,7 @@
 django-mozumder
 ===============
 
-django-mozumder is a set of utilities to enhance Django with Postgres and Redis. It was designed to serve a celebrity-oriented website that sees bursts of web traffic. The goal was to reduce non-cached page generation times from 1-2 seconds down to the 1-2 milliseconds range on a single CPU core, speeding up a Django site by 1000x.
+django-mozumder is a set of utilities to enhance Django with Postgres and Redis. It was designed to serve a celebrity-oriented website that sees bursts of web traffic. The goal was to reduce non-cached page generation times from 1-2 seconds down to the 1-2 milliseconds range on a single CPU core, speeding up a Django site by 1000x. See `Django Unchained at FutureClaw <https://www.mozumder.net/blog/django-unchained-how-futureclaw-serves-pages-in-microseconds>`_
 
 Python-based Templates
 ----------------------
@@ -82,3 +82,4 @@ Let's start with a Django Blogging app that includes the following models:
         file = models.ImageField()
 
 
+.. tutorial currently under development
