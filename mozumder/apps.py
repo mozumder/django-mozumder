@@ -20,7 +20,7 @@ message_log = logging.getLogger("django")
 
 class PreparedAppConfig(AppConfig):
     def execute_sql_files(self,command):
-        pth = os.path.dirname(inspect.getmodule(self.__class__).__file__) + '/sql'
+        pth = os.path.dirname(inspect.getmodule(self.__class__).__file__) + '/include/sql'
         if not hasattr(self, 'sql_dirs'):
             self.sql_dirs = [pth]
         for dir in self.sql_dirs:
@@ -28,7 +28,7 @@ class PreparedAppConfig(AppConfig):
             try:
                 file = open(file_name, 'r')
             except FileNotFoundError:
-                db_log.debug('No SQL file: %s' % file_name)
+                db_log.debug('Oops.. No SQL file: %s' % file_name)
                 pass
             except (OSError, IOError) as e:
                 db_log.error('Error reading SQL file: %s' % file_name)
@@ -45,8 +45,8 @@ class PreparedAppConfig(AppConfig):
                         db_log.error(f"Failed running SQL command: {sql_commands}!")
                         db_log.error(f'- Specifically, {value}')
                         db_log.error("- Please review the most recent stack entries:\n" + "".join(traceback.format_list(traceback.extract_tb(tb, limit=5))))
-                        logger.error(f'Caught Database error {value} while trying to exectute sql file {file_name}')
-                        logger.error(f'- Ignoring and continuing')
+                        message_log.error(f'Caught Database error {value} while trying to exectute sql file {file_name}')
+                        message_log.error(f'- Ignoring and continuing')
                     cursor.close()
 
     def read_prepared_statements(self):
@@ -79,8 +79,8 @@ class PreparedAppConfig(AppConfig):
                             db_log.error(f"Failed preparing statements statements with {type.__name__}!")
                             db_log.error(f'- Specifically, {value}')
                             db_log.error("- Please review the most recent stack entries:\n" + "".join(traceback.format_list(traceback.extract_tb(tb, limit=5))))
-                            logger.error(f'Caught Database error {value} while trying to exectute sql file {file_name}')
-                            logger.error(f'- Ignoring and continuing')
+                            message_log.error(f'Caught Database error {value} while trying to exectute sql file {file_name}')
+                            message_log.error(f'- Ignoring and continuing')
                         cursor.close()
 
     def db_connected(self, sender, connection, **kwargs):
@@ -121,9 +121,6 @@ class MozumderAppConfig(PreparedAppConfig):
     name = 'mozumder'
     verbose_name = 'Django Mozumder'
     dbConnectSignal = 'prepareMozumderDb'
-    sql_dirs = (
-            'mozumder/include/sql',
-            )
     def db_connected(self,sender, connection, **kwargs):
         self._lock = threading.Lock()
         super().db_connected(sender, connection, **kwargs)
