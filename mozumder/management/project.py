@@ -380,15 +380,15 @@ def startproject(args):
         createh2o(args)
         
     if args.create_db == True:
-        psql_pw = db_admin_password if db_admin_password else ''
-        psql_base_command = f'PGPASSWORD={psql_pw} psql -X --echo-all '
+        psql_admin_pw = db_admin_password if db_admin_password else ''
+        psql_base_command = f'PGPASSWORD={psql_admin_pw} psql -X --echo-all '
         psql_command = f"CREATE ROLE {db_username} WITH LOGIN PASSWORD '{db_password}';"
         command = f'{psql_base_command} -U {db_admin_username} -c "{psql_command}"'
         os.system(command)
-        createdb_command = f'PGPASSWORD={psql_pw} createdb --echo -U {db_admin_username} -O {db_username} {db_name}'
+        createdb_command = f'PGPASSWORD={psql_admin_pw} createdb --echo -U {db_admin_username} -O {db_username} {db_name}'
         os.system(createdb_command)
         psql_command = f"CREATE EXTENSION pgcrypto;"
-        command = f'{psql_base_command} -U {db_username} {db_name} -c "{psql_command}"'
+        command = f'{psql_base_command} -U {db_admin_username} {db_name} -c "{psql_command}"'
         os.system(command)
 
 def createuwsgi(args, use_secret_key=None):

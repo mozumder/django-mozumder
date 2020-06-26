@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/{ docs_version }/ref/settings/
 import os
 from decouple import config, Csv
 
+PROJECT_NAME = '{ project_name }'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY',default='')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG',default=True)
+DEBUG = config('DEBUG',default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1', cast=Csv())
 
@@ -38,8 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mozumder',
-    'mozumder.analytics',
-    'mozumder.i18n',
 ]
 
 MIDDLEWARE = [
@@ -125,7 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/{ docs_version }/howto/static-files/
 
 STATIC_URL = '/{static_url}/'
-STATIC_URL = '/{media_url}/'
+MEDIA_URL = '/{media_url}/'
 
 # Logging
 

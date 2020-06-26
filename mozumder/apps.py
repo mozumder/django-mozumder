@@ -1,4 +1,5 @@
 import os
+from os.path import join
 import sys
 from subprocess import call
 import logging
@@ -15,16 +16,26 @@ from django.db.backends.signals import connection_created
 from django.db.utils import ProgrammingError, OperationalError
 import psycopg2.extras
 
+try:
+    import uwsgi
+    import uwsgidecorators
+    uwsgi_mode = True
+except:
+    uwsgi_mode = False
+
+from .management.utilities.logger import LogWriter
+from .signals import log_response
+
 db_log = logging.getLogger("database")
 message_log = logging.getLogger("django")
 
 class PreparedAppConfig(AppConfig):
     def execute_sql_files(self,command):
-        pth = os.path.dirname(inspect.getmodule(self.__class__).__file__) + '/include/sql'
+        pth = join(os.path.dirname(inspect.getmodule(self.__class__).__file__),'include','sql')
         if not hasattr(self, 'sql_dirs'):
             self.sql_dirs = [pth]
         for dir in self.sql_dirs:
-            file_name = dir + '/' + command + '.sql'
+            file_name = join(dir, command + '.sql')
             try:
                 file = open(file_name, 'r')
             except FileNotFoundError:
@@ -50,17 +61,17 @@ class PreparedAppConfig(AppConfig):
                     cursor.close()
 
     def read_prepared_statements(self):
-        pth = os.path.dirname(inspect.getmodule(self.__class__).__file__) + '/include/sql/prepared_statements'
+        pth = join(os.path.dirname(inspect.getmodule(self.__class__).__file__), 'include','sql','prepared_statements')
         if not hasattr(self, 'sql_dirs'):
             self.sql_dirs = [pth]
         for dir in self.sql_dirs:
             try:
-                list_of_files = os.listdir(dir+'/prepared_statements')
+                list_of_files = os.listdir(dir)
             except:
                 list_of_files = []
             for file_name in list_of_files:
                 try:
-                    file = open(dir+'/prepared_statements/'+file_name, 'r')
+                    file = open(join(dir,file_name), 'r')
                 except FileNotFoundError:
                     db_log.info('No SQL prepared statements file: %s' % file_name)
                     pass
@@ -73,7 +84,7 @@ class PreparedAppConfig(AppConfig):
                         cursor = connection.cursor()
                         try:
                             cursor.execute(sql_prepare)
-                            db_log.info(f"Prepared statements from file {file_name}")
+                            db_log.debug(f"Prepared statements from file {file_name}")
                         except (OperationalError, ProgrammingError) as e:
                             type, value, tb = sys.exc_info()
                             db_log.error(f"Failed preparing statements statements with {type.__name__}!")
@@ -106,8 +117,8 @@ class PreparedAppConfig(AppConfig):
                         message_log.error(f'Caught Database error {value} while preparing statements for model {model.__name__}')
                         message_log.error(f'- Ignoring and continuing')
 
-        self.execute_sql_files('prepare')
-
+#        self.execute_sql_files('prepare')
+    
         self.read_prepared_statements()
         if hasattr(settings, 'MATERIALIZED_VIEWS'):
             if settings.MATERIALIZED_VIEWS == True:
@@ -119,11 +130,33 @@ class PreparedAppConfig(AppConfig):
 
 class MozumderAppConfig(PreparedAppConfig):
     name = 'mozumder'
-    verbose_name = 'Django Mozumder'
+    verbose_name = 'Mozumder'
     dbConnectSignal = 'prepareMozumderDb'
     def db_connected(self,sender, connection, **kwargs):
         self._lock = threading.Lock()
         super().db_connected(sender, connection, **kwargs)
+        lock = self._lock
+        self.logwriter = LogWriter(self.cursor, lock)
+
+        try:
+            MULTIPROCESS = settings.MULTIPROCESS
+        except:
+            MULTIPROCESS = False
+        if MULTIPROCESS:
+            message_log.info('Multi process mode!')
+            lock = multiprocessing.Lock()
+            if uwsgi_mode:
+                message_log.info('UWSGI mode!')
+                log_response.connect(self.logwriter.log_uwsgi, dispatch_uid="log_response")
+            else:
+                message_log.info('Runserver mode =^(')
+                log_process = multiprocessing.Process(name='Logging', target=LogWriter.log_process_listener, args=(LogWriter.e,LogWriter.q))
+                log_process.daemon=True
+                log_process.start()
+                log_response.connect(self.logwriter.log_multiprocess, dispatch_uid="log_response")
+        else:
+#            message_log.debug('Single Processor mode =^(')
+            log_response.connect(self.logwriter.log, dispatch_uid="log_response")
 
     def ready(self):
         """

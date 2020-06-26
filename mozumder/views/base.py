@@ -21,10 +21,11 @@ from django.apps import apps
 from dotmap import DotMap
 import psycopg2
 
-from analytics.views import *
-from mozumder.views.zip import Zip
+from mozumder.views import *
+from .zip import Zip
 from mozumder.template import MozumderHTMLMessageTemplate
 from mozumder.template.default import templates_map
+from .logging import LoggingHttpResponseNotFound, LoggingHttpResponseServerError, LoggingHttpResponseForbidden, LoggingHttpResponseBadRequest
 
 logger = logging.getLogger("django")
 pp = pprint.PrettyPrinter(indent=4)
@@ -299,25 +300,25 @@ class MozumderPageView(MozumderView):
                         ))
 
         if context.status_code == 404:
-            return AnalyticsHttpResponseNotFound(
+            return LoggingHttpResponseNotFound(
                 zPageData,
                 status = context.status_code,
                 request=request,
                 cached=cache_hit)
         elif context.status_code == 500:
-            return AnalyticsHttpResponseServerError(
+            return LoggingHttpResponseServerError(
                 zPageData,
                 status = context.status_code,
                 request=request,
                 cached=cache_hit)
         elif context.status_code == 403:
-            return AnalyticsHttpResponseForbidden(
+            return LoggingHttpResponseForbidden(
                 zPageData,
                 status = context.status_code,
                 request=request,
                 cached=cache_hit)
         elif context.status_code == 400:
-            return AnalyticsHttpResponseBadRequest(
+            return LoggingHttpResponseBadRequest(
                 zPageData,
                 status = context.status_code,
                 request=request,

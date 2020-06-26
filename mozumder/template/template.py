@@ -1,13 +1,18 @@
-from django.conf import settings
-from django.db import connection
-import psycopg2
+from os.path import join, dirname
 import base64
 import hashlib
 import zlib
 import copy
+import inspect
 
 from django.apps import apps
+from django.conf import settings
+from django.db import connection
+import psycopg2
+
+import mozumder
 from mozumder.views.zip import Zip
+
 class Block():
     context_vary = False
 
@@ -166,17 +171,19 @@ class MozumderTemplate(Zip):
     policy, and its own set of blocks to include.
     """
 
-    include_dir = 'pages/include'
-    src_dir = include_dir + '/src'
-    lib_dir = include_dir + '/src'
-    html_dir = lib_dir + '/html'
-    js_dir = lib_dir + '/js'
-    js_fragments_dir = js_dir + '/fragments'
-    css_dir = lib_dir + '/css'
-    html_debug_dir = src_dir + '/html'
-    js_debug_dir = src_dir + '/js'
-    js_fragments_debug_dir = src_dir + '/js/fragments'
-    css_debug_dir = src_dir + '/css'
+    base_dir = dirname(inspect.getfile(mozumder))
+
+    include_dir = join(base_dir, 'include')
+    src_dir = join(include_dir, 'src')
+    lib_dir = join(include_dir, 'lib')
+    html_dir = join(lib_dir, 'html')
+    js_dir = join(lib_dir, 'js')
+    js_fragments_dir = join(js_dir, 'fragments')
+    css_dir = join(lib_dir, 'css')
+    html_debug_dir = join(src_dir, 'html')
+    js_debug_dir = join(src_dir, 'js')
+    js_fragments_debug_dir = join(js_debug_dir, 'fragments')
+    css_debug_dir = join(src_dir, 'css')
 
     html_headers_include = ''
     inline_head_css_include = ''
@@ -220,7 +227,6 @@ class MozumderTemplate(Zip):
         else:
             return self.inline_bodyclose_js
 
-
     generate_csp = True
     
     def __init__(self):
@@ -238,27 +244,37 @@ class MozumderTemplate(Zip):
         html_headers = ''
 
         if settings.DEBUG:
-            inline_head_css_include = self.css_debug_dir + '/' + \
-                self.inline_head_css_include
-            inline_head_js_include = self.js_debug_dir + '/' + \
-                self.inline_head_js_include
-            inline_bodyopen_js_include = self.js_fragments_debug_dir + '/' + \
-                self.inline_bodyopen_js_include
-            inline_bodyclose_js_include = self.js_fragments_debug_dir + '/' + \
-                self.inline_bodyclose_js_include
-            html_headers_include = self.html_debug_dir + '/' + \
-                self.html_headers_include
+            inline_head_css_include = join(
+                self.css_debug_dir,
+                self.inline_head_css_include)
+            inline_head_js_include = join(
+                self.js_debug_dir,
+                self.inline_head_js_include)
+            inline_bodyopen_js_include = join(
+                self.js_fragments_debug_dir,
+                self.inline_bodyopen_js_include)
+            inline_bodyclose_js_include = join(
+                self.js_fragments_debug_dir,
+                self.inline_bodyclose_js_include)
+            html_headers_include = join(
+                self.html_debug_dir,
+                self.html_headers_include)
         else:
-            inline_head_css_include = self.css_dir + '/' + \
-                self.inline_head_css_include
-            inline_head_js_include = self.js_dir + '/' + \
-                self.inline_head_js_include
-            inline_bodyopen_js_include = self.js_fragments_dir + '/' + \
-                self.inline_bodyopen_js_include
-            inline_bodyclose_js_include = self.js_fragments_dir + '/' + \
-                self.inline_bodyclose_js_include
-            html_headers_include = self.html_dir + '/' + \
-                self.html_headers_include
+            inline_head_css_include = join(
+                self.css_dir,
+                self.inline_head_css_include)
+            inline_head_js_include = join(
+                self.js_dir,
+                self.inline_head_js_include)
+            inline_bodyopen_js_include = join(
+                self.js_fragments_dir,
+                self.inline_bodyopen_js_include)
+            inline_bodyclose_js_include = join(
+                self.js_fragments_dir,
+                self.inline_bodyclose_js_include)
+            html_headers_include = join(
+                self.html_dir,
+                self.html_headers_include)
 
         if self.inline_head_css_include:
             with open(inline_head_css_include, 'r') as \
