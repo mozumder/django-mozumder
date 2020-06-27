@@ -159,7 +159,7 @@ def create():
     parser_startproject.add_argument(
         '--db_admin_url',
         action='store',
-        default='postgresql://postgres@localhost',
+        default='postgresql://postgres@127.0.0.1',
         help='Postgresql Admin database connection URL. This will be used to log in and create the new project database and user. Only uses username and password information. Database connection URL in the format: postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]')
     parser_startproject.add_argument(
         '--db_admin_name',

@@ -16,7 +16,7 @@ import psycopg2
 
 from user_agents import parse as parse_ua
 
-from ..__init__ import *
+from ...__init__ import *
 from ...signals import *
 
 try:
