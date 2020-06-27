@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import sys
 import os
-from os.path import join, getsize
 import subprocess
 from shutil import copyfile
 import argparse
 from urllib.parse import urlparse
+import virtualenv
 
 import django
 from django.utils.version import get_docs_version
@@ -91,6 +91,11 @@ def create():
         action='store',
         default='venv',
         help='Python virtualenv directory. Default to: venv')
+    parser.add_argument(
+        '--develop_path',
+        action='store',
+        default='venv',
+        help='Use django-mozumder in developer mode by providing path to source tree.')
     parser.add_argument(
         '--site_name',
         action='store',
@@ -255,7 +260,6 @@ def process_args(args):
     access_log_file = os.path.join(log_dir, f'{project_name}.access.log')
     cache_log_file = os.path.join(log_dir, f'{project_name}.cache.log')
     db_log_file = os.path.join(log_dir, f'{project_name}.db.log')
-    venv_dir = args.virtualenv_dir
 
     # Get path by deleting '/__init__.py' from pathname
     source_root = os.path.join(mozumder.__file__[:-12], 'include','project_template')
@@ -264,9 +268,14 @@ def process_args(args):
     target_root = os.path.join(os.getcwd(),project_name)
     access_rights = 0o755
     log_path = os.path.join(target_root,log_dir)
-    venv_path = os.path.join(target_root,venv_dir)
     static_path = os.path.join(target_root,static_dir)
     media_path = os.path.join(target_root,media_dir)
+    
+    venv_name = args.virtualenv_dir + f'.{project_name}'
+    venv_path = os.path.join(target_root,venv_name)
+    venv_activate = os.path.join(venv_path, 'bin', 'activate_this.py')
+    python_bin = os.path.join(venv_path, 'bin', 'python')
+    develop_path = args.develop_path
 
     uwsgi_run_dir = args.uwsgi_run_dir
     uwsgi_log_dir = args.uwsgi_log_dir
@@ -278,28 +287,27 @@ def process_args(args):
     site_theme_color = args.site_theme_color
     site_background_color = args.site_background_color
 
-    return project_name, db_host, db_port, db_name, db_username, \
-        db_password, allowed_hosts, static_dir, media_dir, static_url, \
-        media_url, admin_url, log_dir, log_file, error_log_file, \
-        access_log_file, cache_log_file, db_log_file, venv_dir, \
-        secret_key, django_version, docs_version, source_root, \
-        source_root_length, target_root, access_rights, log_path, \
-        venv_path, static_path, media_path, uwsgi_run_dir, uwsgi_log_dir, \
-        site_name, site_short_name, site_description, site_lang, \
-        site_theme_color, site_background_color
+    return project_name, db_host, db_port, db_name, db_username, db_password, \
+        allowed_hosts, static_dir, media_dir, static_url, media_url, \
+        admin_url, log_dir, log_file, error_log_file, access_log_file, \
+        cache_log_file, db_log_file, secret_key, django_version, docs_version, \
+        source_root, source_root_length, target_root, access_rights, log_path, \
+        static_path, media_path, venv_name, venv_path, venv_activate, \
+        python_bin, develop_path, uwsgi_run_dir, uwsgi_log_dir, site_name, \
+        site_short_name, site_description, site_lang, site_theme_color, \
+        site_background_color
 
 def startproject(args):
 
-    project_name, db_host, db_port, db_name, db_username, \
-        db_password, allowed_hosts, static_dir, media_dir, static_url, \
-        media_url, admin_url, log_dir, log_file, error_log_file, \
-        access_log_file, cache_log_file, db_log_file, venv_dir, \
-        secret_key, django_version, docs_version, source_root, \
-        source_root_length, target_root, access_rights, log_path, \
-        venv_path, static_path, media_path, uwsgi_run_dir, uwsgi_log_dir, \
-        site_name, site_short_name, site_description, site_lang, \
-        site_theme_color, site_background_color = \
-        process_args(args)
+    project_name, db_host, db_port, db_name, db_username, db_password, \
+        allowed_hosts, static_dir, media_dir, static_url, media_url, \
+        admin_url, log_dir, log_file, error_log_file, access_log_file, \
+        cache_log_file, db_log_file, secret_key, django_version, docs_version, \
+        source_root, source_root_length, target_root, access_rights, log_path, \
+        static_path, media_path, venv_name, venv_path, venv_activate, \
+        python_bin, develop_path, uwsgi_run_dir, uwsgi_log_dir, site_name, \
+        site_short_name, site_description, site_lang, site_theme_color, \
+        site_background_color = process_args(args)
 
     db_admin_url = args.db_admin_url
     if db_admin_url == None:
@@ -316,6 +324,7 @@ def startproject(args):
         print (f"Creation of project directory {target_root} failed")
     else:
         print (f"Created project directory {target_root}")
+        os.chdir(target_root)
 
     try:
         os.mkdir(log_path, access_rights)
@@ -323,13 +332,6 @@ def startproject(args):
         print (f"Creation of log directory {log_path} failed")
     else:
         print (f"Created project directory {log_path}")
-
-    try:
-        os.mkdir(venv_path, access_rights)
-    except OSError:
-        print (f"Creation of Python Virtualenv directory {venv_path} failed")
-    else:
-        print (f"Created Python virtualenv directory {venv_path}")
 
     media_path = os.path.join(target_root,media_dir)
     try:
@@ -379,41 +381,50 @@ def startproject(args):
                 copyfile(source_filename, target_filename)
             
 
+    if args.create_venv == True:
+        try:
+            virtualenv.create_environment(venv_path)
+        except OSError:
+            print (f"Creation of Python Virtualenv {venv_name} failed")
+        else:
+            print (f"Created Python virtualenv {venv_name}")
+        exec(open(venv_activate).read(), {'__file__': venv_activate})
+        os.system(f'source {venv_path}/bin/activate;{venv_path}/bin/pip install -r requirements.txt')
+        if develop_path:
+            os.system(f'cd {develop_path};{python_bin} setup.py develop')
+       
+#        import pip._internal.main
+#        pip._internal.main.main(['install', '--isolated', '-r', 'requirements.txt'])
+
     if args.create_uwsgi == True:
         createuwsgi(args,use_secret_key=secret_key)
 
     if args.create_h2o == True:
         createh2o(args)
-
-    if args.create_venc == True:
-        print('creating virtualenv')
-
+        
     if args.create_db == True:
         psql_base_command = f'PGPASSWORD={db_admin_password} psql -X --echo-all '
         psql_command = f"CREATE ROLE {db_username} WITH LOGIN PASSWORD '{db_password}';"
         command = f'{psql_base_command} -U {db_admin_username} -c "{psql_command}"'
-        print(f'{command}')
         os.system(command)
         createdb_command = f'PGPASSWORD={db_admin_password} createdb --echo -U {db_admin_username} -O {db_username} {db_name}'
-        print(f'{createdb_command}')
         os.system(createdb_command)
         psql_command = f"CREATE EXTENSION pgcrypto;"
         command = f'{psql_base_command} -U {db_admin_username} {db_name} -c "{psql_command}"'
-        print(f'{command}')
         os.system(command)
+        subprocess.run(['manage.py', 'migrate'])
 
 def createuwsgi(args, use_secret_key=None):
 
-    project_name, db_host, db_port, db_name, db_username, \
-        db_password, allowed_hosts, static_dir, media_dir, static_url, \
-        media_url, admin_url, log_dir, log_file, error_log_file, \
-        access_log_file, cache_log_file, db_log_file, venv_dir, \
-        secret_key, django_version, docs_version, source_root, \
-        source_root_length, target_root, access_rights, log_path, \
-        venv_path, static_path, media_path, uwsgi_run_dir, uwsgi_log_dir, \
-        site_name, site_short_name, site_description, site_lang, \
-        site_theme_color, site_background_color = \
-        process_args(args)
+    project_name, db_host, db_port, db_name, db_username, db_password, \
+        allowed_hosts, static_dir, media_dir, static_url, media_url, \
+        admin_url, log_dir, log_file, error_log_file, access_log_file, \
+        cache_log_file, db_log_file, secret_key, django_version, docs_version, \
+        source_root, source_root_length, target_root, access_rights, log_path, \
+        static_path, media_path, venv_name, venv_path, venv_activate, \
+        python_bin, develop_path, uwsgi_run_dir, uwsgi_log_dir, site_name, \
+        site_short_name, site_description, site_lang, site_theme_color, \
+        site_background_color = process_args(args)
     
     venv = os.path.join(venv_path,project_name)
 
@@ -430,7 +441,7 @@ def createuwsgi(args, use_secret_key=None):
     f = open(target_filename, 'w')
     f.write(
 f"""[uwsgi]
-home            = {venv}
+home            = {venv_path}
 chdir           = {target_root}
 app             = {project_name}
 base            = %v
@@ -485,16 +496,15 @@ procname-prefix = %(app).
 
 def createh2o(args):
 
-    project_name, db_host, db_port, db_name, db_username, \
-        db_password, allowed_hosts, static_dir, media_dir, static_url, \
-        media_url, admin_url, log_dir, log_file, error_log_file, \
-        access_log_file, cache_log_file, db_log_file, venv_dir, \
-        secret_key, django_version, docs_version, source_root, \
-        source_root_length, target_root, access_rights, log_path, \
-        venv_path, static_path, media_path, uwsgi_run_dir, uwsgi_log_dir, \
-        site_name, site_short_name, site_description, site_lang, \
-        site_theme_color, site_background_color = \
-        process_args(args)
+    project_name, db_host, db_port, db_name, db_username, db_password, \
+        allowed_hosts, static_dir, media_dir, static_url, media_url, \
+        admin_url, log_dir, log_file, error_log_file, access_log_file, \
+        cache_log_file, db_log_file, secret_key, django_version, docs_version, \
+        source_root, source_root_length, target_root, access_rights, log_path, \
+        static_path, media_path, venv_name, venv_path, venv_activate, \
+        python_bin, develop_path, uwsgi_run_dir, uwsgi_log_dir, site_name, \
+        site_short_name, site_description, site_lang, site_theme_color, \
+        site_background_color = process_args(args)
         
 
     domainname = args.domainname
