@@ -12,22 +12,26 @@ Class-based views
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    
+WARNING: Do not delete comments labeled MARK. They are used by createmodel
+scripts to edit this file.
 \"\"\"
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from mozumder.views import page_not_found_view, error_view, permission_denied_view, bad_request_view
 
+# MARK: urlheaders
+
 urlpatterns = [
+# MARK: urlpatterns
 ]
 
 if settings.DEBUG == True:
-    urlpatterns += [
-        path('admin/', admin.site.urls),
-        static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-        static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
-    ]
+    urlpatterns += [path(settings.ADMIN_URL, admin.site.urls)]
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 handler404 = page_not_found_view.as_view()
 handler500 = error_view.as_view()

@@ -120,12 +120,15 @@ USE_L10N = True
 
 USE_TZ = True
 
+ADMIN_URL = 'admin/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/{ docs_version }/howto/static-files/
 
 STATIC_URL = '/{static_url}/'
 MEDIA_URL = '/{media_url}/'
+
+STATIC_ROOT = "static"
 
 # Logging
 

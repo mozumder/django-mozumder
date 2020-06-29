@@ -92,11 +92,8 @@
 		ECBCB0EA249AD8750097C2FA /* wsgi.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "wsgi.py-tpl"; sourceTree = "<group>"; };
 		ECBCB0EB249AD8CB0097C2FA /* urls.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "urls.py-tpl"; sourceTree = "<group>"; };
 		ECBCB0EC249AD8DA0097C2FA /* settings.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "settings.py-tpl"; sourceTree = "<group>"; };
-		ECBCB0ED249AD9320097C2FA /* admin.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "admin.py-tpl"; sourceTree = "<group>"; };
 		ECBCB0EE249AD94C0097C2FA /* apps.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "apps.py-tpl"; sourceTree = "<group>"; };
-		ECBCB0EF249AD9820097C2FA /* models.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "models.py-tpl"; sourceTree = "<group>"; };
 		ECBCB0F0249AD9950097C2FA /* test.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "test.py-tpl"; sourceTree = "<group>"; };
-		ECBCB0F1249AD9A20097C2FA /* views.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "views.py-tpl"; sourceTree = "<group>"; };
 		ECBCB0F4249D41470097C2FA /* requirements.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = requirements.txt; sourceTree = "<group>"; };
 		ECBCB0F5249D5BE70097C2FA /* .env-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".env-tpl"; sourceTree = "<group>"; };
 		ECBCB119249EE4D60097C2FA /* robots.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = robots.txt; sourceTree = "<group>"; };
@@ -139,6 +136,15 @@
 		ECBCB15424A599E50097C2FA /* logging.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logging.py; sourceTree = "<group>"; };
 		ECBCB15624A5A1F90097C2FA /* 0001_initial.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = 0001_initial.py; sourceTree = "<group>"; };
 		ECBCB15824A6F68B0097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB15924A9282A0097C2FA /* addmodel.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = addmodel.py; sourceTree = "<group>"; };
+		ECBCB16324A990D80097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
+		ECBCB16424A990E10097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
+		ECBCB16524A990EB0097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
+		ECBCB16A24A992690097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
+		ECBCB16C24A9927E0097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
+		ECBCB16E24A9928D0097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
+		ECBCB17124A996A20097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
+		ECBCB17224A996DF0097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -320,6 +326,7 @@
 				ECBCB15024A596CE0097C2FA /* import_iso_script_codes.py */,
 				ECBCB15124A596E80097C2FA /* import_sil_language_data.py */,
 				ECBCB15224A597180097C2FA /* import_subdivisions.py */,
+				ECBCB15924A9282A0097C2FA /* addmodel.py */,
 			);
 			path = commands;
 			sourceTree = "<group>";
@@ -446,13 +453,15 @@
 		ECBCB0E2249AD7BB0097C2FA /* app_template */ = {
 			isa = PBXGroup;
 			children = (
+				ECBCB16F24A996740097C2FA /* urls */,
+				ECBCB16924A992570097C2FA /* template */,
+				ECBCB16224A990BA0097C2FA /* views */,
+				ECBCB16124A990B50097C2FA /* admin */,
+				ECBCB16024A990AF0097C2FA /* models */,
 				ECBCB0E3249AD7E20097C2FA /* migrations */,
 				ECBCB0E6249AD81D0097C2FA /* __init__.py-tpl */,
-				ECBCB0ED249AD9320097C2FA /* admin.py-tpl */,
 				ECBCB0EE249AD94C0097C2FA /* apps.py-tpl */,
-				ECBCB0EF249AD9820097C2FA /* models.py-tpl */,
 				ECBCB0F0249AD9950097C2FA /* test.py-tpl */,
-				ECBCB0F1249AD9A20097C2FA /* views.py-tpl */,
 			);
 			path = app_template;
 			sourceTree = "<group>";
@@ -598,6 +607,73 @@
 				ECBCB0DD2499A29D0097C2FA /* project.py */,
 			);
 			path = shell;
+			sourceTree = "<group>";
+		};
+		ECBCB16024A990AF0097C2FA /* models */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB16324A990D80097C2FA /* __init__.py-tpl */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
+		ECBCB16124A990B50097C2FA /* admin */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB16424A990E10097C2FA /* __init__.py-tpl */,
+			);
+			path = admin;
+			sourceTree = "<group>";
+		};
+		ECBCB16224A990BA0097C2FA /* views */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB16524A990EB0097C2FA /* __init__.py-tpl */,
+			);
+			path = views;
+			sourceTree = "<group>";
+		};
+		ECBCB16924A992570097C2FA /* template */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB16D24A992830097C2FA /* pages */,
+				ECBCB16B24A9926C0097C2FA /* blocks */,
+				ECBCB16A24A992690097C2FA /* __init__.py-tpl */,
+			);
+			path = template;
+			sourceTree = "<group>";
+		};
+		ECBCB16B24A9926C0097C2FA /* blocks */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB16C24A9927E0097C2FA /* __init__.py-tpl */,
+			);
+			path = blocks;
+			sourceTree = "<group>";
+		};
+		ECBCB16D24A992830097C2FA /* pages */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB16E24A9928D0097C2FA /* __init__.py-tpl */,
+			);
+			path = pages;
+			sourceTree = "<group>";
+		};
+		ECBCB16F24A996740097C2FA /* urls */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB17024A9968C0097C2FA /* api */,
+				ECBCB17124A996A20097C2FA /* __init__.py-tpl */,
+			);
+			path = urls;
+			sourceTree = "<group>";
+		};
+		ECBCB17024A9968C0097C2FA /* api */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB17224A996DF0097C2FA /* __init__.py-tpl */,
+			);
+			path = api;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

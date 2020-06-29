@@ -1,0 +1,7 @@
+\"\"\"{ app_name } Admin Configuration
+
+WARNING: Do not delete comments labeled MARK. They are used by createmodel
+scripts to edit this file.
+\"\"\"
+
+# MARK: import_admin

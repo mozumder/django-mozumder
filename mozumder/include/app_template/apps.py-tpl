@@ -1,5 +1,4 @@
 from django.apps import AppConfig
 
-
-class { camel_case_app_name }Config(AppConfig):
+class { app_name.lower().title() }Config(AppConfig):
     name = '{ app_name }'

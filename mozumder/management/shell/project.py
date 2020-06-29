@@ -414,6 +414,8 @@ def startproject(args):
         os.system(command)
         subprocess.run(['manage.py', 'migrate'])
 
+    subprocess.run(['manage.py', 'collectstatic', '--noinput'])
+
 def createuwsgi(args, use_secret_key=None):
 
     project_name, db_host, db_port, db_name, db_username, db_password, \
