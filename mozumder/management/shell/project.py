@@ -19,139 +19,168 @@ def create():
     subparsers = parser.add_subparsers(help='Create new project, or create UWSGI vassals file', dest='subparser_name')
     parser_startproject = subparsers.add_parser('startproject', help='Create a new Mozumder project')
     parser_uwsgi = subparsers.add_parser('createuwsgi', help='Create a UWSGI Vassal .ini file')
-    parser_uwsgi = subparsers.add_parser('createh2o', help='Create h2o config file')
+    parser_h2o = subparsers.add_parser('createh2o', help='Create h2o config file')
 
     parser.add_argument(
         'project_name',
         action='store',
         help='Name of project. Project directory will be created with this name.')
-    parser.add_argument(
+
+    parser_startproject.set_defaults(func=startproject)
+    parser_uwsgi.set_defaults(func=createuwsgi)
+    parser_h2o.set_defaults(func=createh2o)
+
+    parser_startproject.add_argument(
         '--db_url',
         action='store',
         help='Database connection URL in the format: postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--db_name',
         action='store',
         default='project_name',
         help='When not using a database URL, name of database to connect to')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--db_host',
         action='store',
         help='When not using a database URL, hostname or IP address of database server')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--db_port',
         action='store',
         help='When not using a database URL, port number of database server')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--db_user_name',
         action='store',
         help='When not using a database URL, username to connect to the database')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--db_user_password',
         action='store',
         help='When not using a database URL, password of user connecting to the database')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--allowed_hosts',
         nargs='*',
         action='store',
         default=['127.0.0.1'],
         help='Comma separated lists of hosts that are allowed to accept connections for the site. Default to: 127.0.0.1')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--log_dir',
         action='store',
         default='log',
         help='Django log directory. Default to: log')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--static_dir',
         action='store',
         default='static',
         help='Static files directory. Default to: static')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--media_dir',
         action='store',
         default='media',
         help='Django log directory. Default to: media')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--static_url',
         action='store',
         default='static',
         help='Static files URL path. Default to: static')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--media_url',
         action='store',
         default='media',
         help='Media files URL path. Default to: media')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--admin_url',
         action='store',
         default='admin',
         help='Admin URL path. Default to: admin')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--virtualenv_dir',
         action='store',
         default='venv',
         help='Python virtualenv directory. Default to: venv')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--develop_path',
         action='store',
         default='venv',
         help='Use django-mozumder in developer mode by providing path to source tree.')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--site_name',
         action='store',
         default='Mozumder Website',
         help='Full Name of site. Default: "Mozumder Website"')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--site_short_name',
         action='store',
         default='Mozumder',
         help='Short Name of site. Default: Mozumder')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--site_description',
         action='store',
         default='A new website',
         help='Site description. Default: "A new website"')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--site_lang',
         action='store',
         default='en-US',
         help='Site default language. Default: en-US')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--site_theme_color',
         action='store',
         default='black',
         help='Site theme color. Default: black')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--site_background_color',
         action='store',
         default='pink',
         help='Site theme color. Default: pink')
-
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--hostname',
         action='store',
         help='Full Host name for HTTP server. Example: www.example.com')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--domainname',
         action='store',
         help='Top-level domain name for this server. This will be permanently redirected to the server hostname. Example: example.com')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--redirects',
         action='store',
         help='List of additional domains that will be temporarily redirected to this HTTP host. Example: host1.example.com host2.example.com')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--letsencrypt_dir',
         action='store',
         default='/usr/local/etc/letsencrypt/live',
         help='Letsencrypt live key directory. Default to: /usr/local/etc/letsencrypt/live')
-    parser.add_argument(
+    parser_startproject.add_argument(
         '--h2o_log_dir',
         action='store',
         default='/var/log/h2o',
         help='H2O log directory. Default to: /var/log/uwsgi')
-
-    parser_startproject.set_defaults(func=startproject)
-
+    parser_startproject.add_argument(
+        '--uwsgi_http_sockets',
+        nargs='*',
+        action='store',
+        default=['127.0.0.1:8010'],
+        help='Comma separated list of additional UWSGI HTTP sockets. Connect to these for debugging purposes without going through the main HTTP reverse proxy web server. Make sure these are only accessible in your debug environment. Default to: 127.0.0.1:8010')
+    parser_startproject.add_argument(
+        '--uwsgi_processes',
+        action='store',
+        default=1,
+        type=int,
+        help='Number of UWSGI processes to run. Default 1.')
+    parser_startproject.add_argument(
+        '--uwsgi_threads',
+        action='store',
+        default=8,
+        type=int,
+        help='Number of threads per UWSGI process to run. Default 8.')
+    parser_startproject.add_argument(
+        '--uwsgi_run_dir',
+        action='store',
+        default='/var/run/uwsgi',
+        help='UWSGI run directory for temporary run files. Default to: /var/run/uwsgi')
+    parser_startproject.add_argument(
+        '--uwsgi_log_dir',
+        action='store',
+        default='/var/log/uwsgi',
+        help='UWSGI log directory. Default to: /var/log/uwsgi')
     parser_startproject.add_argument(
         '--create_db',
         action='store_true',
@@ -174,50 +203,170 @@ def create():
         action='store_true',
         default=False,
         help='Create a UWSGI vassals file.')
+    parser_startproject.add_argument(
+        '--create_h2o',
+        action='store_true',
+        default=False,
+        help='Create h2o config file.')
+    parser_startproject.add_argument(
+        '--create_venv',
+        action='store_true',
+        default=False,
+        help='Create Python Virtualenv.')
 
-    parser_uwsgi.set_defaults(func=createuwsgi)
 
-    parser.add_argument(
+    parser_uwsgi.add_argument(
+        '--db_url',
+        action='store',
+        help='Database connection URL in the format: postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]')
+    parser_uwsgi.add_argument(
+        '--db_name',
+        action='store',
+        default='project_name',
+        help='When not using a database URL, name of database to connect to')
+    parser_uwsgi.add_argument(
+        '--db_host',
+        action='store',
+        help='When not using a database URL, hostname or IP address of database server')
+    parser_uwsgi.add_argument(
+        '--db_port',
+        action='store',
+        help='When not using a database URL, port number of database server')
+    parser_uwsgi.add_argument(
+        '--db_user_name',
+        action='store',
+        help='When not using a database URL, username to connect to the database')
+    parser_uwsgi.add_argument(
+        '--db_user_password',
+        action='store',
+        help='When not using a database URL, password of user connecting to the database')
+    parser_uwsgi.add_argument(
+        '--allowed_hosts',
+        nargs='*',
+        action='store',
+        default=['127.0.0.1'],
+        help='Comma separated lists of hosts that are allowed to accept connections for the site. Default to: 127.0.0.1')
+    parser_uwsgi.add_argument(
+        '--log_dir',
+        action='store',
+        default='log',
+        help='Django log directory. Default to: log')
+    parser_uwsgi.add_argument(
+        '--static_dir',
+        action='store',
+        default='static',
+        help='Static files directory. Default to: static')
+    parser_uwsgi.add_argument(
+        '--media_dir',
+        action='store',
+        default='media',
+        help='Django log directory. Default to: media')
+    parser_uwsgi.add_argument(
+        '--static_url',
+        action='store',
+        default='static',
+        help='Static files URL path. Default to: static')
+    parser_uwsgi.add_argument(
+        '--media_url',
+        action='store',
+        default='media',
+        help='Media files URL path. Default to: media')
+    parser_uwsgi.add_argument(
+        '--admin_url',
+        action='store',
+        default='admin',
+        help='Admin URL path. Default to: admin')
+    parser_uwsgi.add_argument(
+        '--virtualenv_dir',
+        action='store',
+        default='venv',
+        help='Python virtualenv directory. Default to: venv')
+    parser_uwsgi.add_argument(
+        '--develop_path',
+        action='store',
+        default='venv',
+        help='Use django-mozumder in developer mode by providing path to source tree.')
+    parser_uwsgi.add_argument(
+        '--site_name',
+        action='store',
+        default='Mozumder Website',
+        help='Full Name of site. Default: "Mozumder Website"')
+    parser_uwsgi.add_argument(
+        '--site_short_name',
+        action='store',
+        default='Mozumder',
+        help='Short Name of site. Default: Mozumder')
+    parser_uwsgi.add_argument(
+        '--site_description',
+        action='store',
+        default='A new website',
+        help='Site description. Default: "A new website"')
+    parser_uwsgi.add_argument(
+        '--site_lang',
+        action='store',
+        default='en-US',
+        help='Site default language. Default: en-US')
+    parser_uwsgi.add_argument(
+        '--site_theme_color',
+        action='store',
+        default='black',
+        help='Site theme color. Default: black')
+    parser_uwsgi.add_argument(
+        '--site_background_color',
+        action='store',
+        default='pink',
+        help='Site theme color. Default: pink')
+    parser_uwsgi.add_argument(
+        '--hostname',
+        action='store',
+        help='Full Host name for HTTP server. Example: www.example.com')
+    parser_uwsgi.add_argument(
+        '--domainname',
+        action='store',
+        help='Top-level domain name for this server. This will be permanently redirected to the server hostname. Example: example.com')
+    parser_uwsgi.add_argument(
+        '--redirects',
+        action='store',
+        help='List of additional domains that will be temporarily redirected to this HTTP host. Example: host1.example.com host2.example.com')
+    parser_uwsgi.add_argument(
+        '--letsencrypt_dir',
+        action='store',
+        default='/usr/local/etc/letsencrypt/live',
+        help='Letsencrypt live key directory. Default to: /usr/local/etc/letsencrypt/live')
+    parser_uwsgi.add_argument(
+        '--h2o_log_dir',
+        action='store',
+        default='/var/log/h2o',
+        help='H2O log directory. Default to: /var/log/uwsgi')
+    parser_uwsgi.add_argument(
         '--uwsgi_run_dir',
         action='store',
         default='/var/run/uwsgi',
         help='UWSGI run directory for temporary run files. Default to: /var/run/uwsgi')
-    parser.add_argument(
+    parser_uwsgi.add_argument(
         '--uwsgi_log_dir',
         action='store',
         default='/var/log/uwsgi',
         help='UWSGI log directory. Default to: /var/log/uwsgi')
-    parser.add_argument(
+    parser_uwsgi.add_argument(
         '--uwsgi_http_sockets',
         nargs='*',
         action='store',
         default=['127.0.0.1:8010'],
         help='Comma separated list of additional UWSGI HTTP sockets. Connect to these for debugging purposes without going through the main HTTP reverse proxy web server. Make sure these are only accessible in your debug environment. Default to: 127.0.0.1:8010')
-    parser.add_argument(
+    parser_uwsgi.add_argument(
         '--uwsgi_processes',
         action='store',
         default=1,
         type=int,
         help='Number of UWSGI processes to run. Default 1.')
-    parser.add_argument(
+    parser_uwsgi.add_argument(
         '--uwsgi_threads',
         action='store',
         default=8,
         type=int,
         help='Number of threads per UWSGI process to run. Default 8.')
 
-    parser_startproject.add_argument(
-        '--create_h2o',
-        action='store_true',
-        default=False,
-        help='Create h2o config file.')
-        
-    parser_startproject.add_argument(
-        '--create_venv',
-        action='store_true',
-        default=False,
-        help='Create Python Virtualenv.')
-    parser_uwsgi.set_defaults(func=createh2o)
 
     args = parser.parse_args()
 

@@ -229,29 +229,29 @@
 		EC54499724935D54000BB8A2 = {
 			isa = PBXGroup;
 			children = (
-				EC3010EE24A31FAB000E2C84 /* example */,
-				ECBCB0DA249968FB0097C2FA /* .gitignore */,
 				EC54499E24946640000BB8A2 /* mozumder */,
 				ECBCB0AD2498191D0097C2FA /* docs */,
+				EC3010EE24A31FAB000E2C84 /* example */,
 				ECBCB0AC249818D40097C2FA /* MANIFEST.in */,
 				ECBCB0A824980A6E0097C2FA /* README.rst */,
 				ECBCB0A92498175D0097C2FA /* LICENSE */,
 				ECBCB0DB249976A10097C2FA /* requirements.txt */,
 				ECBCB0AA249817C90097C2FA /* setup.cfg */,
 				ECBCB0AB249818A20097C2FA /* setup.py */,
+				ECBCB0DA249968FB0097C2FA /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
 		EC54499E24946640000BB8A2 /* mozumder */ = {
 			isa = PBXGroup;
 			children = (
+				EC5449AA249468A9000BB8A2 /* management */,
 				EC5449D724947625000BB8A2 /* signals.py */,
 				ECBCB13C24A5917D0097C2FA /* admin */,
 				EC54499F249466C2000BB8A2 /* __init__.py */,
 				EC5449A024946722000BB8A2 /* apps.py */,
 				EC5449A124946770000BB8A2 /* db */,
 				EC5449A22494677E000BB8A2 /* include */,
-				EC5449AA249468A9000BB8A2 /* management */,
 				EC5449B624946CB2000BB8A2 /* middleware.py */,
 				EC5449B724946CDB000BB8A2 /* migrations */,
 				EC5449BB24946D9F000BB8A2 /* models */,
