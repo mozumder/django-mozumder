@@ -11,3 +11,4 @@ build/
 dist/
 django_mozumder.egg-info/
 testarea/
+make.sh
