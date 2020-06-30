@@ -10,3 +10,4 @@ venv/
 build/
 dist/
 django_mozumder.egg-info/
+testarea/

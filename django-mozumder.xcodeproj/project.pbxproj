@@ -145,6 +145,11 @@
 		ECBCB16E24A9928D0097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
 		ECBCB17124A996A20097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
 		ECBCB17224A996DF0097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
+		ECBCB17524AA881F0097C2FA /* testarea */ = {isa = PBXFileReference; lastKnownFileType = folder; name = testarea; path = ../../Sites/testarea; sourceTree = "<group>"; };
+		ECBCB17624AAC3CA0097C2FA /* prepareoldapp.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = prepareoldapp.py; sourceTree = "<group>"; };
+		ECBCB17D24AACE290097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB17E24AACE320097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB18124AAD9AF0097C2FA /* createmodel.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = createmodel.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -229,8 +234,8 @@
 		EC54499724935D54000BB8A2 = {
 			isa = PBXGroup;
 			children = (
+				ECBCB17524AA881F0097C2FA /* testarea */,
 				EC54499E24946640000BB8A2 /* mozumder */,
-				ECBCB0AD2498191D0097C2FA /* docs */,
 				EC3010EE24A31FAB000E2C84 /* example */,
 				ECBCB0AC249818D40097C2FA /* MANIFEST.in */,
 				ECBCB0A824980A6E0097C2FA /* README.rst */,
@@ -246,12 +251,12 @@
 			isa = PBXGroup;
 			children = (
 				EC5449AA249468A9000BB8A2 /* management */,
+				EC5449A22494677E000BB8A2 /* include */,
 				EC5449D724947625000BB8A2 /* signals.py */,
 				ECBCB13C24A5917D0097C2FA /* admin */,
 				EC54499F249466C2000BB8A2 /* __init__.py */,
 				EC5449A024946722000BB8A2 /* apps.py */,
 				EC5449A124946770000BB8A2 /* db */,
-				EC5449A22494677E000BB8A2 /* include */,
 				EC5449B624946CB2000BB8A2 /* middleware.py */,
 				EC5449B724946CDB000BB8A2 /* migrations */,
 				EC5449BB24946D9F000BB8A2 /* models */,
@@ -274,6 +279,7 @@
 		EC5449A22494677E000BB8A2 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				ECBCB17724AACB580097C2FA /* old_app_template */,
 				ECBCB0C12498924E0097C2FA /* fixtures */,
 				ECBCB12C24A579610097C2FA /* src */,
 				ECBCB12B24A579440097C2FA /* lib */,
@@ -327,6 +333,8 @@
 				ECBCB15124A596E80097C2FA /* import_sil_language_data.py */,
 				ECBCB15224A597180097C2FA /* import_subdivisions.py */,
 				ECBCB15924A9282A0097C2FA /* addmodel.py */,
+				ECBCB17624AAC3CA0097C2FA /* prepareoldapp.py */,
+				ECBCB18124AAD9AF0097C2FA /* createmodel.py */,
 			);
 			path = commands;
 			sourceTree = "<group>";
@@ -407,13 +415,6 @@
 				ECBCB15424A599E50097C2FA /* logging.py */,
 			);
 			path = views;
-			sourceTree = "<group>";
-		};
-		ECBCB0AD2498191D0097C2FA /* docs */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = docs;
 			sourceTree = "<group>";
 		};
 		ECBCB0C12498924E0097C2FA /* fixtures */ = {
@@ -674,6 +675,47 @@
 				ECBCB17224A996DF0097C2FA /* __init__.py-tpl */,
 			);
 			path = api;
+			sourceTree = "<group>";
+		};
+		ECBCB17724AACB580097C2FA /* old_app_template */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB17F24AAD68C0097C2FA /* template */,
+				ECBCB17B24AACE130097C2FA /* urls */,
+			);
+			path = old_app_template;
+			sourceTree = "<group>";
+		};
+		ECBCB17B24AACE130097C2FA /* urls */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB17C24AACE1B0097C2FA /* api */,
+				ECBCB17E24AACE320097C2FA /* __init__.py */,
+			);
+			path = urls;
+			sourceTree = "<group>";
+		};
+		ECBCB17C24AACE1B0097C2FA /* api */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB17D24AACE290097C2FA /* __init__.py */,
+			);
+			path = api;
+			sourceTree = "<group>";
+		};
+		ECBCB17F24AAD68C0097C2FA /* template */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB18024AAD6B30097C2FA /* app_name */,
+			);
+			path = template;
+			sourceTree = "<group>";
+		};
+		ECBCB18024AAD6B30097C2FA /* app_name */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = app_name;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

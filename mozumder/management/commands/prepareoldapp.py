@@ -8,7 +8,7 @@ import mozumder
 
 class Command(BaseCommand):
 
-    help = 'Add a new django-mozumder app.'
+    help = 'Modify newly created Django app to add URL and template directories.'
     
     def add_arguments(self, parser):
 
@@ -17,31 +17,18 @@ class Command(BaseCommand):
             action='store',
             help='App name',
             )
-        parser.add_argument(
-            '--old',
-            action='store_true',
-            default=False,
-            help='Create a traditional Django app, not a django-mozumder app',
-            )
             
     def handle(self, *args, **options):
 
         app_name = options['name']
-        template = 'old_app_template' if options['old'] == True else 'app_template'
+
         project_settings = os.environ.get('DJANGO_SETTINGS_MODULE')
         project_name, project_settings_name = project_settings.split('.')
 
         path = os.path.join(os.getcwd(),app_name)
         access_rights = 0o755
 
-        try:
-            os.mkdir(path, access_rights)
-        except OSError:
-            print ("Creation of the directory %s failed" % path)
-        else:
-            print ("Successfully created the directory %s " % path)
-
-        source_root = os.path.join(mozumder.__file__[:-12], 'include',template)
+        source_root = os.path.join(mozumder.__file__[:-12], 'include','old_app_template')
         source_root_length = len(source_root)
 
         target_root = os.path.join(os.getcwd(),app_name)

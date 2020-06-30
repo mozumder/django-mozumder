@@ -13,8 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
     
-WARNING: Do not delete comments labeled MARK. They are used by createmodel
-scripts to edit this file.
+WARNING: Do not delete comments labeled MARK. They are used by scripts to edit
+this file.
 \"\"\"
 from django.contrib import admin
 from django.urls import path, include
@@ -22,10 +22,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from mozumder.views import page_not_found_view, error_view, permission_denied_view, bad_request_view
 
-# MARK: urlheaders
-
 urlpatterns = [
-# MARK: urlpatterns
 ]
 
 if settings.DEBUG == True:
