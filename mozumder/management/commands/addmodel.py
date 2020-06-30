@@ -76,13 +76,22 @@ class Command(BaseCommand):
                         related_name = param.split('=')[1]
                         field_params[i] = f"related_name='{related_name}'"
                     i += 1
+            elif field_type == 'ManyToManyField':
+                relation = field_params[0]
+                field_params[0] = f"'{relation}'"
+                i = 0
+                for param in field_params:
+                    if param.startswith('related_name='):
+                        related_name = param.split('=')[1]
+                        field_params[i] = f"related_name='{related_name}'"
+                    i += 1
             field_args = ", ".join(field_params)
             field_line = f'    {field_name}=models.{field_type}({field_args})\n'
             model += field_line
         model += '\n'
 
         if list_display or list_display_links or readonly_fields or search_fields:
-            admin = f'@admin.register({model_name})\nclass {model_name}Admin(admin.ModelAdmin):\n'
+            admin = f'from .models import {model_name}\n\n@admin.register({model_name})\nclass {model_name}Admin(admin.ModelAdmin):\n'
             if list_display:
                 admin += f"    list_display={', '.join(map(str, [list_display]))}\n"
             if list_display_links:

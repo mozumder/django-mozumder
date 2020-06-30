@@ -2,10 +2,12 @@
 import sys
 import os
 import subprocess
+import site
 from shutil import copyfile
 import argparse
 from urllib.parse import urlparse
-from virtualenv import cli_run
+#from virtualenv import cli_run
+import venv
 
 import django
 from django.utils.version import get_docs_version
@@ -422,7 +424,7 @@ def process_args(args):
     
     venv_name = args.virtualenv_dir + f'.{project_name}'
     venv_path = os.path.join(target_root,venv_name)
-    venv_activate = os.path.join(venv_path, 'bin', 'activate_this.py')
+    venv_bin = os.path.join(venv_path, 'bin')
     python_bin = os.path.join(venv_path, 'bin', 'python')
     develop_path = args.develop_path
 
@@ -441,7 +443,7 @@ def process_args(args):
         admin_url, log_dir, log_file, error_log_file, access_log_file, \
         cache_log_file, db_log_file, secret_key, django_version, docs_version, \
         source_root, source_root_length, target_root, access_rights, log_path, \
-        static_path, media_path, venv_name, venv_path, venv_activate, \
+        static_path, media_path, venv_name, venv_path, venv_bin, \
         python_bin, develop_path, uwsgi_run_dir, uwsgi_log_dir, site_name, \
         site_short_name, site_description, site_lang, site_theme_color, \
         site_background_color
@@ -453,12 +455,13 @@ def startproject(args):
         admin_url, log_dir, log_file, error_log_file, access_log_file, \
         cache_log_file, db_log_file, secret_key, django_version, docs_version, \
         source_root, source_root_length, target_root, access_rights, log_path, \
-        static_path, media_path, venv_name, venv_path, venv_activate, \
+        static_path, media_path, venv_name, venv_path, venv_bin, \
         python_bin, develop_path, uwsgi_run_dir, uwsgi_log_dir, site_name, \
         site_short_name, site_description, site_lang, site_theme_color, \
         site_background_color = process_args(args)
 
     db_admin_url = args.db_admin_url
+
     if db_admin_url == None:
         db_admin_username = args.db_admin_name
         db_admin_password = args.db_admin_password
@@ -531,16 +534,37 @@ def startproject(args):
             
 
     if args.create_venv == True:
+        
+        # Create new Python virtual environment with venv
+        venv_builder = venv.EnvBuilder(with_pip=True)
         try:
-            cli_run([venv_path])
+            venv_builder.create(venv_path)
         except OSError:
             print (f"Creation of Python Virtualenv {venv_name} failed")
         else:
             print (f"Created Python virtualenv {venv_name}")
-        exec(open(venv_activate).read(), {'__file__': venv_activate})
-        os.system(f'source {venv_path}/bin/activate;{venv_path}/bin/pip install -r requirements.txt')
+
+        # Activate new virtual environment in this script
+        # prepend bin to PATH (this file is inside the bin directory)
+        os.environ["PATH"] = os.pathsep.join([venv_bin] + os.environ.get("PATH", "").split(os.pathsep))
+        os.environ["VIRTUAL_ENV"] = venv_path  # virtual env is right above bin directory
+
+        # add the virtual environments libraries to the host python import mechanism
+        prev_length = len(sys.path)
+        for lib in f"{venv_path}/lib/python3.8/site-packages".split(os.pathsep):
+            path = os.path.realpath(os.path.join(venv_bin, lib))
+            site.addsitedir(path.decode("utf-8") if "" else path)
+        sys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]
+
+        sys.real_prefix = sys.prefix
+        sys.prefix = venv_path
+
+        # Install Python requirements with pip
+        subprocess.check_call([python_bin, "-m", "pip", "install", "-r", "requirements.txt"])
+
+        # Install django-mozumder into environment in develop mode if needed
         if develop_path:
-            os.system(f'cd {develop_path};{python_bin} setup.py develop')
+            os.system(f'source {venv_bin}/activate;cd {develop_path};{python_bin} {develop_path}/setup.py develop')
        
 #        import pip._internal.main
 #        pip._internal.main.main(['install', '--isolated', '-r', 'requirements.txt'])
@@ -572,7 +596,7 @@ def createuwsgi(args, use_secret_key=None):
         admin_url, log_dir, log_file, error_log_file, access_log_file, \
         cache_log_file, db_log_file, secret_key, django_version, docs_version, \
         source_root, source_root_length, target_root, access_rights, log_path, \
-        static_path, media_path, venv_name, venv_path, venv_activate, \
+        static_path, media_path, venv_name, venv_path, venv_bin, \
         python_bin, develop_path, uwsgi_run_dir, uwsgi_log_dir, site_name, \
         site_short_name, site_description, site_lang, site_theme_color, \
         site_background_color = process_args(args)
@@ -652,7 +676,7 @@ def createh2o(args):
         admin_url, log_dir, log_file, error_log_file, access_log_file, \
         cache_log_file, db_log_file, secret_key, django_version, docs_version, \
         source_root, source_root_length, target_root, access_rights, log_path, \
-        static_path, media_path, venv_name, venv_path, venv_activate, \
+        static_path, media_path, venv_name, venv_path, venv_bin, \
         python_bin, develop_path, uwsgi_run_dir, uwsgi_log_dir, site_name, \
         site_short_name, site_description, site_lang, site_theme_color, \
         site_background_color = process_args(args)

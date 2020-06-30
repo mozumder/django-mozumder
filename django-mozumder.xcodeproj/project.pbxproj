@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		EC0DB82824ABBD030070DD80 /* activate_this.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = activate_this.py; sourceTree = "<group>"; };
 		EC3010F024A31FE9000E2C84 /* models.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = models.py; sourceTree = "<group>"; };
 		EC3010F124A3205C000E2C84 /* apps.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = apps.py; sourceTree = "<group>"; };
 		EC3010F224A3206A000E2C84 /* admin.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = admin.py; sourceTree = "<group>"; };
@@ -345,6 +346,7 @@
 				EC5449DA249477AF000BB8A2 /* logging_mule.py */,
 				EC5449B4249469DF000BB8A2 /* cache_mule.py */,
 				EC5449B524946A1F000BB8A2 /* invalidator.py */,
+				EC0DB82824ABBD030070DD80 /* activate_this.py */,
 			);
 			path = utilities;
 			sourceTree = "<group>";
