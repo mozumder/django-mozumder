@@ -150,6 +150,7 @@
 		ECBCB17624AAC3CA0097C2FA /* prepareoldapp.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = prepareoldapp.py; sourceTree = "<group>"; };
 		ECBCB17D24AACE290097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		ECBCB17E24AACE320097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECBCB18224ABD75B0097C2FA /* enableapp.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = enableapp.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -334,6 +335,7 @@
 				ECBCB15224A597180097C2FA /* import_subdivisions.py */,
 				ECBCB15924A9282A0097C2FA /* addmodel.py */,
 				ECBCB17624AAC3CA0097C2FA /* prepareoldapp.py */,
+				ECBCB18224ABD75B0097C2FA /* enableapp.py */,
 			);
 			path = commands;
 			sourceTree = "<group>";
