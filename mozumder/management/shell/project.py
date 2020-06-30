@@ -5,7 +5,7 @@ import subprocess
 from shutil import copyfile
 import argparse
 from urllib.parse import urlparse
-import virtualenv
+from virtualenv import cli_run
 
 import django
 from django.utils.version import get_docs_version
@@ -532,7 +532,7 @@ def startproject(args):
 
     if args.create_venv == True:
         try:
-            virtualenv.create_environment(venv_path)
+            cli_run([venv_path])
         except OSError:
             print (f"Creation of Python Virtualenv {venv_name} failed")
         else:
