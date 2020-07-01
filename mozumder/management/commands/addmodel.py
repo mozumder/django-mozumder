@@ -129,10 +129,12 @@ class Command(BaseCommand):
         # Read One Item
         # Read All
         # Read Filter/Exclude
+        # Read Stubs List
         # Search Items
         # Sort Items
         # Reorder Items
         # Add One Item
+        # Insert One Item
         # Add Multiple Items
         # Duplicate Item
         # Update Item
@@ -154,10 +156,67 @@ class Command(BaseCommand):
         # Delete Multiple Items from Field
         # Operation on View
         #
-        # Disable operations you don't need by commenting out the operation in
+        # Enable operations you need by uncommenting out the operation in
         # the urls.py file
         
         # Write urls.py file
+        # Edit base URLs py
+        urls_file = os.path.join(os.getcwd(),app_name,'urls','__init__.py')
+
+        f = open(urls_file, "r")
+        output = ''
+        state = 'file'
+        for line in f.readlines():
+            if state == 'file':
+                if line.startswith('urlpatterns = [\n'):
+                    state = 'urlpatterns'
+                elif line.startswith("from django.urls import path"):
+                    line += f"""from ..views import ({model_name}View, {model_name}DetailView,
+    search_{model_name}, copy_{model_name})
+"""
+            elif state == 'urlpatterns':
+                if line == ']\n':
+                    # GET: Read All, DELETE: Delete All, POST: Add, PATCH: Update All Field, HEAD: Read Stubs List
+                    output += f"    #path('{model_name}/', {model_name}ListView.as_view(), name='{model_name}_list'),\n"
+                    # GET: Read One, DELETE: Delete One, POST: Copy, PUT: Update Fields, PATCH: Update Field, HEAD: Read Stub
+                    output += f"    #path('{model_name}/<int:pk>', {model_name}DetailView.as_view(), name='{model_name}_detail'),\n"
+                    output += f"    #path('search/{model_name}', {model_name}SearchView.as_view(), name='search_{model_name}'),\n"
+                    output += f"    #path('copy/{model_name}/<int:pk>', copy_{model_name}, name='copy_{model_name}'),\n"
+                    state = 'file'
+            output += line
+        f.close()
+        f = open(urls_file, "w")
+        f.write(output)
+        f.close()
+
+        # Edit base URLs py
+        urls_file = os.path.join(os.getcwd(),app_name,'urls','api','__init__.py')
+
+        f = open(urls_file, "r")
+        output = ''
+        state = 'file'
+        for line in f.readlines():
+            if state == 'file':
+                if line.startswith('urlpatterns = [\n'):
+                    state = 'urlpatterns'
+                elif line.startswith("from django.urls import path"):
+                    line += f"""from ..views import ({model_name}JSONView, {model_name}JSONDetailView,
+    json_search_{model_name}, json_copy_{model_name})
+"""
+            elif state == 'urlpatterns':
+                if line == ']\n':
+                    # GET: Read All, DELETE: Delete All, POST: Add, PATCH: Update All Field, HEAD: Read Stubs List
+                    output += f"    #path('{model_name}/', {model_name}JSONListView.as_view(), name='json_{model_name}_list'),\n"
+                    # GET: Read One, DELETE: Delete One, POST: Copy, PUT: Update Fields, PATCH: Update Field, HEAD: Read Stub
+                    output += f"    #path('{model_name}/<int:pk>', {model_name}JSONDetailView.as_view(), name='json_{model_name}_detail'),\n"
+                    output += f"    #path('search/{model_name}', {model_name}JSONSearchView.as_view(), name='json_search_{model_name}'),\n"
+                    output += f"    #path('copy/{model_name}/<int:pk>', json_copy_{model_name}, name='json_copy_{model_name}'),\n"
+                    state = 'file'
+            output += line
+        f.close()
+        f = open(urls_file, "w")
+        f.write(output)
+        f.close()
 
         # Write views.py file
 
