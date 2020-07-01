@@ -25,29 +25,29 @@ class Command(BaseCommand):
         parser.add_argument(
             'file',
             action='store',
-            help='CSV file name',
+            help='CSV file name. First line is a header line with all the field names.',
             )
             
     def handle(self, *args, **options):
-
-        csv.reader(
+        module = __import__(options['app'] + '.models')
+        class_ = getattr(getattr(module,'models'), options['model'])
+        
+        fields = {}
         with open(options['file'], "r") as csvfile:
-            csvreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-            for row in csvreader
+            csvreader = csv.reader(csvfile)
+            for row in csvreader:
+                if row:
+                    i = 0
+                    if fields == {}:
+                        field_lookup =[]
+                        for field in row:
+                            field_lookup.append(row[i])
+                            fields[field] = ''
+                            i = i + 1
+                    else:
+                        for field in row:
+                            fields[field_lookup[i]] = field
+                            i = i + 1
+                        _, created = class_.objects.get_or_create(**fields)
                 
-        output = ''
-        state = 'file'
-        for line in f.readlines():
-            if state == 'file':
-                if line == 'INSTALLED_APPS = [\n':
-                    state = 'INSTALLED_APPS'
-            elif state == 'INSTALLED_APPS':
-                if line == ']\n':
-                    output += f"    '{app_name}',\n"
-                    state = 'file'
-            output += line
-        f.close()
-        f = open(settings_file, "w")
-        f.write(output)
-        f.close()
 
