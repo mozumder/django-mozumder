@@ -124,5 +124,29 @@ class Command(BaseCommand):
         f.close()
 
         # Write views.py file
+
+        # Read One Item
+        # Read All
+        # Read Filter/Exclude
+        # Search Items
+        # Add One Item
+        # Add Multiple Items
+        # Duplicate Item
+        # Update Item
+        # Update All
+        # Update Filter/Exclude
+        # Delete Item
+        # Delete All
+        # Delete Filter/Exclude
+        # Search Through Field
+        # Add Item to Field
+        # Add Multiple Items to Field
+        # Increment Field
+        # Decrement Field
+        # Duplicate Items to Field
+        # Delete Item from Field
+        # Delete All Items from Field
+        # Delete Multiple Items from Field
         
+
         # Write urls.py file
