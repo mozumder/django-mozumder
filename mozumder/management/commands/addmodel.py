@@ -90,8 +90,15 @@ class Command(BaseCommand):
             model += field_line
         model += '\n'
 
+        # Write models.py file
+        models_file = os.path.join(os.getcwd(),app_name,'models.py')
+        f = open(models_file, "a")
+        f.write(model)
+        f.close()
+
+        # Create admin data
         if list_display or list_display_links or readonly_fields or search_fields:
-            admin = f'from .models import {model_name}\n\n@admin.register({model_name})\nclass {model_name}Admin(admin.ModelAdmin):\n'
+            admin = f'\n@admin.register({model_name})\nclass {model_name}Admin(admin.ModelAdmin):\n'
             if list_display:
                 admin += f"    list_display={', '.join(map(str, [list_display]))}\n"
             if list_display_links:
@@ -101,12 +108,21 @@ class Command(BaseCommand):
             if search_fields:
                 admin += f"    search_fields={', '.join(map(str, [search_fields]))}\n"
             admin += '\n'
-        models_file = os.path.join(os.getcwd(),app_name,'models.py')
-        f = open(models_file, "a")
-        f.write(model)
+
+        # Write admin.py file
+        admin_file = os.path.join(os.getcwd(),app_name,'admin.py')
+        f = open(admin_file, "r")
+        file = ''
+        for line in f.readlines():
+            if line.startswith("# Register your models here."):
+                file += f'from .models import {model_name}\n'
+            file += line
+        file += admin
+        
+        f = open(admin_file, "w")
+        f.write(file)
         f.close()
 
-        admin_file = os.path.join(os.getcwd(),app_name,'admin.py')
-        f = open(admin_file, "a")
-        f.write(admin)
-        f.close()
+        # Write views.py file
+        
+        # Write urls.py file
