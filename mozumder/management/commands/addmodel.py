@@ -123,8 +123,9 @@ class Command(BaseCommand):
         f.write(file)
         f.close()
 
-        # Write views.py file
-
+        # The following are the operations that are built by default for
+        # every model:
+        #
         # Read One Item
         # Read All
         # Read Filter/Exclude
@@ -152,5 +153,14 @@ class Command(BaseCommand):
         # Delete All Items from Field
         # Delete Multiple Items from Field
         # Operation on View
-
+        #
+        # Disable operations you don't need by commenting out the operation in
+        # the urls.py file
+        
         # Write urls.py file
+
+        # Write views.py file
+
+        # Write forms.py file
+
+        # Write Templates
