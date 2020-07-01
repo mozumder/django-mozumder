@@ -129,12 +129,15 @@ class Command(BaseCommand):
         # Read All
         # Read Filter/Exclude
         # Search Items
+        # Sort Items
+        # Reorder Items
         # Add One Item
         # Add Multiple Items
         # Duplicate Item
         # Update Item
         # Update All
         # Update Filter/Exclude
+        # Validate Item
         # Delete Item
         # Delete All
         # Delete Filter/Exclude
@@ -143,10 +146,11 @@ class Command(BaseCommand):
         # Add Multiple Items to Field
         # Increment Field
         # Decrement Field
+        # Validate Field
         # Duplicate Items to Field
         # Delete Item from Field
         # Delete All Items from Field
         # Delete Multiple Items from Field
-        
+        # Operation on View
 
         # Write urls.py file
