@@ -152,6 +152,28 @@
 		ECBCB17E24AACE320097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		ECBCB18224ABD75B0097C2FA /* enableapp.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = enableapp.py; sourceTree = "<group>"; };
 		ECBCB18424AC37D20097C2FA /* readcsv.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = readcsv.py; sourceTree = "<group>"; };
+		ECBCB18824AD50920097C2FA /* home.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = home.html; sourceTree = "<group>"; };
+		ECBCB18924AD50A70097C2FA /* page.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = page.html; sourceTree = "<group>"; };
+		ECBCB18A24AD50EB0097C2FA /* base.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = base.html; sourceTree = "<group>"; };
+		ECBCB18B24AD51200097C2FA /* head.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = head.html; sourceTree = "<group>"; };
+		ECBCB18C24AD51430097C2FA /* style.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = style.html; sourceTree = "<group>"; };
+		ECBCB18E24AD51730097C2FA /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
+		ECBCB18F24AD51850097C2FA /* typography.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = typography.css; sourceTree = "<group>"; };
+		ECBCB19024AD519E0097C2FA /* configure.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = configure.css; sourceTree = "<group>"; };
+		ECBCB19124AD51B60097C2FA /* generic.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = generic.css; sourceTree = "<group>"; };
+		ECBCB19224AD51D30097C2FA /* form.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = form.css; sourceTree = "<group>"; };
+		ECBCB19324AD51F50097C2FA /* table.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = table.css; sourceTree = "<group>"; };
+		ECBCB19424AD52130097C2FA /* page.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = page.css; sourceTree = "<group>"; };
+		ECBCB19524AD52280097C2FA /* header.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = header.css; sourceTree = "<group>"; };
+		ECBCB19624AD52450097C2FA /* navbar.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = navbar.css; sourceTree = "<group>"; };
+		ECBCB19724AD52700097C2FA /* messages.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = messages.css; sourceTree = "<group>"; };
+		ECBCB19824AD52830097C2FA /* footer.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = footer.css; sourceTree = "<group>"; };
+		ECBCB19A24AD59800097C2FA /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
+		ECBCB19B24AD59BA0097C2FA /* scripts.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = scripts.html; sourceTree = "<group>"; };
+		ECBCB19D24AD5A240097C2FA /* header.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = header.html; sourceTree = "<group>"; };
+		ECBCB19F24AD5A970097C2FA /* messages.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = messages.html; sourceTree = "<group>"; };
+		ECBCB1A024AD5B140097C2FA /* svg.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = svg.html; sourceTree = "<group>"; };
+		ECBCB1A224AD5F350097C2FA /* views.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "views.py-tpl"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -444,6 +466,7 @@
 		ECBCB0E1249AD7A40097C2FA /* project_template */ = {
 			isa = PBXGroup;
 			children = (
+				ECBCB18624AD506A0097C2FA /* template */,
 				ECBCB117249EE4B90097C2FA /* static */,
 				ECBCB0E4249AD7F70097C2FA /* project_name */,
 				ECBCB0E8249AD84E0097C2FA /* manage.py-tpl */,
@@ -487,6 +510,7 @@
 				ECBCB0EA249AD8750097C2FA /* wsgi.py-tpl */,
 				ECBCB0EB249AD8CB0097C2FA /* urls.py-tpl */,
 				ECBCB0EC249AD8DA0097C2FA /* settings.py-tpl */,
+				ECBCB1A224AD5F350097C2FA /* views.py-tpl */,
 			);
 			path = project_name;
 			sourceTree = "<group>";
@@ -494,6 +518,7 @@
 		ECBCB117249EE4B90097C2FA /* static */ = {
 			isa = PBXGroup;
 			children = (
+				ECBCB1A124AD5D3D0097C2FA /* font */,
 				ECBCB118249EE4C20097C2FA /* icon */,
 				ECBCB119249EE4D60097C2FA /* robots.txt */,
 				ECBCB11A249EE4FD0097C2FA /* browserconfig.xml */,
@@ -720,6 +745,57 @@
 			children = (
 			);
 			path = app_name;
+			sourceTree = "<group>";
+		};
+		ECBCB18624AD506A0097C2FA /* template */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB18D24AD51560097C2FA /* css */,
+				ECBCB18824AD50920097C2FA /* home.html */,
+				ECBCB18924AD50A70097C2FA /* page.html */,
+				ECBCB18A24AD50EB0097C2FA /* base.html */,
+				ECBCB18B24AD51200097C2FA /* head.html */,
+				ECBCB18C24AD51430097C2FA /* style.html */,
+				ECBCB19B24AD59BA0097C2FA /* scripts.html */,
+				ECBCB19D24AD5A240097C2FA /* header.html */,
+				ECBCB19F24AD5A970097C2FA /* messages.html */,
+				ECBCB1A024AD5B140097C2FA /* svg.html */,
+			);
+			path = template;
+			sourceTree = "<group>";
+		};
+		ECBCB18D24AD51560097C2FA /* css */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB19924AD596E0097C2FA /* home */,
+				ECBCB18E24AD51730097C2FA /* style.css */,
+				ECBCB18F24AD51850097C2FA /* typography.css */,
+				ECBCB19024AD519E0097C2FA /* configure.css */,
+				ECBCB19124AD51B60097C2FA /* generic.css */,
+				ECBCB19224AD51D30097C2FA /* form.css */,
+				ECBCB19324AD51F50097C2FA /* table.css */,
+				ECBCB19424AD52130097C2FA /* page.css */,
+				ECBCB19524AD52280097C2FA /* header.css */,
+				ECBCB19624AD52450097C2FA /* navbar.css */,
+				ECBCB19724AD52700097C2FA /* messages.css */,
+				ECBCB19824AD52830097C2FA /* footer.css */,
+			);
+			path = css;
+			sourceTree = "<group>";
+		};
+		ECBCB19924AD596E0097C2FA /* home */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB19A24AD59800097C2FA /* style.css */,
+			);
+			path = home;
+			sourceTree = "<group>";
+		};
+		ECBCB1A124AD5D3D0097C2FA /* font */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = font;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

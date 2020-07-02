@@ -1,0 +1,250 @@
+/**
+ * 1. Change the font styles in all browsers.
+ * 2. Remove the margin in Firefox and Safari.
+ */
+
+.button,
+button,
+input,
+optgroup,
+select,
+textarea {
+    font-family: inherit; /* 1 */
+    line-height: 1.15; /* 1 */
+    margin: .2em 0 .5em 0; /* 2 */
+    border:1px solid var(--note-color, #aaa);
+    box-shadow: none;
+}
+
+button,
+optgroup,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+}
+
+input[type=text], input[type=password], input[type=email] {
+    font-size: 1.2em;
+}
+
+input[type=submit] {
+    font-size: 100%;
+}
+
+.button {
+}
+
+/* Change the white to any color ;) */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-text-fill-color: inherit;
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+    transition: background-color 5000s ease-in-out 0s;
+    font-size:18px;
+}
+
+.button:hover,
+button:hover,
+input:hover,
+optgroup:hover,
+select:hover,
+textarea:hover {
+    border-color:var(--inactive-color, #666);
+}
+
+.button:active,
+button:active,
+input:active,
+optgroup:active,
+select:active,
+textarea:active {
+    border-color:var(--active-color, #222);
+}
+
+.button:focus,
+button:focus,
+input:focus,
+optgroup:focus,
+select:focus,
+textarea:focus {
+    box-shadow: 0 0 1px 3px rgba(252, 200, 59, 0.781);
+}
+
+/**
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
+ */
+
+button,
+input { /* 1 */
+    overflow: visible;
+}
+
+/**
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
+
+button,
+select { /* 1 */
+    text-transform: none;
+}
+
+/**
+ * Correct the inability to style clickable types in iOS and Safari.
+ */
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+    -webkit-appearance: button;
+}
+
+button:hover,
+button:focus {
+}
+
+button:focus {
+    outline: 1px solid #fff;
+    outline-offset: -4px;
+}
+
+button:active {
+    transform: scale(0.99);
+}
+
+select {
+    display: block;
+    font-size: 16px;
+    font-family: inherit;
+    line-height: 1.3;
+    padding: .6em 2.4em .5em .8em;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    border-radius: 0;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016.04%2016%22%3E%3Cdefs%3E%3Cstyle%3E.down_arrow%7Bfill%3Anone%3Bstroke%3Avar%28--active-color%2C%23444%29%3Bstroke-miterlimit%3A10%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3EDown%20Arrow%3C%2Ftitle%3E%3Cpolyline%20class%3D%22down_arrow%22%20points%3D%222.99%205.17%208.01%2010.18%2013.02%205.16%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat, repeat;
+    background-position: right .7em top 50%, 0 0;
+    background-size: 1.5em auto, 100%;
+}
+select::-ms-expand {
+    display: none;
+}
+select:hover {
+    border-color: #888;
+}
+select:focus {
+    border-color: #aaa;
+    color: #222;
+    outline: none;
+}
+select option {
+    font-weight:normal;
+}
+
+
+
+
+fieldset {
+    border:none;
+}
+
+legend {
+    font-weight:400;
+    font-size:2em;
+    margin-bottom:.5em;
+}
+
+
+label {
+    font-weight:700;
+    font-size:1em;
+}
+
+input {
+    background: transparent;
+}
+
+input[type=text], input[type=password], input[type=email] {
+    padding:.5em .5em .3em .5em;
+    width:calc(100% - 1em - 2px);
+}
+
+input[type=search] {
+    -moz-appearance: none;/* older firefox */
+    -webkit-appearance: none; /* safari, chrome, edge and ie mobile */
+    appearance: none; /* rest */
+    border:none;
+    border-bottom: 1px solid black;
+    font-size: 1.1em;
+    padding:0;
+    margin:0;
+}
+
+input[type=search]:focus{
+    box-shadow: none;
+}
+
+label>.label_error_message {
+    font-family:"Andale Mono";
+    font-size:.8em;
+    font-weight:300;
+    color:var(--error-color,#C22);
+    width:100%;
+    margin-top:-.7em;
+    height:2em;
+}
+
+button, .button, input[type=submit] {
+    text-align:center;
+    font-weight:700;
+    text-transform:uppercase;
+    display:inline-block;
+    background-color: var(--default-inactive-color, #FAA);
+    padding:.8em .8em .5em .8em;
+    border:1px solid black;
+    box-sizing: border-box;
+}
+
+.button, input[type=submit]{
+    line-height: 1.15; /* 1 */
+}
+
+button:hover, .button:hover, input[type=submit]:hover {
+    cursor: pointer;
+    background-color: var(--default-active-color, #F66);
+    text-decoration: underline;
+}
+
+.secondaryAction {
+    float:right;
+    background-color: var(--bad-inactive-color, #fda);
+}
+
+.secondaryAction:hover {
+    background-color: var(--bad-active-color, #fa6);
+}
+
+.primaryAction {
+    background-color: var(--good-inactive-color, #afa);
+}
+
+.primaryAction:hover {
+    background-color: var(--good-active-color, #6f6);
+}
+

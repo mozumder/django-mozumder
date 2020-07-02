@@ -1,0 +1,26 @@
+{% include "css/typography.css" %}
+{% include "css/configure.css" %}
+{% include "css/generic.css" %}
+{% include "css/form.css" %}
+{% include "css/table.css" %}
+{% include "css/page.css" %}
+{% include "css/header.css" %}
+{% include "css/navbar.css" %}
+{% include "css/messages.css" %}
+{% include "css/footer.css" %}
+{% include "css/home/style.css" %}
+
+.note {
+    font-style:oblique;
+    color:#666;
+    font-size:12px;
+}
+
+del {
+    color:red;
+}
+
+del>span {
+    color:#888;
+}
+

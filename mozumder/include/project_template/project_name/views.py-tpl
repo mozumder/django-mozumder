@@ -1,0 +1,12 @@
+from django.shortcuts import render
+from django.views.generic import View
+
+# Create your views here.
+
+class HomePage(View):
+    def get(self, *args, **kwargs):
+        context = {{
+            'title': '{project_name}',
+        }}
+        return render(self.request, "home.html", context)
+

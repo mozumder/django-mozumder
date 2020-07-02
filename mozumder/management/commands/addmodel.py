@@ -1,9 +1,17 @@
 import os
+import re
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
 import mozumder
+
+def CamelCase(str, separator=' '):
+    return ''.join([re.sub('[^A-Za-z0-9]+', '', n).title() for n in str.split(separator)])
+
+def camel_case_split(str, separator='_'):
+    return separator.join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', str))
+
 
 class Command(BaseCommand):
 
@@ -20,12 +28,12 @@ class Command(BaseCommand):
         parser.add_argument(
             '--verbose_name',
             action='store',
-            help='Model verbose name',
+            help="Model's verbose name",
             )
         parser.add_argument(
             '--verbose_name_plural',
             action='store',
-            help='Model plural verbose name',
+            help="Model's plural verbose name",
             )
         parser.add_argument(
             'app_name',
@@ -47,7 +55,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         app_name = options['app_name']
+        verbose_name = options['verbose_name']
+        verbose_name_plural = options['verbose_name_plural']
         model_name = options['model_name']
+        model_code_name = CamelCase(model_name).lower()
         fields_list = options['field']
         model = f'class {model_name}(models.Model):\n'
         admin = ''
@@ -172,17 +183,17 @@ class Command(BaseCommand):
                     state = 'urlpatterns'
                 elif line.startswith("from django.urls import path"):
                     line += f"""from ..views import ({model_name}ListView, {model_name}DetailView,
-    search_{model_name}, {model_name}StubsView, {model_name}StubView)
+    search_{model_code_name}, {model_name}StubsView, {model_name}StubView)
 """
             elif state == 'urlpatterns':
                 if line == ']\n':
                     # GET: Read All, DELETE: Delete All, POST: Add, PATCH: Update All Field
-                    output += f"    #path('{model_name}/', {model_name}ListView.as_view(), name='{model_name}_list'),\n"
+                    output += f"    #path('{model_code_name}/', {model_name}ListView.as_view(), name='{model_code_name}_list'),\n"
                     # GET: Read One, DELETE: Delete One, POST: Copy, PUT: Update Fields, PATCH: Update Field
-                    output += f"    #path('{model_name}/<int:pk>', {model_name}DetailView.as_view(), name='{model_name}_detail'),\n"
-                    output += f"    #path('search/{model_name}', search_{model_name}, name='search_{model_name}'),\n"
-                    output += f"    #path('stub/{model_name}', {model_name}StubsView.as_view(), name='{model_name}_stub'),\n"
-                    output += f"    #path('stub/{model_name}/<int:pk>', {model_name}StubView.as_view(), name='{model_name}_stubs'),\n"
+                    output += f"    #path('{model_code_name}/<int:pk>', {model_name}DetailView.as_view(), name='{model_code_name}_detail'),\n"
+                    output += f"    #path('search/{model_code_name}', search_{model_name}, name='search_{model_code_name}'),\n"
+                    output += f"    #path('stub/{model_code_name}', {model_name}StubsView.as_view(), name='{model_code_name}_stub'),\n"
+                    output += f"    #path('stub/{model_code_name}/<int:pk>', {model_name}StubView.as_view(), name='{model_code_name}_stubs'),\n"
                     state = 'file'
             output += line
         f.close()
@@ -201,18 +212,18 @@ class Command(BaseCommand):
                 if line.startswith('urlpatterns = [\n'):
                     state = 'urlpatterns'
                 elif line.startswith("from django.urls import path"):
-                    line += f"""from ..views import ({model_name}JSONListView, {model_name}JSONDetailView,
-    json_search_{model_name}, {model_name}JSONStubsView, {model_name}JSONStubView)
+                    line += f"""from ...views import ({model_name}JSONListView, {model_name}JSONDetailView,
+    json_search_{model_code_name}, {model_name}JSONStubsView, {model_name}JSONStubView)
 """
             elif state == 'urlpatterns':
                 if line == ']\n':
                     # GET: Read All, DELETE: Delete All, POST: Add, PATCH: Update All Field
-                    output += f"    #path('{model_name}/', {model_name}JSONListView.as_view(), name='json_{model_name}_list'),\n"
+                    output += f"    #path('{model_code_name}/', {model_name}JSONListView.as_view(), name='json_{model_code_name}_list'),\n"
                     # GET: Read One, DELETE: Delete One, POST: Copy, PUT: Update Fields, PATCH: Update Field
-                    output += f"    #path('{model_name}/<int:pk>', {model_name}JSONDetailView.as_view(), name='json_{model_name}_detail'),\n"
-                    output += f"    #path('search/{model_name}', json_search_{model_name}, name='search_{model_name}'),\n"
-                    output += f"    #path('stub/{model_name}', {model_name}JSONStubsView.as_view(), name='json_{model_name}_stub'),\n"
-                    output += f"    #path('stub/{model_name}/<int:pk>', {model_name}JSONStubView.as_view(), name='json_{model_name}_stubs'),\n"
+                    output += f"    #path('{model_code_name}/<int:pk>', {model_name}JSONDetailView.as_view(), name='json_{model_code_name}_detail'),\n"
+                    output += f"    #path('search/{model_code_name}', json_search_{model_name}, name='search_{model_code_name}'),\n"
+                    output += f"    #path('stub/{model_code_name}', {model_name}JSONStubsView.as_view(), name='json_{model_code_name}_stub'),\n"
+                    output += f"    #path('stub/{model_code_name}/<int:pk>', {model_name}JSONStubView.as_view(), name='json_{model_code_name}_stubs'),\n"
                     state = 'file'
             output += line
         f.close()
@@ -221,7 +232,58 @@ class Command(BaseCommand):
         f.close()
 
         # Write views.py file
+        views_file = os.path.join(os.getcwd(),app_name,'views.py')
+
+        f = open(views_file, "r")
+        output = ''
+        state = 'file'
+        imported = False
+        for line in f.readlines():
+            if line.startswith("from django.views.generic import ListView, DetailView, View"):
+                imported = True
+            elif line.startswith('# Create your views here.'):
+                if imported == False:
+                    output += f"from django.views.generic import ListView, DetailView, View\n"
+                    imported = True
+            output += line
+
+        output += f"""
+class {model_name}DetailView(DetailView):
+    pass
+
+class {model_name}ListView(ListView):
+    pass
+
+class {model_name}StubView(DetailView):
+    pass
+
+class {model_name}StubsView(ListView):
+    pass
+
+def search_{model_code_name}():
+    pass
+
+class {model_name}JSONDetailView(DetailView):
+    pass
+
+class {model_name}JSONListView(ListView):
+    pass
+
+class {model_name}JSONStubView(DetailView):
+    pass
+
+class {model_name}JSONStubsView(ListView):
+    pass
+
+def json_search_{model_code_name}():
+    pass
+"""
+        f.close()
+        f = open(views_file, "w")
+        f.write(output)
+        f.close()
+
+        # Write Templates
 
         # Write forms.py file
 
-        # Write Templates

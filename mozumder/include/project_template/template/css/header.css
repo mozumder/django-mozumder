@@ -1,0 +1,89 @@
+#header {
+    width:100%;
+    margin-top:1.6em;
+    font-size: 14px;
+    font-style:normal;
+    font-weight:200;
+    flex-shrink: 0;
+    display:flex;
+    flex-direction:row;
+    justify-content: center;
+    align-items:bottom;
+    flex-wrap:wrap;
+}
+
+#logo_box, #account_info {
+    flex-basis:29%;
+    flex-grow:1;
+}
+
+#account_info {
+    margin-left:1em;
+}
+
+#logo_icon {
+    width:120px;
+    height:24px;
+}
+
+#search_box {
+    flex-grow:0;
+    display:flex;
+}
+
+#search_form {
+}
+
+#search_icon {
+    flex-shrink:0;
+    flex-grow:0;
+    height:24px;
+    width:15px;
+}
+
+#search_input {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+}
+
+#account_info {
+    display:flex;
+    justify-content: flex-end;
+}
+
+.header_links {
+    margin-right:0em;
+}
+.header_links:last-child {
+    margin-right:0;
+}
+
+
+#shopping_icon{
+    position:relative;
+    top:2px;
+    height:16px;
+    width:24px;
+}
+
+#cart_count{
+    position:relative;
+    color:#fff;
+    top:-10px;
+    margin-left:-12px;
+    font-size: 12px;
+    font-style:normal;
+    font-weight:500;
+    background-color:rgba(255,50,50,0.8);
+    padding:2px 3px 0px 3px;
+    border-radius: 5px;
+}
+
+#account_icon{
+    position:relative;
+    top:2px;
+    height:17px;
+    width:24px;
+}
+

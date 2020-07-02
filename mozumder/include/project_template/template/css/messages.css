@@ -1,0 +1,32 @@
+.message {
+    padding: .7em .5em 0 .5em;
+    width: 100%;
+}
+
+.message-success {
+    background-color: var(--success-background-color, #CCFFCC) ;
+}
+
+.message-info {
+    background-color: var(--info-background-color, #CCCCFF) ;
+}
+
+.message-warning {
+    background-color: var(--warning-background-color, #FFCCCC) ;
+}
+
+.message_close {
+    background:none;
+    border:none;
+    float:right;
+    padding: 0 .3em;
+    margin: -.2em 0 .5em 0;
+    font-weight:400;
+}
+
+.message_close:hover {
+    text-decoration: none;
+    border:none;
+    background-color: rgba(255, 255, 255, .3);
+}
+

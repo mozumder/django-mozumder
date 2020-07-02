@@ -21,8 +21,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from mozumder.views import page_not_found_view, error_view, permission_denied_view, bad_request_view
+from .views import HomePage
 
 urlpatterns = [
+    path('', HomePage.as_view(), name='home'),
 ]
 
 if settings.DEBUG == True:

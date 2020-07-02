@@ -1,0 +1,16 @@
+#navbar {
+    font-family:"ITC Avant Garde Gothic Std";
+    font-style:normal;
+    font-weight:700;
+    font-size: 12px;
+    text-transform:uppercase;
+    flex-shrink: 0;
+}
+
+#navbar_header  {
+}
+
+.department_navlink {
+    float:left;
+    margin-right: .8em;
+}

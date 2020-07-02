@@ -1,0 +1,24 @@
+:root {
+    --good-active-color: #6F6;
+    --good-inactive-color:  #AFA;
+    --bad-active-color: #FA6;
+    --bad-inactive-color: #FDA;
+    --neutral-active-color: #DDA;
+    --neutral-inactive-color: #AA6;
+    --default-active-color: #F66;
+    --default-inactive-color: #FAA;
+    --section-color: #000;
+    --divider-color: #888;
+    --note-color: #aaa;
+    --spacer-color: #dadada;
+    --active-color: #222;
+    --inactive-color: #666;
+    --error-color: #C22;
+    --warning-color: #C82;
+    --warning-background-color: #FFCCCC;
+    --info-color: #22C;
+    --info-background-color: #CCCCFF;
+    --success-color: #2C2;
+    --success-background-color:#CCFFCC;
+    --highlight-color: #DD6;
+}

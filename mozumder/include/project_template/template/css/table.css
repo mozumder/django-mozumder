@@ -1,0 +1,31 @@
+table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size:13px;
+    line-height: 1.4em;
+    min-width:40em;
+    width:100%;
+    height: 1px;
+}
+
+thead>th {
+    white-space: nowrap;
+}
+
+tbody {
+    vertical-align: top;
+}
+
+th,  td  {
+    padding: .6em .6em .3em .6em;
+}
+
+
+thead, tbody, tfoot {
+    border-top: 1px solid #888;
+}
+
+
+tbody tr + tr {
+    border-top: 1px solid var(--spacer-color, #dadada);
+}

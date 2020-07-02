@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block head_title %}{% endblock %}</title>
+        {% block head %}{% endblock %}
+        {% block extra_head %}{% endblock %}
+    </head>
+    <body>
+        {% include "svg.html" %}
+        {% block body_open %}{% endblock %}
+        {% block main_open %}{% endblock %}
+        {% block content_open %}{% endblock %}
+        {% block content %}{% endblock %}
+        {% block content_close %}{% endblock %}
+        {% block main_close %}{% endblock %}
+        {% block body_close %}{% endblock %}
+        {% block extra_body %}{% endblock %}
+        {% block scripts %}{% endblock %}
+    </body>
+    
+</html>
+

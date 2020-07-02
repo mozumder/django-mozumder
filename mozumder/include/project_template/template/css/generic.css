@@ -1,0 +1,86 @@
+a, div, img, ul, li, nav, main, input, p, img {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+}
+
+
+ul {
+    list-style-type:none
+}
+
+h1, h2, h3, h4 {
+    margin-top:1em;
+    margin-bottom:.5em;
+}
+h5, h6 {
+    margin-top:.8em;
+    margin-bottom:.5em;
+}
+
+hr {
+    border-style: none;
+    border-top: 1px solid #ddd;
+    height: 1px;
+}
+
+hr.gradient {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+
+a {
+    color: #000;
+    text-decoration-skip-ink: none;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: #000;
+}
+
+.active a {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: #888;
+}
+
+.active a:hover {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: #000;
+}
+
+.bottom_border {
+    border-bottom: 1px solid #888;
+}
+
+.hoverlight:hover {
+    background-color: #f8f8f8;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.fill{
+    width:100%;
+}
+
+.left {
+    text-align: left;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
