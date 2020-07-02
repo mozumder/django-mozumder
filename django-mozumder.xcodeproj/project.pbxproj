@@ -146,7 +146,6 @@
 		ECBCB16E24A9928D0097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
 		ECBCB17124A996A20097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
 		ECBCB17224A996DF0097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
-		ECBCB17524AA881F0097C2FA /* testarea */ = {isa = PBXFileReference; lastKnownFileType = folder; name = testarea; path = ../../Sites/testarea; sourceTree = "<group>"; };
 		ECBCB17624AAC3CA0097C2FA /* prepareoldapp.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = prepareoldapp.py; sourceTree = "<group>"; };
 		ECBCB17D24AACE290097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		ECBCB17E24AACE320097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
@@ -259,7 +258,6 @@
 		EC54499724935D54000BB8A2 = {
 			isa = PBXGroup;
 			children = (
-				ECBCB17524AA881F0097C2FA /* testarea */,
 				EC54499E24946640000BB8A2 /* mozumder */,
 				EC3010EE24A31FAB000E2C84 /* example */,
 				ECBCB0AC249818D40097C2FA /* MANIFEST.in */,
