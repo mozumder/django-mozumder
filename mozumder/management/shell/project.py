@@ -426,7 +426,7 @@ def process_args(args):
     venv_path = os.path.join(target_root,venv_name)
     venv_bin = os.path.join(venv_path, 'bin')
     python_bin = os.path.join(venv_path, 'bin', 'python')
-    develop_path = args.develop_path
+    develop_path = args.develop_path.replace(' ', '\ ')
 
     uwsgi_run_dir = args.uwsgi_run_dir
     uwsgi_log_dir = args.uwsgi_log_dir
@@ -562,6 +562,7 @@ def startproject(args):
 
         # Install django-mozumder into environment in develop mode if needed
         if develop_path:
+            print('Installing django-mozumder into development path')
             os.system(f'source {venv_bin}/activate;cd {develop_path};{python_bin} {develop_path}/setup.py develop')
        
 #        import pip._internal.main
@@ -583,8 +584,10 @@ def startproject(args):
         psql_command = f"CREATE EXTENSION pgcrypto;"
         command = f'{psql_base_command} -U {db_admin_username} {db_name} -c "{psql_command}"'
         os.system(command)
+        print('Migrating')
         subprocess.run(['manage.py', 'migrate'])
 
+    print('Collecting Static Files')
     subprocess.run(['manage.py', 'collectstatic', '--noinput'])
 
 def createuwsgi(args, use_secret_key=None):
