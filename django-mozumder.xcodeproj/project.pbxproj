@@ -152,7 +152,6 @@
 		ECBCB17E24AACE320097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		ECBCB18224ABD75B0097C2FA /* enableapp.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = enableapp.py; sourceTree = "<group>"; };
 		ECBCB18424AC37D20097C2FA /* readcsv.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = readcsv.py; sourceTree = "<group>"; };
-		ECBCB18824AD50920097C2FA /* home.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = home.html; sourceTree = "<group>"; };
 		ECBCB18924AD50A70097C2FA /* page.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = page.html; sourceTree = "<group>"; };
 		ECBCB18A24AD50EB0097C2FA /* base.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = base.html; sourceTree = "<group>"; };
 		ECBCB18B24AD51200097C2FA /* head.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = head.html; sourceTree = "<group>"; };
@@ -174,6 +173,8 @@
 		ECBCB19F24AD5A970097C2FA /* messages.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = messages.html; sourceTree = "<group>"; };
 		ECBCB1A024AD5B140097C2FA /* svg.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = svg.html; sourceTree = "<group>"; };
 		ECBCB1A224AD5F350097C2FA /* views.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "views.py-tpl"; sourceTree = "<group>"; };
+		ECBCB1A424AD8ACC0097C2FA /* models.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = models.html; sourceTree = "<group>"; };
+		ECBCB1A524AD8C9A0097C2FA /* home.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = home.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -505,6 +506,7 @@
 		ECBCB0E4249AD7F70097C2FA /* project_name */ = {
 			isa = PBXGroup;
 			children = (
+				ECBCB1A324AD89B40097C2FA /* template */,
 				ECBCB0E5249AD8110097C2FA /* __init__.py-tpl */,
 				ECBCB0E9249AD86C0097C2FA /* asgi.py-tpl */,
 				ECBCB0EA249AD8750097C2FA /* wsgi.py-tpl */,
@@ -751,7 +753,6 @@
 			isa = PBXGroup;
 			children = (
 				ECBCB18D24AD51560097C2FA /* css */,
-				ECBCB18824AD50920097C2FA /* home.html */,
 				ECBCB18924AD50A70097C2FA /* page.html */,
 				ECBCB18A24AD50EB0097C2FA /* base.html */,
 				ECBCB18B24AD51200097C2FA /* head.html */,
@@ -796,6 +797,15 @@
 			children = (
 			);
 			path = font;
+			sourceTree = "<group>";
+		};
+		ECBCB1A324AD89B40097C2FA /* template */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB1A424AD8ACC0097C2FA /* models.html */,
+				ECBCB1A524AD8C9A0097C2FA /* home.html */,
+			);
+			path = template;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
