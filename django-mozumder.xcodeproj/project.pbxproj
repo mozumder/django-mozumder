@@ -8,7 +8,7 @@
 
 /* Begin PBXFileReference section */
 		EC0DB82824ABBD030070DD80 /* activate_this.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = activate_this.py; sourceTree = "<group>"; };
-		EC23492424ADA74200537F78 /* testarea */ = {isa = PBXFileReference; lastKnownFileType = folder; name = testarea; path = ../../../Sites/testarea; sourceTree = "<group>"; };
+		EC23492524AF020200537F78 /* testarea */ = {isa = PBXFileReference; lastKnownFileType = folder; name = testarea; path = ../../Sites/testarea; sourceTree = "<group>"; };
 		EC3010F024A31FE9000E2C84 /* models.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = models.py; sourceTree = "<group>"; };
 		EC3010F124A3205C000E2C84 /* apps.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = apps.py; sourceTree = "<group>"; };
 		EC3010F224A3206A000E2C84 /* admin.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = admin.py; sourceTree = "<group>"; };
@@ -259,7 +259,7 @@
 		EC54499724935D54000BB8A2 = {
 			isa = PBXGroup;
 			children = (
-				EC23492424ADA74200537F78 /* testarea */,
+				EC23492524AF020200537F78 /* testarea */,
 				EC54499E24946640000BB8A2 /* mozumder */,
 				EC3010EE24A31FAB000E2C84 /* example */,
 				ECBCB0AC249818D40097C2FA /* MANIFEST.in */,
