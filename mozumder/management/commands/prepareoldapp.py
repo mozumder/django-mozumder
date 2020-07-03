@@ -36,9 +36,7 @@ class Command(BaseCommand):
         for root, dirs, files in os.walk(source_root):
             # Process files from source templates directory and install
             # them in the new project directory
-            sub_dir = root[source_root_length+1:]
-            if sub_dir == 'app_name':
-                sub_dir = app_name
+            sub_dir = root[source_root_length+1:].replace('app_name',app_name)
             target_path = os.path.join(target_root, sub_dir)
             for name in dirs:
                 if name == 'app_name':

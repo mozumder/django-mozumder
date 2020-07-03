@@ -56,10 +56,10 @@ class Command(BaseCommand):
 
         project_name = settings.PROJECT_NAME
         app_name = options['app_name']
-        verbose_name = options['verbose_name']
-        verbose_name_plural = options['verbose_name_plural']
         model_name = options['model_name']
         model_code_name = CamelCase(model_name).lower()
+        verbose_name = options['verbose_name'] if options['verbose_name'] else model_name
+        verbose_name_plural = options['verbose_name_plural'] if options['verbose_name_plural'] else verbose_name + 's'
         fields_list = options['field']
         model = f'class {model_name}(models.Model):\n'
         admin = ''
@@ -184,7 +184,7 @@ class Command(BaseCommand):
                     state = 'urlpatterns'
                 elif line.startswith("from django.urls import path"):
                     line += f"""from ..views import ({model_name}ListView, {model_name}DetailView,
-    search_{model_code_name}, {model_name}StubsView, {model_name}StubView)
+    search_{model_code_name})
 
 """
             elif state == 'urlpatterns':
@@ -194,8 +194,6 @@ class Command(BaseCommand):
                     # GET: Read One, DELETE: Delete One, POST: Copy, PUT: Update Fields, PATCH: Update Field
                     output += f"    path('{model_code_name}/<int:pk>', {model_name}DetailView.as_view(), name='{model_code_name}_detail'),\n"
                     output += f"    path('search/{model_code_name}', search_{model_code_name}, name='search_{model_code_name}'),\n"
-                    output += f"    path('stub/{model_code_name}', {model_name}StubsView.as_view(), name='{model_code_name}_stub'),\n"
-                    output += f"    path('stub/{model_code_name}/<int:pk>', {model_name}StubView.as_view(), name='{model_code_name}_stubs'),\n"
                     state = 'file'
             output += line
         f.close()
@@ -215,7 +213,7 @@ class Command(BaseCommand):
                     state = 'urlpatterns'
                 elif line.startswith("from django.urls import path"):
                     line += f"""from ...views import ({model_name}JSONListView, {model_name}JSONDetailView,
-    json_search_{model_code_name}, {model_name}JSONStubsView, {model_name}JSONStubView)
+    json_search_{model_code_name})
 
 """
             elif state == 'urlpatterns':
@@ -225,8 +223,6 @@ class Command(BaseCommand):
                     # GET: Read One, DELETE: Delete One, POST: Copy, PUT: Update Fields, PATCH: Update Field
                     output += f"    path('{model_code_name}/<int:pk>', {model_name}JSONDetailView.as_view(), name='json_{model_code_name}_detail'),\n"
                     output += f"    path('search/{model_code_name}', json_search_{model_code_name}, name='search_{model_code_name}'),\n"
-                    output += f"    path('stub/{model_code_name}', {model_name}JSONStubsView.as_view(), name='json_{model_code_name}_stub'),\n"
-                    output += f"    path('stub/{model_code_name}/<int:pk>', {model_name}JSONStubView.as_view(), name='json_{model_code_name}_stubs'),\n"
                     state = 'file'
             output += line
         f.close()
@@ -254,38 +250,18 @@ class Command(BaseCommand):
         output += f"""
 class {model_name}DetailView(DetailView):
     model = {model_name}
-    template = 'detail.html'
 
 class {model_name}ListView(ListView):
     model = {model_name}
-    template = 'list.html'
-
-class {model_name}StubView(DetailView):
-    model = {model_name}
-    template = 'stub.html'
-
-class {model_name}StubsView(ListView):
-    model = {model_name}
-    template = 'stubs.html'
 
 def search_{model_code_name}():
     pass
 
 class {model_name}JSONDetailView(DetailView):
     model = {model_name}
-    template = 'json_detail.html'
 
 class {model_name}JSONListView(ListView):
     model = {model_name}
-    template = 'json_list.html'
-
-class {model_name}JSONStubView(DetailView):
-    model = {model_name}
-    template = 'json_stub.html'
-
-class {model_name}JSONStubsView(ListView):
-    model = {model_name}
-    template = 'json_stubs.html'
 
 def json_search_{model_code_name}():
     pass
@@ -298,7 +274,7 @@ def json_search_{model_code_name}():
         # Write Templates
         
         #Add model to Homepage
-        models_html_file = os.path.join(os.getcwd(),project_name,'template','models.html')
+        models_html_file = os.path.join(os.getcwd(),project_name,'templates','models.html')
 
         f = open(models_html_file, "r")
         output = ''
@@ -312,8 +288,53 @@ def json_search_{model_code_name}():
         f = open(models_html_file, "w")
         f.write(output)
         f.close()
+        
+        # Model List Block
+        header_row = ''
+        row = ''
+        for field in list_display:
+            header_row += f'<th>{field}</th>'
+            row += f'<td>{{{{instance.{field}}}}}</td>'
+        models_list_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_list_block.html')
+        f = open(models_list_block_file, "w")
+        f.write(f"""<table>
+<tr>{header_row}</tr>
+{{% for instance in object_list %}}
+<tr>{ row }</tr>
+{{% endfor %}}
+</table>""")
+        f.close()
+
+        # Model List Page
+        models_list_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_list.html')
+        f = open(models_list_page_file, "w")
+        f.write(f"""{{% extends "base.html" %}}
+{{% block head_title %}}{verbose_name_plural}{{% endblock %}}
+{{% block content %}}
+<H1>{ verbose_name_plural }</H1>
+{{% include "{app_name}/{model_code_name}_list_block.html" %}}
+{{% endblock content %}}
+""")
+        f.close()
+
+        # Model Detail Block
+        models_detail_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_detail_block.html')
+        f = open(models_detail_block_file, "w")
+        f.write(f'<div>Model Detail</div>')
+        f.close()
+
+        # Model Detail Page
+        models_detail_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_detail.html')
+        f = open(models_detail_page_file, "w")
+        f.write(f"""{{% extends "base.html" %}}
+{{% block head_title %}}{verbose_name}{{% endblock %}}
+{{% block content %}}
+<H1>{ verbose_name }</H1>
+{{% include "{app_name}/{model_code_name}_detail_block.html" %}}
+{{% endblock content %}}
+""")
+        f.close()
 
         # Write views.py file
 
         # Write forms.py file
-

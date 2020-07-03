@@ -178,6 +178,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		EC23492724AF0C7000537F78 /* templates */ = {
+			isa = PBXGroup;
+			children = (
+				EC23492824AF0C7B00537F78 /* app_name */,
+			);
+			path = templates;
+			sourceTree = "<group>";
+		};
+		EC23492824AF0C7B00537F78 /* app_name */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = app_name;
+			sourceTree = "<group>";
+		};
 		EC3010EE24A31FAB000E2C84 /* example */ = {
 			isa = PBXGroup;
 			children = (
@@ -467,7 +482,7 @@
 		ECBCB0E1249AD7A40097C2FA /* project_template */ = {
 			isa = PBXGroup;
 			children = (
-				ECBCB18624AD506A0097C2FA /* template */,
+				ECBCB18624AD506A0097C2FA /* templates */,
 				ECBCB117249EE4B90097C2FA /* static */,
 				ECBCB0E4249AD7F70097C2FA /* project_name */,
 				ECBCB0E8249AD84E0097C2FA /* manage.py-tpl */,
@@ -483,7 +498,7 @@
 			isa = PBXGroup;
 			children = (
 				ECBCB16F24A996740097C2FA /* urls */,
-				ECBCB16924A992570097C2FA /* template */,
+				ECBCB16924A992570097C2FA /* templates */,
 				ECBCB16224A990BA0097C2FA /* views */,
 				ECBCB16124A990B50097C2FA /* admin */,
 				ECBCB16024A990AF0097C2FA /* models */,
@@ -506,7 +521,7 @@
 		ECBCB0E4249AD7F70097C2FA /* project_name */ = {
 			isa = PBXGroup;
 			children = (
-				ECBCB1A324AD89B40097C2FA /* template */,
+				ECBCB1A324AD89B40097C2FA /* templates */,
 				ECBCB0E5249AD8110097C2FA /* __init__.py-tpl */,
 				ECBCB0E9249AD86C0097C2FA /* asgi.py-tpl */,
 				ECBCB0EA249AD8750097C2FA /* wsgi.py-tpl */,
@@ -665,14 +680,14 @@
 			path = views;
 			sourceTree = "<group>";
 		};
-		ECBCB16924A992570097C2FA /* template */ = {
+		ECBCB16924A992570097C2FA /* templates */ = {
 			isa = PBXGroup;
 			children = (
 				ECBCB16D24A992830097C2FA /* pages */,
 				ECBCB16B24A9926C0097C2FA /* blocks */,
 				ECBCB16A24A992690097C2FA /* __init__.py-tpl */,
 			);
-			path = template;
+			path = templates;
 			sourceTree = "<group>";
 		};
 		ECBCB16B24A9926C0097C2FA /* blocks */ = {
@@ -711,7 +726,7 @@
 		ECBCB17724AACB580097C2FA /* old_app_template */ = {
 			isa = PBXGroup;
 			children = (
-				ECBCB17F24AAD68C0097C2FA /* template */,
+				EC23492724AF0C7000537F78 /* templates */,
 				ECBCB17B24AACE130097C2FA /* urls */,
 			);
 			path = old_app_template;
@@ -734,22 +749,7 @@
 			path = api;
 			sourceTree = "<group>";
 		};
-		ECBCB17F24AAD68C0097C2FA /* template */ = {
-			isa = PBXGroup;
-			children = (
-				ECBCB18024AAD6B30097C2FA /* app_name */,
-			);
-			path = template;
-			sourceTree = "<group>";
-		};
-		ECBCB18024AAD6B30097C2FA /* app_name */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = app_name;
-			sourceTree = "<group>";
-		};
-		ECBCB18624AD506A0097C2FA /* template */ = {
+		ECBCB18624AD506A0097C2FA /* templates */ = {
 			isa = PBXGroup;
 			children = (
 				ECBCB18D24AD51560097C2FA /* css */,
@@ -762,7 +762,7 @@
 				ECBCB19F24AD5A970097C2FA /* messages.html */,
 				ECBCB1A024AD5B140097C2FA /* svg.html */,
 			);
-			path = template;
+			path = templates;
 			sourceTree = "<group>";
 		};
 		ECBCB18D24AD51560097C2FA /* css */ = {
@@ -799,13 +799,13 @@
 			path = font;
 			sourceTree = "<group>";
 		};
-		ECBCB1A324AD89B40097C2FA /* template */ = {
+		ECBCB1A324AD89B40097C2FA /* templates */ = {
 			isa = PBXGroup;
 			children = (
 				ECBCB1A424AD8ACC0097C2FA /* models.html */,
 				ECBCB1A524AD8C9A0097C2FA /* home.html */,
 			);
-			path = template;
+			path = templates;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
