@@ -178,21 +178,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		EC23492724AF0C7000537F78 /* templates */ = {
-			isa = PBXGroup;
-			children = (
-				EC23492824AF0C7B00537F78 /* app_name */,
-			);
-			path = templates;
-			sourceTree = "<group>";
-		};
-		EC23492824AF0C7B00537F78 /* app_name */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = app_name;
-			sourceTree = "<group>";
-		};
 		EC3010EE24A31FAB000E2C84 /* example */ = {
 			isa = PBXGroup;
 			children = (
@@ -726,7 +711,7 @@
 		ECBCB17724AACB580097C2FA /* old_app_template */ = {
 			isa = PBXGroup;
 			children = (
-				EC23492724AF0C7000537F78 /* templates */,
+				ECBCB1A824AFC4DD0097C2FA /* templates */,
 				ECBCB17B24AACE130097C2FA /* urls */,
 			);
 			path = old_app_template;
@@ -806,6 +791,21 @@
 				ECBCB1A524AD8C9A0097C2FA /* home.html */,
 			);
 			path = templates;
+			sourceTree = "<group>";
+		};
+		ECBCB1A824AFC4DD0097C2FA /* templates */ = {
+			isa = PBXGroup;
+			children = (
+				ECBCB1A924AFC4F30097C2FA /* app_name */,
+			);
+			path = templates;
+			sourceTree = "<group>";
+		};
+		ECBCB1A924AFC4F30097C2FA /* app_name */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = app_name;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

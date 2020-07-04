@@ -36,6 +36,41 @@ class Command(BaseCommand):
             help="Model's plural verbose name",
             )
         parser.add_argument(
+            '--list_display',
+            action='store',
+            nargs='+',
+            default = [],
+            help="Fields to be shown in list display. You can also add fields by appending an asterisk - * - to the field name.",
+            )
+        parser.add_argument(
+            '--detail_display',
+            action='store',
+            nargs='+',
+            default = [],
+            help="Fields to be shown in detail display. You can also add fields by prepending an asterisk to the field name.",
+            )
+        parser.add_argument(
+            '--list_display_links',
+            action='store',
+            nargs='+',
+            default = [],
+            help="List display fields that link to model. You can also add fields by appending two asterisks to the field name.",
+            )
+        parser.add_argument(
+            '--readonly_fields',
+            action='store',
+            nargs='+',
+            default = [],
+            help="Fields that are read only",
+            )
+        parser.add_argument(
+            '--search_fields',
+            action='store',
+            nargs='+',
+            default = [],
+            help="Search fields for admin",
+            )
+        parser.add_argument(
             'app_name',
             action='store',
             help='App name',
@@ -63,20 +98,24 @@ class Command(BaseCommand):
         fields_list = options['field']
         model = f'class {model_name}(models.Model):\n'
         admin = ''
-        list_display = ['id']
-        list_display_links = ['id']
-        readonly_fields= []
-        search_fields = []
+        list_display_links = options['list_display_links']
+        list_display = options['list_display'] if options['list_display'] else options['list_display_links']
+        readonly_fields = options['readonly_fields']
+        search_fields = options['search_fields']
+        detail_display = options['detail_display']
 
         for field in fields_list:
             field_name, field_type, *field_params = field.split(":")
+            if field_name.startswith('*'):
+                field_name = field_name[1:]
+                detail_display.append(field_name.strip('*'))
             if field_name.endswith('**'):
                 field_name = field_name[:-2]
-                list_display.append(field_name)
-                list_display_links.append(field_name)
+                list_display.append(field_name.strip('*'))
+                list_display_links.append(field_name.strip('*'))
             elif field_name.endswith('*'):
                 field_name = field_name[:-1]
-                list_display.append(field_name)
+                list_display.append(field_name.strip('*'))
             if field_type == 'ForeignKey':
                 relation = field_params[0]
                 field_params[0] = f"'{relation}'"
@@ -183,16 +222,18 @@ class Command(BaseCommand):
                 if line.startswith('urlpatterns = [\n'):
                     state = 'urlpatterns'
                 elif line.startswith("from django.urls import path"):
-                    line += f"""from ..views import ({model_name}ListView, {model_name}DetailView,
-    search_{model_code_name})
+                    line += f"""from ..views import *
 
 """
             elif state == 'urlpatterns':
                 if line == ']\n':
                     # GET: Read All, DELETE: Delete All, POST: Add, PATCH: Update All Field
                     output += f"    path('{model_code_name}/', {model_name}ListView.as_view(), name='{model_code_name}_list'),\n"
-                    # GET: Read One, DELETE: Delete One, POST: Copy, PUT: Update Fields, PATCH: Update Field
+                    output += f"    path('{model_code_name}/add', {model_name}AddView.as_view(), name='{model_code_name}_add'),\n"
                     output += f"    path('{model_code_name}/<int:pk>', {model_name}DetailView.as_view(), name='{model_code_name}_detail'),\n"
+                    output += f"    path('{model_code_name}/<int:pk>/update', {model_name}UpdateView.as_view(), name='{model_code_name}_update'),\n"
+                    output += f"    path('{model_code_name}/<int:pk>/copy', {model_name}CopyView.as_view(), name='{model_code_name}_copy'),\n"
+                    output += f"    path('{model_code_name}/<int:pk>/delete', {model_name}DeleteView.as_view(), name='{model_code_name}_delete'),\n"
                     output += f"    path('search/{model_code_name}', search_{model_code_name}, name='search_{model_code_name}'),\n"
                     state = 'file'
             output += line
@@ -212,9 +253,8 @@ class Command(BaseCommand):
                 if line.startswith('urlpatterns = [\n'):
                     state = 'urlpatterns'
                 elif line.startswith("from django.urls import path"):
-                    line += f"""from ...views import ({model_name}JSONListView, {model_name}JSONDetailView,
-    json_search_{model_code_name})
-
+                    line += f"""from ...views import *
+                    
 """
             elif state == 'urlpatterns':
                 if line == ']\n':
@@ -254,6 +294,18 @@ class {model_name}DetailView(DetailView):
 class {model_name}ListView(ListView):
     model = {model_name}
 
+class {model_name}AddView(ListView):
+    model = {model_name}
+
+class {model_name}CopyView(DetailView):
+    model = {model_name}
+
+class {model_name}UpdateView(DetailView):
+    model = {model_name}
+
+class {model_name}DeleteView(DetailView):
+    model = {model_name}
+
 def search_{model_code_name}():
     pass
 
@@ -271,30 +323,15 @@ def json_search_{model_code_name}():
         f.write(output)
         f.close()
 
-        # Write Templates
-        
-        #Add model to Homepage
-        models_html_file = os.path.join(os.getcwd(),project_name,'templates','models.html')
-
-        f = open(models_html_file, "r")
-        output = ''
-        for line in f.readlines():
-            if line.startswith("</table>"):
-                imported = True
-                output += f"""<tr><td>{model_name}</td><td><a href="{{% url '{model_code_name}_list' %}}">List</a></td></tr>\n"""
-            output += line
-        f.close()
-        
-        f = open(models_html_file, "w")
-        f.write(output)
-        f.close()
-        
         # Model List Block
         header_row = ''
         row = ''
         for field in list_display:
             header_row += f'<th>{field}</th>'
-            row += f'<td>{{{{instance.{field}}}}}</td>'
+            if field in list_display_links:
+                row += f"""<td><a href="{{% url '{model_code_name}_update' instance.id %}}">{{{{instance.{field}}}}}</a></td>"""
+            else:
+                row += f'<td>{{{{instance.{field}}}}}</td>'
         models_list_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_list_block.html')
         f = open(models_list_block_file, "w")
         f.write(f"""<table>
@@ -317,10 +354,14 @@ def json_search_{model_code_name}():
 """)
         f.close()
 
+        field_ul = ''
+        for field in detail_display:
+            field_ul += f"<li>{{{{{model_code_name}.{field}}}}}</li>"
+
         # Model Detail Block
         models_detail_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_detail_block.html')
         f = open(models_detail_block_file, "w")
-        f.write(f'<div>Model Detail</div>')
+        f.write(f'<div>Model Detail</div>\n<ul>{field_ul}</ul>')
         f.close()
 
         # Model Detail Page
@@ -335,6 +376,12 @@ def json_search_{model_code_name}():
 """)
         f.close()
 
-        # Write views.py file
+
+        # Add model to app's models list HTML
+        models_ul = f"""<li><a href="{{% url '{model_code_name}_list' %}}">{verbose_name}</a> <a href="{{% url '{model_code_name}_add' %}}">Add</a></li>"""
+        models_list_html_file = os.path.join(os.getcwd(),app_name,'templates',app_name, 'models.html')
+        f = open(models_list_html_file, "a")
+        f.write(models_ul)
+        f.close()
 
         # Write forms.py file

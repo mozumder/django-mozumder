@@ -529,7 +529,6 @@ def startproject(args):
             else:
                 target_filename = os.path.join(target_path, name)
                 copyfile(source_filename, target_filename)
-            
 
     if args.create_venv == True:
         
