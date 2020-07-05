@@ -99,11 +99,10 @@ class Command(BaseCommand):
         model = f'class {model_name}(models.Model):\n'
         admin = ''
         list_display_links = options['list_display_links']
-        list_display = options['list_display'] if options['list_display'] else options['list_display_links']
+        list_display = options['list_display'] if options['list_display'] else options['list_display_links'].copy()
         readonly_fields = options['readonly_fields']
         search_fields = options['search_fields']
         detail_display = options['detail_display']
-
         for field in fields_list:
             field_name, field_type, *field_params = field.split(":")
             if field_name.startswith('*'):
@@ -116,6 +115,7 @@ class Command(BaseCommand):
             elif field_name.endswith('*'):
                 field_name = field_name[:-1]
                 list_display.append(field_name.strip('*'))
+                print(f'3 {list_display=}')
             if field_type == 'ForeignKey':
                 relation = field_params[0]
                 field_params[0] = f"'{relation}'"
@@ -140,7 +140,6 @@ class Command(BaseCommand):
             field_line = f'    {field_name}=models.{field_type}({field_args})\n'
             model += field_line
         model += '\n'
-
         # Write models.py file
         models_file = os.path.join(os.getcwd(),app_name,'models.py')
         f = open(models_file, "a")

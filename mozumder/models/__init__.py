@@ -6,6 +6,8 @@ from .i18n import Language, LanguageLang, RetiredLanguage, \
     Subdivision, SubdivisionLang, SubdivisionType, SubdivisionTypeLang, Lang, \
     LangLang, Locale, LocaleLang
 
+from .development import *
+
 from django.utils.text import slugify as django_slugify
 
 def slugify(text):

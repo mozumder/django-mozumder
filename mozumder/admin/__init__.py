@@ -6,3 +6,4 @@ from .i18n import LanguageAdmin, LanguageLangAdmin, RetiredLanguageAdmin, \
     MacroLanguageMappingAdmin, ScriptAdmin, ScriptLangAdmin, CountryAdmin, \
     CountryLangAdmin, SubdivisionAdmin, SubdivisionLangAdmin, LangAdmin, \
     LangLangAdmin, LocaleAdmin, LocaleLangAdmin
+from .development import *
