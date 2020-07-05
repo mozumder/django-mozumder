@@ -103,8 +103,10 @@ class Command(BaseCommand):
         readonly_fields = options['readonly_fields']
         search_fields = options['search_fields']
         detail_display = options['detail_display']
+        fields = []
         for field in fields_list:
             field_name, field_type, *field_params = field.split(":")
+            fields.append(field_name.strip('*'))
             if field_name.startswith('*'):
                 field_name = field_name[1:]
                 detail_display.append(field_name.strip('*'))
@@ -115,7 +117,6 @@ class Command(BaseCommand):
             elif field_name.endswith('*'):
                 field_name = field_name[:-1]
                 list_display.append(field_name.strip('*'))
-                print(f'3 {list_display=}')
             if field_type == 'ForeignKey':
                 relation = field_params[0]
                 field_params[0] = f"'{relation}'"
@@ -139,7 +140,8 @@ class Command(BaseCommand):
             field_args = ", ".join(field_params)
             field_line = f'    {field_name}=models.{field_type}({field_args})\n'
             model += field_line
-        model += '\n'
+        model += f"""    def get_absolute_url(self):
+        return reverse('{model_code_name}_detail', kwargs={{'id': self.id}})\n"""
         # Write models.py file
         models_file = os.path.join(os.getcwd(),app_name,'models.py')
         f = open(models_file, "a")
@@ -165,7 +167,9 @@ class Command(BaseCommand):
         file = ''
         for line in f.readlines():
             if line.startswith("# Register your models here."):
-                file += f'from .models import {model_name}\n'
+                file += f"""from django.urls import reverse
+from .models import {model_name}
+"""
             file += line
         file += admin
         
@@ -277,12 +281,15 @@ class Command(BaseCommand):
         state = 'file'
         imported = False
         for line in f.readlines():
-            if line.startswith("from django.views.generic import ListView, DetailView, View"):
+            if line.startswith("from django.views.generic import ListView, DetailView, CreateView, FormView, UpdateView, DeleteView"):
                 imported = True
             elif line.startswith('# Create your views here.'):
                 output += f"from .models import {model_name}\n"
                 if imported == False:
-                    output += f"from django.views.generic import ListView, DetailView, View\n"
+                    output += f"""from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, FormView, \
+    UpdateView, DeleteView
+"""
                     imported = True
             output += line
 
@@ -293,17 +300,25 @@ class {model_name}DetailView(DetailView):
 class {model_name}ListView(ListView):
     model = {model_name}
 
-class {model_name}AddView(ListView):
+class {model_name}AddView(CreateView):
     model = {model_name}
+    fields = {fields}
+    template_name_suffix = '_create_form'
 
-class {model_name}CopyView(DetailView):
+class {model_name}CopyView(CreateView):
     model = {model_name}
+    fields = {fields}
+    template_name_suffix = '_copy_form'
 
-class {model_name}UpdateView(DetailView):
+class {model_name}UpdateView(UpdateView):
     model = {model_name}
+    fields = {fields}
+    template_name_suffix = '_update_form'
 
-class {model_name}DeleteView(DetailView):
+class {model_name}DeleteView(DeleteView):
     model = {model_name}
+    template_name_suffix = '_delete_form'
+    success_url = reverse_lazy('{model_code_name}_list')
 
 def search_{model_code_name}():
     pass
@@ -328,9 +343,11 @@ def json_search_{model_code_name}():
         for field in list_display:
             header_row += f'<th>{field}</th>'
             if field in list_display_links:
-                row += f"""<td><a href="{{% url '{model_code_name}_update' instance.id %}}">{{{{instance.{field}}}}}</a></td>"""
+                row += f"""<td>{{{{instance.{field}}}}}</td>"""
             else:
-                row += f'<td>{{{{instance.{field}}}}}</td>'
+                row += f"""<td><a href="{{% url '{model_code_name}_detail' instance.id %}}">{{{{instance.{field}}}}}</a></td>"""
+        header_row += '<th></th><th></th><th></th>'
+        row += f"""<td><a href="{{% url '{model_code_name}_copy' instance.id %}}">Copy</a></td><td><a href="{{% url '{model_code_name}_update' instance.id %}}">Edit</a></td><td><a href="{{% url '{model_code_name}_delete' instance.id %}}">Delete</a></td>"""
         models_list_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_list_block.html')
         f = open(models_list_block_file, "w")
         f.write(f"""<table>
@@ -353,11 +370,11 @@ def json_search_{model_code_name}():
 """)
         f.close()
 
+        # Model Detail Block
         field_ul = ''
         for field in detail_display:
             field_ul += f"<li>{{{{{model_code_name}.{field}}}}}</li>"
 
-        # Model Detail Block
         models_detail_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_detail_block.html')
         f = open(models_detail_block_file, "w")
         f.write(f'<div>Model Detail</div>\n<ul>{field_ul}</ul>')

@@ -50,3 +50,14 @@ class TrackedField(models.Model):
     related_query_name = models.CharField(max_length=80, null=True, blank=True)
     # limit_choices_to
 
+    #Field: ManyToManyField
+    symmetrical = models.BooleanField(null=True, blank=True)
+    through = models.CharField(max_length=80, null=True, blank=True)
+    through_fields_source = models.CharField(max_length=80, null=True, blank=True)
+    through_fields_target = models.CharField(max_length=80, null=True, blank=True)
+    db_table = models.CharField(max_length=80, null=True, blank=True)
+    db_constraint = models.BooleanField(null=True, blank=True)
+    swappable = models.BooleanField(null=True, blank=True)
+
+    #Field: OneToOneField
+    parent_link = models.BooleanField(null=True, blank=True)
