@@ -71,6 +71,13 @@ class Command(BaseCommand):
             help="Search fields for admin",
             )
         parser.add_argument(
+            '--form_fields',
+            action='store',
+            nargs='+',
+            default = [],
+            help="Fields used in form entry",
+            )
+        parser.add_argument(
             'app_name',
             action='store',
             help='App name',
@@ -96,27 +103,33 @@ class Command(BaseCommand):
         verbose_name = options['verbose_name'] if options['verbose_name'] else model_name
         verbose_name_plural = options['verbose_name_plural'] if options['verbose_name_plural'] else verbose_name + 's'
         fields_list = options['field']
-        model = f'class {model_name}(models.Model):\n'
-        admin = ''
         list_display_links = options['list_display_links']
         list_display = options['list_display'] if options['list_display'] else options['list_display_links'].copy()
         readonly_fields = options['readonly_fields']
         search_fields = options['search_fields']
         detail_display = options['detail_display']
+        form_fields = options['form_fields']
+
+        # Build models lists
+        model = f'class {model_name}(models.Model):\n'
+        admin = ''
         fields = []
         for field in fields_list:
             field_name, field_type, *field_params = field.split(":")
-            fields.append(field_name.strip('*'))
+            fields.append(field_name.strip('*').strip('_'))
             if field_name.startswith('*'):
                 field_name = field_name[1:]
-                detail_display.append(field_name.strip('*'))
+                detail_display.append(field_name.strip('*').strip('_'))
+            if field_name.startswith('_'):
+                field_name = field_name[1:]
+                form_fields.append(field_name.strip('*').strip('_'))
             if field_name.endswith('**'):
                 field_name = field_name[:-2]
                 list_display.append(field_name.strip('*'))
-                list_display_links.append(field_name.strip('*'))
+                list_display_links.append(field_name.strip('*').strip('_'))
             elif field_name.endswith('*'):
                 field_name = field_name[:-1]
-                list_display.append(field_name.strip('*'))
+                list_display.append(field_name.strip('*').strip('_'))
             if field_type == 'ForeignKey':
                 relation = field_params[0]
                 field_params[0] = f"'{relation}'"
@@ -141,11 +154,25 @@ class Command(BaseCommand):
             field_line = f'    {field_name}=models.{field_type}({field_args})\n'
             model += field_line
         model += f"""    def get_absolute_url(self):
-        return reverse('{model_code_name}_detail', kwargs={{'id': self.id}})\n"""
-        # Write models.py file
+        return reverse('{model_code_name}_detail', kwargs={{'pk': self.id}})\n"""
+
+        # Read & modify models.py file
         models_file = os.path.join(os.getcwd(),app_name,'models.py')
-        f = open(models_file, "a")
-        f.write(model)
+        f = open(models_file, "r")
+        output = ''
+        has_reverse = False
+        for line in f.readlines():
+            if line.startswith('# Create your models here.'):
+                if has_reverse == False:
+                    output += f"from django.shortcuts import reverse\n"
+            elif line.startswith('from django.shortcuts import reverse'):
+                has_reverse = True
+            output += line
+        output += model
+        f.close()
+        # Write models.py file
+        f = open(models_file, "w")
+        f.write(output)
         f.close()
 
         # Create admin data
@@ -302,17 +329,17 @@ class {model_name}ListView(ListView):
 
 class {model_name}AddView(CreateView):
     model = {model_name}
-    fields = {fields}
+    fields = {form_fields}
     template_name_suffix = '_create_form'
 
-class {model_name}CopyView(CreateView):
+class {model_name}CopyView(UpdateView):
     model = {model_name}
-    fields = {fields}
+    fields = {form_fields}
     template_name_suffix = '_copy_form'
 
 class {model_name}UpdateView(UpdateView):
     model = {model_name}
-    fields = {fields}
+    fields = {form_fields}
     template_name_suffix = '_update_form'
 
 class {model_name}DeleteView(DeleteView):
@@ -401,3 +428,99 @@ def json_search_{model_code_name}():
         f.close()
 
         # Write forms.py file
+
+
+        # Create Form Block
+        create_form_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_create_form_block.html')
+        f = open(create_form_block_file, "w")
+        f.write(f"""<div>Model Add Form</div>
+<form action="{{% url '{model_code_name}_add' %}}" method="post">
+    {{% csrf_token %}}
+    {{{{ form }}}}
+    <input type="submit" value="Submit">
+</form>""")
+        f.close()
+
+        # Create Form Page
+        create_form_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_create_form.html')
+        f = open(create_form_page_file, "w")
+        f.write(f"""{{% extends "base.html" %}}
+{{% block head_title %}}{verbose_name}{{% endblock %}}
+{{% block content %}}
+<H1>{ verbose_name }</H1>
+{{% include "{app_name}/{model_code_name}_create_form_block.html" %}}
+{{% endblock content %}}
+""")
+        f.close()
+
+
+        # Update Form Block
+        update_form_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_update_form_block.html')
+        f = open(update_form_block_file, "w")
+        f.write(f"""<div>Model Update Form</div>
+<form action="{{% url '{model_code_name}_update' {model_code_name}.id %}}" method="post">
+    {{% csrf_token %}}
+    {{{{ form }}}}
+    <input type="submit" value="Submit">
+</form>""")
+        f.close()
+
+        # Update Form Page
+        update_form_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_update_form.html')
+        f = open(update_form_page_file, "w")
+        f.write(f"""{{% extends "base.html" %}}
+{{% block head_title %}}{verbose_name}{{% endblock %}}
+{{% block content %}}
+<H1>{ verbose_name }</H1>
+{{% include "{app_name}/{model_code_name}_update_form_block.html" %}}
+{{% endblock content %}}
+""")
+        f.close()
+
+
+        # Copy Form Block
+        copy_form_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_copy_form_block.html')
+        f = open(copy_form_block_file, "w")
+        f.write(f"""<div>Model Copy Form</div>
+<form action="{{% url '{model_code_name}_copy' {model_code_name}.id %}}" method="post">
+    {{% csrf_token %}}
+    {{{{ form }}}}
+    <input type="submit" value="Submit">
+</form>""")
+        f.close()
+
+        # Copy Form Page
+        copy_form_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_copy_form.html')
+        f = open(copy_form_page_file, "w")
+        f.write(f"""{{% extends "base.html" %}}
+{{% block head_title %}}{verbose_name}{{% endblock %}}
+{{% block content %}}
+<H1>{ verbose_name }</H1>
+{{% include "{app_name}/{model_code_name}_copy_form_block.html" %}}
+{{% endblock content %}}
+""")
+        f.close()
+
+
+        # Delete Form Block
+        delete_form_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_delete_form_block.html')
+        f = open(delete_form_block_file, "w")
+        f.write(f"""<div>Model Delete Form</div>
+<form action="{{% url '{model_code_name}_delete' {model_code_name}.id %}}" method="post">
+    {{% csrf_token %}}
+    {{{{ form }}}}
+    <input type="submit" value="Submit">
+</form>""")
+        f.close()
+
+        # Delete Form Page
+        delete_form_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_delete_form.html')
+        f = open(delete_form_page_file, "w")
+        f.write(f"""{{% extends "base.html" %}}
+{{% block head_title %}}{verbose_name}{{% endblock %}}
+{{% block content %}}
+<H1>{ verbose_name }</H1>
+{{% include "{app_name}/{model_code_name}_delete_form_block.html" %}}
+{{% endblock content %}}
+""")
+        f.close()
