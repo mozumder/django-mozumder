@@ -75,6 +75,7 @@
 		EC6FB42524B14DF00042396A /* development.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = development.py; sourceTree = "<group>"; };
 		EC6FB42624B187990042396A /* 0001_initial.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = 0001_initial.py; sourceTree = "<group>"; };
 		EC6FB42824B3D0A90042396A /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		EC6FB42A24B694510042396A /* currency.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = currency.py; sourceTree = "<group>"; };
 		ECBCB0A824980A6E0097C2FA /* README.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.rst; sourceTree = "<group>"; };
 		ECBCB0A92498175D0097C2FA /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		ECBCB0AA249817C90097C2FA /* setup.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = setup.cfg; sourceTree = "<group>"; };
@@ -633,6 +634,7 @@
 				ECBCB14C24A594460097C2FA /* languages.py */,
 				ECBCB14D24A5944F0097C2FA /* locale.py */,
 				ECBCB14E24A594570097C2FA /* scripts.py */,
+				EC6FB42A24B694510042396A /* currency.py */,
 			);
 			path = i18n;
 			sourceTree = "<group>";
