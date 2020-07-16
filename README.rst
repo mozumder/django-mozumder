@@ -55,62 +55,103 @@ Requirements: Have Python 3.8, Postgres, and Redis installed.
 Tutorial
 ========
 
-Let's start with a Django fashion app that includes the following models:
+Let's start a new project with the ``mozumder-admin`` command:
+
 
 ::
 
-    class Collection(models.Model):
-        cover_photo = models.ForeignKey('Photo', related_name='cover_photo', on_delete=models.CASCADE)
-        social_photo = models.ForeignKey('Photo', related_name='social_photo', on_delete=models.CASCADE)
-        title = models.CharField(max_length=255)
-        author = models.ForeignKey('Person', on_delete=models.CASCADE)
-        description = models.TextField()
-        album = models.ForeignKey('Album', on_delete=models.CASCADE)
-        season = models.ForeignKey('Season', on_delete=models.CASCADE)
-        rating = models.SmallIntegerField(default=0)
-        date_created = models.DateTimeField(auto_now_add=True)
-        date_published = models.DateTimeField(null=True, blank=True,db_index=True,)
-        date_modified = models.DateTimeField(auto_now=True)
-        date_expired = models.DateTimeField(null=True, blank=True,db_index=True,)
-        date_deleted = models.DateTimeField(null=True, blank=True,db_index=True,)
+    mozumder-admin startproject \
+        --db_url postgresql://exampleuser:examplepw@localhost/example \
+        --db_admin_url postgresql://adminuser:adminpw@localhost/example \
+        --domainname example.com \
+        --hostname www.example.com \
+        --create_db --create_venv example
 
-    class Person(models.Model):
-        first_name = models.CharField(max_length=50)
-        last_name = models.CharField(max_length=50)
+This creates a project directory with everything needed to deploy the project, including a full Python virtualenv.
 
-    class Brand(models.Model):
-        name = models.CharField(max_length=50)
+Let's go into it and source the virtualenve:
 
-    class Season(models.Model):
-        name = models.CharField(max_length=50)
+::
 
-    class Album(models.Model):
-        looks = models.ManyToManyField('Look')
+    cd example
+    source venv.example/bin/activate
 
-    class Look(models.Model):
-        view = models.OneToManyField('View')
-        name = models.CharField(max_length=50)
-        rating = models.SmallIntegerField(default=0)
-        
-    class View(models.Model):
-        photo = models.ForeignKey('Photo', on_delete=models.CASCADE)
-        type = models.ForeignKey('ViewTypes', on_delete=models.CASCADE)
+And start an app for the project using the traditional Django startapp command:
 
-    class ViewTypes(models.Model):
-        name = models.CharField(max_length=50)
-        code = models.CharField(max_length=2)
+::
 
-    class Photo(models.Model):
-        original = models.ForeignKey('Photo', related_name='original_file', on_delete=models.CASCADE)
-        small = models.ForeignKey('Photo', related_name='small_file', on_delete=models.CASCADE)
-        medium = models.ForeignKey('Photo', related_name='medium_file', on_delete=models.CASCADE)
-        large = models.ForeignKey('Photo', related_name='large_file', on_delete=models.CASCADE)
-        thumbnail = models.ForeignKey('Photo', related_name='thumbnail_file', on_delete=models.CASCADE)
+    ./manage.py startapp old_fashion
 
-    class Image(models.Model):
-        width = models.PositiveIntegerField()
-        height = models.PositiveIntegerField()
-        file = models.ImageField()
+We have to update our app project directory with some new files and directories to work with django-mozumder
 
+::
 
-.. tutorial currently under development
+    ./manage.py prepareoldapp old_fashion
+
+And now, we get to the meat of our app by using the ``addmodel`` command to create our database models. Each model takes a lis of field arguments, with :
+
+::
+
+    ./manage.py addmodel --list_display id --old old_fashion Collection  \
+        *_cover_photo:ForeignKey:Photo:CASCADE:related_name=cover_photo \
+        *_social_photo:ForeignKey:Photo:CASCADE:related_name=social_photo \
+        *_title*:CharField:max_length=255 \
+        *_author*:ForeignKey:Person:CASCADE \
+        *_description:TextField \
+        *_album:ForeignKey:Album:CASCADE \
+        *_season*:ForeignKey:Season:CASCADE \
+        *_rating*:SmallIntegerField:default=0 \
+        *date_created:DateTimeField:auto_now_add=True \
+        *_date_published:DateTimeField:null=True:blank=True:db_index=True \
+        *date_modified:DateTimeField:auto_now=True \
+        *_date_expired:DateTimeField:null=True:blank=True:db_index=True \
+        *_date_deleted:DateTimeField:null=True:blank=True:db_index=True
+
+    ./manage.py addmodel --detail_display id --old old_fashion Person  \
+        *_first_name**:CharField:max_length=50 \
+        *_last_name*:CharField:max_length=50
+    ./manage.py addmodel --detail_display id --list_display id --old old_fashion Brand  \
+        *_name**:CharField:max_length=50
+    ./manage.py addmodel --list_display id --old old_fashion Season  \
+        *_name**:CharField:max_length=50
+    ./manage.py addmodel --list_display id --old old_fashion Album  \
+        *_looks:ManyToManyField:Look
+    ./manage.py addmodel --list_display id --old old_fashion Look  \
+        *_collection:ForeignKey:Collection:CASCADE \
+        *_name**:CharField:max_length=50 \
+        *_rating*:SmallIntegerField:default=0
+    ./manage.py addmodel --list_display_links id --old old_fashion View  \
+        *_photo:ForeignKey:Photo:CASCADE \
+        *_type:ForeignKey:ViewTypes:CASCADE
+    ./manage.py addmodel --list_display id --old old_fashion ViewTypes  \
+        *_name**:CharField:max_length=50 \
+        *_code:CharField:max_length=2
+    ./manage.py addmodel --list_display_links id --old old_fashion Photo  \
+        *_original:ForeignKey:Photo:CASCADE:related_name=original_file \
+        *_small:ForeignKey:Photo:CASCADE:related_name=small_file \
+        *_medium:ForeignKey:Photo:CASCADE:related_name=medium_file \
+        *_large:ForeignKey:Photo:CASCADE:related_name=large_file \
+        *_thumbnail:ForeignKey:Photo:CASCADE:related_name=thumbnail_file
+    ./manage.py addmodel --list_display_links id --old old_fashion Image  \
+        *_width:PositiveIntegerField \
+        *_height:PositiveIntegerField \
+        *_file:ImageField
+
+This creates the apps models along with admin and template components.
+
+We can now enable the app with the enableapp command:
+
+::
+
+    ./manage.py enableapp old_fashion
+
+This adds the app to the INSTALLED_APPS settings.py configuration, as well as adding the apps urls to the urls.py.
+
+From here, we continue with the usual Django development process of creating migration files and running the migrations in order to create the database schema:
+
+::
+
+    ./manage.py makemigrations
+    ./manage.py migrate
+
+At this point, you can contine with the usual Django development of your app by editing your models and creating templates. You may also want to edit the urls.py file to adjust which urls you want active in your app.
