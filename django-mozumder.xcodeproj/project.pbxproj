@@ -76,6 +76,7 @@
 		EC6FB42624B187990042396A /* 0001_initial.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = 0001_initial.py; sourceTree = "<group>"; };
 		EC6FB42824B3D0A90042396A /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		EC6FB42A24B694510042396A /* currency.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = currency.py; sourceTree = "<group>"; };
+		EC867D1E24C11045002CA3E3 /* modelwriter.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = modelwriter.py; sourceTree = "<group>"; };
 		ECBCB0A824980A6E0097C2FA /* README.rst */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.rst; sourceTree = "<group>"; };
 		ECBCB0A92498175D0097C2FA /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		ECBCB0AA249817C90097C2FA /* setup.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = setup.cfg; sourceTree = "<group>"; };
@@ -379,6 +380,7 @@
 				EC5449B4249469DF000BB8A2 /* cache_mule.py */,
 				EC5449B524946A1F000BB8A2 /* invalidator.py */,
 				EC0DB82824ABBD030070DD80 /* activate_this.py */,
+				EC867D1E24C11045002CA3E3 /* modelwriter.py */,
 			);
 			path = utilities;
 			sourceTree = "<group>";
