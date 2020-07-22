@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 
 import mozumder
+from mozumder.models.development import *
 
 def CamelCase(str, separator=' '):
     return ''.join([re.sub('[^A-Za-z0-9]+', '', n).title() for n in str.split(separator)])
@@ -109,6 +110,64 @@ class Command(BaseCommand):
         search_fields = options['search_fields']
         detail_display = options['detail_display']
         form_fields = options['form_fields']
+        
+        # Create app
+        app = TrackedModel.objects.get_or_create(name=app_name)
+        app.save()
+        
+        # Build models lists
+        show_in_detail_view = False
+        show_in_edit_view = False
+        show_in_list_view = False
+        link_in_list_view = False
+        for field in fields_list:
+            field_name, field_type, *field_params = field.split(":")
+            fields.append(field_name.strip('*').strip('_'))
+            if field_name.startswith('*'):
+                field_name = field_name[1:]
+                show_in_detail_view = True
+            if field_name.startswith('_'):
+                field_name = field_name[1:]
+                show_in_edit_view = True
+            if field_name.endswith('**'):
+                field_name = field_name[:-2]
+                show_in_list_view = True
+                link_in_list_view = True
+            elif field_name.endswith('*'):
+                field_name = field_name[:-1]
+                show_in_list_view = True
+            
+            field = TrackedField.objects.get_or_create(name=field_name, owner=app)
+            field.show_in_detail_view = show_in_detail_view
+            field.show_in_edit_view = show_in_edit_view
+            field.show_in_list_view = show_in_list_view
+            field.link_in_list_view = link_in_list_view
+
+            if field_type == 'ForeignKey':
+                relation = field_params[0]
+                field_params[0] = f"'{relation}'"
+                on_delete = field_params[1]
+                field_params[1] = f'on_delete=models.{on_delete}'
+                i = 0
+                for param in field_params:
+                    if param.startswith('related_name='):
+                        related_name = param.split('=')[1]
+                        field_params[i] = f"related_name='{related_name}'"
+                    i += 1
+            elif field_type == 'ManyToManyField':
+                relation = field_params[0]
+                field_params[0] = f"'{relation}'"
+                i = 0
+                for param in field_params:
+                    if param.startswith('related_name='):
+                        related_name = param.split('=')[1]
+                        field_params[i] = f"related_name='{related_name}'"
+                    i += 1
+            field_args = ", ".join(field_params)
+            field_line = f'    {field_name}=models.{field_type}({field_args})\n'
+            model += field_line
+        model += f"""    def get_absolute_url(self):
+        return reverse('{model_code_name}_detail', kwargs={{'pk': self.id}})\n"""
 
         # Build models lists
         model = f'class {model_name}(models.Model):\n'

@@ -1,16 +1,56 @@
-def write(app_name, model_code_name, extension, text, template_dir='templates'):
-    text = f"""{{% extends "base.html" %}}
-{{% block head_title %}}{verbose_name}{{% endblock %}}
-{{% block content %}}
-<H1>{ verbose_name }</H1>
-{{% include "{app_name}/{model_code_name}_delete_form_block.html" %}}
-{{% endblock content %}}
-"""
+## Method 1
+import inspect
 
-    filename = os.path.join(os.getcwd(),app_name,self.template_dir, app_name,f'{model_code_name}_delete_form.html')
-    f = open(filename, "w")
-    f.write(text)
-    f.close()
+class magic_fstring_function:
+    def __init__(self, payload):
+        self.payload = payload
+    def __str__(self):
+        vars = inspect.currentframe().f_back.f_globals.copy()
+        vars.update(inspect.currentframe().f_back.f_locals)
+        return self.payload.format(**vars)
+
+template = "The current name is {name}"
+
+template_a = magic_fstring_function(template)
+
+# use it inside a function to demonstrate it gets the scoping right
+def new_scope():
+    names = ["foo", "bar"]
+    for name in names:
+        print(template_a)
+
+new_scope()
+# The current name is foo
+# The current name is bar
+
+## Method 2
+template_a = lambda: f"The current name is {name}"
+names = ["foo", "bar"]
+for name in names:
+    print (template_a())
+
+
+class Element:
+
+        text = f"""{{% extends "base.html" %}}
+    {{% block head_title %}}{verbose_name}{{% endblock %}}
+    {{% block content %}}
+    <H1>{ verbose_name }</H1>
+    {{% include "{self.context['app_name']}/{self.context['model_code_name']}{self.context['include_extension']}" %}}
+    {{% endblock content %}}
+    """
+    
+    def __init__(app_name, text,context={},template_dir='templates'):
+        self.text = text
+        self.context = context
+        self.template_dir = template_dir
+
+    def write(extension):
+
+        filename = os.path.join(os.getcwd(),self.context['app_name'],self.context['template_dir'],self.context['app_name'],f"{self.context['model_code_name']}{self.context['extension']}')
+        f = open(filename, "w")
+        f.write(self.text)
+        f.close()
 
 
 
