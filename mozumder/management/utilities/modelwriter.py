@@ -1,60 +1,22 @@
-## Method 1
-import inspect
+import os
 
-class magic_fstring_function:
-    def __init__(self, payload):
-        self.payload = payload
-    def __str__(self):
-        vars = inspect.currentframe().f_back.f_globals.copy()
-        vars.update(inspect.currentframe().f_back.f_locals)
-        return self.payload.format(**vars)
+class DevelopTemplate:
 
-template = "The current name is {name}"
-
-template_a = magic_fstring_function(template)
-
-# use it inside a function to demonstrate it gets the scoping right
-def new_scope():
-    names = ["foo", "bar"]
-    for name in names:
-        print(template_a)
-
-new_scope()
-# The current name is foo
-# The current name is bar
-
-## Method 2
-template_a = lambda: f"The current name is {name}"
-names = ["foo", "bar"]
-for name in names:
-    print (template_a())
-
-
-class Element:
-
-        text = f"""{{% extends "base.html" %}}
-    {{% block head_title %}}{verbose_name}{{% endblock %}}
-    {{% block content %}}
-    <H1>{ verbose_name }</H1>
-    {{% include "{self.context['app_name']}/{self.context['model_code_name']}{self.context['include_extension']}" %}}
-    {{% endblock content %}}
-    """
-    
-    def __init__(app_name, text,context={},template_dir='templates'):
-        self.text = text
+    def __init__(self, context={},template_dir='templates'):
         self.context = context
         self.template_dir = template_dir
 
-    def write(extension):
-
-        filename = os.path.join(os.getcwd(),self.context['app_name'],self.context['template_dir'],self.context['app_name'],f"{self.context['model_code_name']}{self.context['extension']}')
+    def write(self, extension):
+        self.extension = extension
+        filename = os.path.join(os.getcwd(),self.context['app_name'],self.template_dir,self.context['app_name'],f"{self.context['model_code_name']}{extension}")
+        print(f'Writing file: {filename}')
         f = open(filename, "w")
-        f.write(self.text)
+        f.write(self.get_text(self.context))
         f.close()
 
 
 
-    def write():
+    def update(self, extension):
         # Read & modify models.py file
         models_file = os.path.join(os.getcwd(),app_name,'models.py')
         f = open(models_file, "r")
@@ -423,4 +385,16 @@ def json_search_{model_code_name}():
 {{% endblock content %}}
 """)
         f.close()
+
+class ModelsFile(DevelopTemplate):
+
+    def get_text(self, context):
+
+        return f"""{{% extends "base.html" %}}
+    {{% block head_title %}}{context['verbose_name']}{{% endblock %}}
+    {{% block content %}}
+    <H1>{ context['verbose_name'] }</H1>
+    {{% include "{context['app_name']}/{context['model_code_name']}{self.extension}" %}}
+    {{% endblock content %}}
+    """
 
