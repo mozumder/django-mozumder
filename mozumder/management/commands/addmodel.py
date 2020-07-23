@@ -112,47 +112,57 @@ class Command(BaseCommand):
         form_fields = options['form_fields']
         
         # Create app
-        app = TrackedModel.objects.get_or_create(name=app_name)
-        app.save()
-        
+        tracked_app, app_created = TrackedApp.objects.get_or_create(name=app_name)
+        tracked_app.save()
+
+        # Create model
+        tracked_model, model_crated = TrackedModel.objects.get_or_create(owner=tracked_app, name=model_name)
+        tracked_model.verbose_name = verbose_name
+        tracked_model.verbose_name_plural = verbose_name_plural
+        tracked_model.save()
+
         # Build models lists
         show_in_detail_view = False
         show_in_edit_view = False
         show_in_list_view = False
         link_in_list_view = False
+        blank = False
+        null = False
         for field in fields_list:
-            field_name, field_type, *field_params = field.split(":")
-            fields.append(field_name.strip('*').strip('_'))
-            if field_name.startswith('*'):
-                field_name = field_name[1:]
+            field_name, field_type, field_properties, *field_params = field.split(":")
+            if 'r' in field_properties:
                 show_in_detail_view = True
-            if field_name.startswith('_'):
-                field_name = field_name[1:]
+            if 'e' in field_properties:
                 show_in_edit_view = True
-            if field_name.endswith('**'):
-                field_name = field_name[:-2]
+            if 'l' in field_properties:
+                show_in_list_view = True
+            if 'L' in field_properties:
                 show_in_list_view = True
                 link_in_list_view = True
-            elif field_name.endswith('*'):
-                field_name = field_name[:-1]
-                show_in_list_view = True
+            if '_' in field_properties:
+                blank = True
+            if '-' in field_properties:
+                null = True
             
-            field = TrackedField.objects.get_or_create(name=field_name, owner=app)
+            field = TrackedField.objects.get_or_create(name=field_name, owner=tracked_model)
             field.show_in_detail_view = show_in_detail_view
             field.show_in_edit_view = show_in_edit_view
             field.show_in_list_view = show_in_list_view
             field.link_in_list_view = link_in_list_view
+            field.blank = blank
+            field.null = null
 
-            if field_type == 'ForeignKey':
+            if field_type == 'CharField':
+            elif field_type == 'TextField':
+            elif field_type == 'SmallIntegerField':
+            elif field_type == 'DateTimeField':
+            elif field_type == 'ForeignKey':
                 relation = field_params[0]
-                field_params[0] = f"'{relation}'"
                 on_delete = field_params[1]
-                field_params[1] = f'on_delete=models.{on_delete}'
                 i = 0
                 for param in field_params:
                     if param.startswith('related_name='):
                         related_name = param.split('=')[1]
-                        field_params[i] = f"related_name='{related_name}'"
                     i += 1
             elif field_type == 'ManyToManyField':
                 relation = field_params[0]
@@ -161,13 +171,9 @@ class Command(BaseCommand):
                 for param in field_params:
                     if param.startswith('related_name='):
                         related_name = param.split('=')[1]
-                        field_params[i] = f"related_name='{related_name}'"
                     i += 1
-            field_args = ", ".join(field_params)
-            field_line = f'    {field_name}=models.{field_type}({field_args})\n'
-            model += field_line
-        model += f"""    def get_absolute_url(self):
-        return reverse('{model_code_name}_detail', kwargs={{'pk': self.id}})\n"""
+                    
+            field.save()
 
         # Build models lists
         model = f'class {model_name}(models.Model):\n'

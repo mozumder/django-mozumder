@@ -30,13 +30,16 @@ class TrackedField(models.Model):
     db_column = models.CharField(max_length=80, null=True, blank=True)
     db_index = models.BooleanField(null=True, blank=True)
     default = models.CharField(max_length=80, null=True, blank=True)
-    editable = models.BooleanField(null=True, blank=True)
 
-    admin_list_display = models.BooleanField(null=True, blank=True)
-    admin_list_display_links = models.BooleanField(null=True, blank=True)
+    show_in_detail_view = models.BooleanField(null=True, blank=True)
+    show_in_edit_view = models.BooleanField(null=True, blank=True)
+    show_in_list_view = models.BooleanField(null=True, blank=True)
+    link_in_list_view = models.BooleanField(null=True, blank=True)
+
     admin_readonly_field = models.BooleanField(null=True, blank=True)
     admin_search = models.BooleanField(null=True, blank=True)
 
+    #Field: Charfield
     max_length = models.BooleanField(null=True, blank=True)
 
     #Field: ForeignKey

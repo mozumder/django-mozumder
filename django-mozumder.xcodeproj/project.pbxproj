@@ -73,7 +73,6 @@
 		EC5449DA249477AF000BB8A2 /* logging_mule.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logging_mule.py; sourceTree = "<group>"; };
 		EC6FB42424B14B820042396A /* development.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = development.py; sourceTree = "<group>"; };
 		EC6FB42524B14DF00042396A /* development.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = development.py; sourceTree = "<group>"; };
-		EC6FB42624B187990042396A /* 0001_initial.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = 0001_initial.py; sourceTree = "<group>"; };
 		EC6FB42824B3D0A90042396A /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		EC6FB42A24B694510042396A /* currency.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = currency.py; sourceTree = "<group>"; };
 		EC867D1E24C11045002CA3E3 /* modelwriter.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = modelwriter.py; sourceTree = "<group>"; };
@@ -388,7 +387,6 @@
 		EC5449B724946CDB000BB8A2 /* migrations */ = {
 			isa = PBXGroup;
 			children = (
-				EC6FB42624B187990042396A /* 0001_initial.py */,
 				EC5449B824946CEF000BB8A2 /* __init__.py */,
 			);
 			path = migrations;
