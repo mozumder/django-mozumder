@@ -219,7 +219,7 @@ class Command(BaseCommand):
                     if param.startswith('related_name='):
                         field.related_name = param.split('=')[1]
                     i += 1
-                    
+            field.type=FieldTypes[field_type.upper()]
             field.save()
         context={
             'app_name': app_name,
@@ -227,7 +227,7 @@ class Command(BaseCommand):
             'model_code_name':model_code_name,
             'verbose_name':verbose_name
         }
-        ModelsFile(context).write('.py')
+        ModelsFile().write(context)
         update_models_file()
         write_admin_file()
         update_urls_file()

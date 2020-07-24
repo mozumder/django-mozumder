@@ -1,40 +1,92 @@
 import os
 
+from ...models import *
+
+from dotmap import DotMap
+
+# The following are the operations that are built by default for
+# every model:
+#
+# Read One Item
+# Read All
+# Read Filter/Exclude
+# Read Stubs List
+# Search Items
+# Sort Items
+# Reorder Items
+# Add One Item
+# Insert One Item
+# Add Multiple Items
+# Duplicate Item
+# Update Item
+# Update All
+# Update Filter/Exclude
+# Validate Item
+# Delete Item
+# Delete All
+# Delete Filter/Exclude
+# Search Through Field
+# Add Item to Field
+# Add Multiple Items to Field
+# Increment Field
+# Decrement Field
+# Validate Field
+# Duplicate Items to Field
+# Delete Item from Field
+# Delete All Items from Field
+# Delete Multiple Items from Field
+# Operation on View
+#
+# Enable operations you need by uncommenting out the operation in
+# the urls.py file
+
 class DevelopTemplate:
 
-    def __init__(self, context={},template_dir='templates'):
-        self.context = context
+    def __init__(self, template_dir='templates'):
         self.template_dir = template_dir
 
-    def write(self, extension):
-        self.extension = extension
-        filename = os.path.join(os.getcwd(),self.context['app_name'],self.template_dir,self.context['app_name'],f"{self.context['model_code_name']}{extension}")
-        print(f'Writing file: {filename}')
-        f = open(filename, "w")
-        f.write(self.get_text(self.context))
+    def get_filename(self, context):
+        # Subclass this as needed
+        return f"{context['model_code_name']}{self.extension}"
+    def get_filepath(self, context):
+        # Subclass this as needed
+        return os.path.join(os.getcwd(),context['app_name'],self.template_dir,context['app_name'])
+
+    def write(self, context):
+        file = os.path.join(self.get_filepath(context),self.get_filename(context))
+        print(f'Writing file: {file}')
+        f = open(file, "w")
+        f.write(self.get_text(DotMap(context)))
         f.close()
 
 
+class ModelsFile(DevelopTemplate):
+    extension = ".py"
+    def get_filename(self, context):
+        return 'models.py'
+    def get_filepath(self, context):
+        # Subclass this as needed
+        return os.path.join(os.getcwd(),context['app_name'])
+    def get_text(self, context):
+    
+        app_obj = TrackedApp.objects.get(name=context['app_name'])
+        model_obj = TrackedModel.objects.get(name=context['model_name'], owner=app_obj)
+        output = f"""from django.db import models
 
-    def update(self, extension):
-        # Read & modify models.py file
-        models_file = os.path.join(os.getcwd(),app_name,'models.py')
-        f = open(models_file, "r")
-        output = ''
-        has_reverse = False
-        for line in f.readlines():
-            if line.startswith('# Create your models here.'):
-                if has_reverse == False:
-                    output += f"from django.shortcuts import reverse\n"
-            elif line.startswith('from django.shortcuts import reverse'):
-                has_reverse = True
+# Create your models here
+
+class {context.model_name}(models.Model):
+"""
+        fields = TrackedField.objects.filter(owner=model_obj)
+        for field in fields:
+            field_params = ''
+            line = f"    {field.name} = models.{FieldTypes(field.type).label}({field_params})\n"
             output += line
-        output += model
-        f.close()
-        # Write models.py file
-        f = open(models_file, "w")
-        f.write(output)
-        f.close()
+        return output
+
+class AdminPy(DevelopTemplate):
+
+    def get_text(self, context):
 
         # Create admin data
         if list_display or list_display_links or readonly_fields or search_fields:
@@ -65,42 +117,10 @@ from .models import {model_name}
         f.write(file)
         f.close()
 
-        # The following are the operations that are built by default for
-        # every model:
-        #
-        # Read One Item
-        # Read All
-        # Read Filter/Exclude
-        # Read Stubs List
-        # Search Items
-        # Sort Items
-        # Reorder Items
-        # Add One Item
-        # Insert One Item
-        # Add Multiple Items
-        # Duplicate Item
-        # Update Item
-        # Update All
-        # Update Filter/Exclude
-        # Validate Item
-        # Delete Item
-        # Delete All
-        # Delete Filter/Exclude
-        # Search Through Field
-        # Add Item to Field
-        # Add Multiple Items to Field
-        # Increment Field
-        # Decrement Field
-        # Validate Field
-        # Duplicate Items to Field
-        # Delete Item from Field
-        # Delete All Items from Field
-        # Delete Multiple Items from Field
-        # Operation on View
-        #
-        # Enable operations you need by uncommenting out the operation in
-        # the urls.py file
         
+class URLSPy(DevelopTemplate):
+
+    def get_text(self, context):
         # Write urls.py file
         # Edit base URLs py
         urls_file = os.path.join(os.getcwd(),app_name,'urls','__init__.py')
@@ -133,6 +153,9 @@ from .models import {model_name}
         f.write(output)
         f.close()
 
+class BaseURLSPy(DevelopTemplate):
+
+    def get_text(self, context):
         # Edit base URLs py
         urls_file = os.path.join(os.getcwd(),app_name,'urls','api','__init__.py')
 
@@ -161,6 +184,9 @@ from .models import {model_name}
         f.write(output)
         f.close()
 
+class ViewsPy(DevelopTemplate):
+
+    def get_text(self, context):
         # Write views.py file
         views_file = os.path.join(os.getcwd(),app_name,'views.py')
 
@@ -225,6 +251,9 @@ def json_search_{model_code_name}():
         f.write(output)
         f.close()
 
+class ModelListBlock(DevelopTemplate):
+
+    def get_text(self, context):
         # Model List Block
         header_row = ''
         row = ''
@@ -246,6 +275,9 @@ def json_search_{model_code_name}():
 </table>""")
         f.close()
 
+class ModelListPage(DevelopTemplate):
+
+    def get_text(self, context):
         # Model List Page
         models_list_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_list.html')
         f = open(models_list_page_file, "w")
@@ -258,6 +290,9 @@ def json_search_{model_code_name}():
 """)
         f.close()
 
+class ModelDetailPage(DevelopTemplate):
+
+    def get_text(self, context):
         # Model Detail Block
         field_ul = ''
         for field in detail_display:
@@ -268,6 +303,9 @@ def json_search_{model_code_name}():
         f.write(f'<div>Model Detail</div>\n<ul>{field_ul}</ul>')
         f.close()
 
+class ModelDetailPage(DevelopTemplate):
+
+    def get_text(self, context):
         # Model Detail Page
         models_detail_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_detail.html')
         f = open(models_detail_page_file, "w")
@@ -280,7 +318,9 @@ def json_search_{model_code_name}():
 """)
         f.close()
 
+class UpdateModelsListBlock(DevelopTemplate):
 
+    def get_text(self, context):
         # Add model to app's models list HTML
         models_ul = f"""<li><a href="{{% url '{model_code_name}_list' %}}">{verbose_name}</a> <a href="{{% url '{model_code_name}_add' %}}">Add</a></li>"""
         models_list_html_file = os.path.join(os.getcwd(),app_name,'templates',app_name, 'models.html')
@@ -288,113 +328,105 @@ def json_search_{model_code_name}():
         f.write(models_ul)
         f.close()
 
-        # Write forms.py file
-
-
-        # Create Form Block
-        create_form_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_create_form_block.html')
-        f = open(create_form_block_file, "w")
-        f.write(f"""<div>Model Add Form</div>
-<form action="{{% url '{model_code_name}_add' %}}" method="post">
-    {{% csrf_token %}}
-    {{{{ form }}}}
-    <input type="submit" value="Submit">
-</form>""")
-        f.close()
-
-        # Create Form Page
-        create_form_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_create_form.html')
-        f = open(create_form_page_file, "w")
-        f.write(f"""{{% extends "base.html" %}}
-{{% block head_title %}}{verbose_name}{{% endblock %}}
-{{% block content %}}
-<H1>{ verbose_name }</H1>
-{{% include "{app_name}/{model_code_name}_create_form_block.html" %}}
-{{% endblock content %}}
-""")
-        f.close()
-
-
-        # Update Form Block
-        update_form_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_update_form_block.html')
-        f = open(update_form_block_file, "w")
-        f.write(f"""<div>Model Update Form</div>
-<form action="{{% url '{model_code_name}_update' {model_code_name}.id %}}" method="post">
-    {{% csrf_token %}}
-    {{{{ form }}}}
-    <input type="submit" value="Submit">
-</form>""")
-        f.close()
-
-        # Update Form Page
-        update_form_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_update_form.html')
-        f = open(update_form_page_file, "w")
-        f.write(f"""{{% extends "base.html" %}}
-{{% block head_title %}}{verbose_name}{{% endblock %}}
-{{% block content %}}
-<H1>{ verbose_name }</H1>
-{{% include "{app_name}/{model_code_name}_update_form_block.html" %}}
-{{% endblock content %}}
-""")
-        f.close()
-
-
-        # Copy Form Block
-        copy_form_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_copy_form_block.html')
-        f = open(copy_form_block_file, "w")
-        f.write(f"""<div>Model Copy Form</div>
-<form action="{{% url '{model_code_name}_copy' {model_code_name}.id %}}" method="post">
-    {{% csrf_token %}}
-    {{{{ form }}}}
-    <input type="submit" value="Submit">
-</form>""")
-        f.close()
-
-        # Copy Form Page
-        copy_form_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_copy_form.html')
-        f = open(copy_form_page_file, "w")
-        f.write(f"""{{% extends "base.html" %}}
-{{% block head_title %}}{verbose_name}{{% endblock %}}
-{{% block content %}}
-<H1>{ verbose_name }</H1>
-{{% include "{app_name}/{model_code_name}_copy_form_block.html" %}}
-{{% endblock content %}}
-""")
-        f.close()
-
-
-        # Delete Form Block
-        delete_form_block_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_delete_form_block.html')
-        f = open(delete_form_block_file, "w")
-        f.write(f"""<div>Model Delete Form</div>
-<form action="{{% url '{model_code_name}_delete' {model_code_name}.id %}}" method="post">
-    {{% csrf_token %}}
-    {{{{ form }}}}
-    <input type="submit" value="Submit">
-</form>""")
-        f.close()
-
-        # Delete Form Page
-        delete_form_page_file = os.path.join(os.getcwd(),app_name,'templates',app_name,f'{model_code_name}_delete_form.html')
-        f = open(delete_form_page_file, "w")
-        f.write(f"""{{% extends "base.html" %}}
-{{% block head_title %}}{verbose_name}{{% endblock %}}
-{{% block content %}}
-<H1>{ verbose_name }</H1>
-{{% include "{app_name}/{model_code_name}_delete_form_block.html" %}}
-{{% endblock content %}}
-""")
-        f.close()
-
-class ModelsFile(DevelopTemplate):
+class CreateFormBlock(DevelopTemplate):
+    extension = '_create_form_block.html'
 
     def get_text(self, context):
+        # Create Form Block
+        return f"""<div>Model Create Form</div>
+<form action="{{% url '{context.model_code_name}_create' {context.model_code_name}.id %}}" method="post">
+    {{% csrf_token %}}
+    {{{{ form }}}}
+    <input type="submit" value="Submit">
+</form>"""
 
+class CreateFormPage(DevelopTemplate):
+    extension = '_create_form.html'
+    include_extension = '_create_form_block.html'
+
+    def get_text(self, context):
+        # Create Form Page
         return f"""{{% extends "base.html" %}}
-    {{% block head_title %}}{context['verbose_name']}{{% endblock %}}
+    {{% block head_title %}}{context.verbose_name}{{% endblock %}}
     {{% block content %}}
-    <H1>{ context['verbose_name'] }</H1>
-    {{% include "{context['app_name']}/{context['model_code_name']}{self.extension}" %}}
+    <H1>{context['verbose_name']}</H1>
+    {{% include "{context.app_name}/{context.model_code_name}{self.include_extension}" %}}
+    {{% endblock content %}}
+    """
+
+class UpdateFormBlock(DevelopTemplate):
+    extension = '_update_form_block.html'
+
+    def get_text(self, context):
+        # Update Form Block
+        return f"""<div>Model Update Form</div>
+<form action="{{% url '{context.model_code_name}_update' {context.model_code_name}.id %}}" method="post">
+    {{% csrf_token %}}
+    {{{{ form }}}}
+    <input type="submit" value="Submit">
+</form>"""
+
+class UpdateFormPage(DevelopTemplate):
+    extension = '_update_form.html'
+    include_extension = '_update_form_block.html'
+
+    def get_text(self, context):
+        # Update Form Page
+        return f"""{{% extends "base.html" %}}
+{{% block head_title %}}{context.verbose_name}{{% endblock %}}
+{{% block content %}}
+<H1>{context.verbose_name}</H1>
+{{% include "{context.app_name}/{context.model_code_name}_update_form_block.html" %}}
+{{% endblock content %}}
+"""
+
+class CopyFormBlock(DevelopTemplate):
+    extension = '_copy_form_block.html'
+
+    def get_text(self, context):
+        # Copy Form Block
+        return f"""<div>Model Copy Form</div>
+<form action="{{% url '{context.model_code_name}_copy' {context.model_code_name}.id %}}" method="post">
+    {{% csrf_token %}}
+    {{{{ form }}}}
+    <input type="submit" value="Submit">
+</form>"""
+
+class CopyFormPage(DevelopTemplate):
+    extension = '_copy_form.html'
+    include_extension = '_copy_form_block.html'
+
+    def get_text(self, context):
+        # Copy Form Page
+        return f"""{{% extends "base.html" %}}
+{{% block head_title %}}{context.verbose_name}{{% endblock %}}
+{{% block content %}}
+<H1>{context['verbose_name']}</H1>
+{{% include "{context.app_name}/{context.model_code_name}{self.include_extension}" %}}
+{{% endblock content %}}
+"""
+
+class DeleteFormBlock(DevelopTemplate):
+    extension = '_delete_form_block.html'
+    
+    def get_text(self, context):
+        # Delete Form Block
+        return f"""<div>Model Delete Form</div>
+<form action="{{% url \'{context.model_code_name}_delete\' {context.model_code_name}.id %}}" method="post">
+    {{% csrf_token %}}
+    {{{{ form }}}}
+    <input type="submit" value="Submit">
+</form>"""
+
+class DeleteFormPage(DevelopTemplate):
+    extension = '_delete_form.html'
+    include_extension = '_delete_form_block.html'
+    def get_text(self, context):
+        return f"""{{% extends "base.html" %}}
+    {{% block head_title %}}{context.verbose_name}{{% endblock %}}
+    {{% block content %}}
+    <H1>{context['verbose_name']}</H1>
+    {{% include "{context.app_name}/{context.model_code_name}{self.include_extension}" %}}
     {{% endblock content %}}
     """
 
