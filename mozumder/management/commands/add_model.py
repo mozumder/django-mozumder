@@ -1,5 +1,4 @@
 import os
-import re
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -8,13 +7,7 @@ import mozumder
 from ...models.development import *
 from ... import FieldTypes, OnDelete
 from ..utilities.modelwriter import *
-
-def CamelCase(str, separator=' '):
-    return ''.join([re.sub('[^A-Za-z0-9]+', '', n).title() for n in str.split(separator)])
-
-def camel_case_split(str, separator='_'):
-    return separator.join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', str))
-
+from ..utilities.name_case import *
 
 class Command(BaseCommand):
 
@@ -102,8 +95,8 @@ class Command(BaseCommand):
         project_name = settings.PROJECT_NAME
         app_name = options['app_name']
         model_name = options['model_name']
-        model_code_name = CamelCase(model_name).lower()
-        verbose_name = options['verbose_name'] if options['verbose_name'] else model_name
+        model_code_name = CamelCase_to_snake_case(model_name)
+        verbose_name = options['verbose_name'] if options['verbose_name'] else CamelCase_to_verbose(model_name)
         verbose_name_plural = options['verbose_name_plural'] if options['verbose_name_plural'] else verbose_name + 's'
         fields_list = options['field']
         list_display_links = options['list_display_links']
@@ -149,7 +142,7 @@ class Command(BaseCommand):
 
             field, field_created = TrackedField.objects.get_or_create(name=field_name, owner=tracked_model)
             
-            field.verbose_name = field_name.replace('_',' ').title()
+            field.verbose_name = snake_case_to_verbose(field_name)
 
             # Get field properties
             if '_' in field_properties:
@@ -213,7 +206,7 @@ class Command(BaseCommand):
                         field.related_name = param.split('=')[1]
                     i += 1
             elif field_type == 'ManyToManyField':
-                field.relation = field_params[0]
+                field.to = field_params[0]
                 i = 0
                 for param in field_params:
                     if param.startswith('related_name='):
@@ -221,29 +214,3 @@ class Command(BaseCommand):
                     i += 1
             field.type=FieldTypes[field_type.upper()]
             field.save()
-        context={
-            'app_name': app_name,
-            'model_name': model_name,
-            'model_code_name':model_code_name,
-            'verbose_name':verbose_name
-        }
-        ModelsFile().write(context)
-        update_models_file()
-        write_admin_file()
-        update_urls_file()
-        write_views_file()
-        write_list_block()
-        write_list_page()
-        write_detail_block()
-        write_detail_page()
-        update_app_model_list_block()
-        write_create_form_block()
-        write_create_form_page()
-        write_update_form_block()
-        write_update_form_page()
-        write_delete_form_block()
-        write_delete_form_page()
-        write_copy_form_block()
-        write_copy_form_page()
-
-

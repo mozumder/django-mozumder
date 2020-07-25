@@ -142,7 +142,7 @@
 		ECBCB15224A597180097C2FA /* import_subdivisions.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = import_subdivisions.py; sourceTree = "<group>"; };
 		ECBCB15424A599E50097C2FA /* logging.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = logging.py; sourceTree = "<group>"; };
 		ECBCB15824A6F68B0097C2FA /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
-		ECBCB15924A9282A0097C2FA /* addmodel.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = addmodel.py; sourceTree = "<group>"; };
+		ECBCB15924A9282A0097C2FA /* add_model.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = add_model.py; sourceTree = "<group>"; };
 		ECBCB16324A990D80097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
 		ECBCB16424A990E10097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
 		ECBCB16524A990EB0097C2FA /* __init__.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "__init__.py-tpl"; sourceTree = "<group>"; };
@@ -179,6 +179,9 @@
 		ECBCB1A224AD5F350097C2FA /* views.py-tpl */ = {isa = PBXFileReference; lastKnownFileType = text; path = "views.py-tpl"; sourceTree = "<group>"; };
 		ECBCB1A424AD8ACC0097C2FA /* models.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = models.html; sourceTree = "<group>"; };
 		ECBCB1A524AD8C9A0097C2FA /* home.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = home.html; sourceTree = "<group>"; };
+		ECD7045524CBBE7B00466C61 /* name_case.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = name_case.py; sourceTree = "<group>"; };
+		ECD7045624CBE7B000466C61 /* write_models.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = write_models.py; sourceTree = "<group>"; };
+		ECD7045724CBF3B300466C61 /* add_app.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = add_app.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -362,10 +365,12 @@
 				ECBCB15024A596CE0097C2FA /* import_iso_script_codes.py */,
 				ECBCB15124A596E80097C2FA /* import_sil_language_data.py */,
 				ECBCB15224A597180097C2FA /* import_subdivisions.py */,
-				ECBCB15924A9282A0097C2FA /* addmodel.py */,
+				ECBCB15924A9282A0097C2FA /* add_model.py */,
 				ECBCB17624AAC3CA0097C2FA /* prepareoldapp.py */,
 				ECBCB18224ABD75B0097C2FA /* enableapp.py */,
 				ECBCB18424AC37D20097C2FA /* readcsv.py */,
+				ECD7045624CBE7B000466C61 /* write_models.py */,
+				ECD7045724CBF3B300466C61 /* add_app.py */,
 			);
 			path = commands;
 			sourceTree = "<group>";
@@ -380,6 +385,7 @@
 				EC5449B524946A1F000BB8A2 /* invalidator.py */,
 				EC0DB82824ABBD030070DD80 /* activate_this.py */,
 				EC867D1E24C11045002CA3E3 /* modelwriter.py */,
+				ECD7045524CBBE7B00466C61 /* name_case.py */,
 			);
 			path = utilities;
 			sourceTree = "<group>";
