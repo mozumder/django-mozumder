@@ -119,10 +119,12 @@ class PreparedAppConfig(AppConfig):
 
 #        self.execute_sql_files('prepare')
     
-        self.read_prepared_statements()
-        if hasattr(settings, 'MATERIALIZED_VIEWS'):
-            if settings.MATERIALIZED_VIEWS == True:
-                self.execute_sql_files('prepare_materialized')
+        if hasattr(settings, 'PREPARED_STATEMENTS'):
+            if settings.PREPARED_STATEMENTS == True:
+                self.read_prepared_statements()
+                if hasattr(settings, 'MATERIALIZED_VIEWS'):
+                    if settings.MATERIALIZED_VIEWS == True:
+                        self.execute_sql_files('prepare_materialized')
 
     def ready(self):
         connection_created.connect(self.db_connected, dispatch_uid=self.dbConnectSignal)

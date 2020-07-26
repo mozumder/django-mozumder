@@ -583,8 +583,8 @@ def startproject(args):
         psql_command = f"CREATE EXTENSION pgcrypto;"
         command = f'{psql_base_command} -U {db_admin_username} {db_name} -c "{psql_command}"'
         os.system(command)
-        print('Migrating')
-        subprocess.run(['manage.py', 'migrate'])
+        migrate_command = f'PREPARED_STATEMENTS=False manage.py migrate'
+        os.system(migrate_command)
 
     print('Collecting Static Files')
     subprocess.run(['manage.py', 'collectstatic', '--noinput'])
