@@ -119,3 +119,13 @@ class OnDelete(models.TextChoices):
     SETDEFAULT = '04', _('SET_DEFAULT')
     SET = '05', _('SET')
     DO_NOTHING = '06', _('DO_NOTHING')
+
+class ConstraintType(models.TextChoices):
+    CHECKCONSTRAINT = '01', _('CheckConstraint')
+    UNIQUECONSTRAINT = '02', _('UniqueContraint')
+
+class IPAddressProtocol(models.TextChoices):
+    BOTH = '01', _('both')
+    IPV4 = '02', _('IPv4')
+    IPV6 = '03', _('IPv6')
+
