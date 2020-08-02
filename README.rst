@@ -76,76 +76,69 @@ Let's go into it and source the virtualenve:
     cd example
     source venv.example/bin/activate
 
-And start an app for the project using the traditional Django startapp command:
+In here, let's create a couple of Django apps:
 
 ::
 
-    ./manage.py startapp old_fashion
+    ./manage.py add_app fashion
+    ./manage.py add_app images
 
-We have to update our app project directory with some new files and directories to work with django-mozumder
 
-::
-
-    ./manage.py prepareoldapp old_fashion
-
-And now, we get to the meat of our app by using the ``addmodel`` command to create our database models. Each model takes a lis of field arguments, with :
+And for each app, we can start to create our database models. Each model takes a list of field arguments:
 
 ::
 
-    ./manage.py addmodel --list_display id --old old_fashion Collection  \
-        *_cover_photo:ForeignKey:Photo:CASCADE:related_name=cover_photo \
-        *_social_photo:ForeignKey:Photo:CASCADE:related_name=social_photo \
-        *_title*:CharField:max_length=255 \
-        *_author*:ForeignKey:Person:CASCADE \
-        *_description:TextField \
-        *_album:ForeignKey:Album:CASCADE \
-        *_season*:ForeignKey:Season:CASCADE \
-        *_rating*:SmallIntegerField:default=0 \
-        *date_created:DateTimeField:auto_now_add=True \
-        *_date_published:DateTimeField:null=True:blank=True:db_index=True \
-        *date_modified:DateTimeField:auto_now=True \
-        *_date_expired:DateTimeField:null=True:blank=True:db_index=True \
-        *_date_deleted:DateTimeField:null=True:blank=True:db_index=True
+    ./manage.py add_model fashion Collection  \
+        cover_photo:ForeignKey:re:Photo:CASCADE:related_name=cover_photo \
+        social_photo:ForeignKey:re:Photo:CASCADE:related_name=social_photo \
+        title:CharField:rel:255 \
+        author:ForeignKey:rel:Person:CASCADE \
+        description:TextField:re \
+        album:ForeignKey:re:Album:CASCADE \
+        season:ForeignKey:rel:Season:CASCADE \
+        rating:SmallIntegerField:rel:0 \
+        date_created:DateTimeField:rA \
+        date_published:DateTimeField:re-i \
+        date_modified:DateTimeField:ra \
+        date_expired:DateTimeField:re-i \
+        date_deleted:DateTimeField:re-i
+    ./manage.py add_model fashion Person  \
+        first_name:CharField:reL:50 \
+        last_name:CharField:rel:50
+    ./manage.py add_model fashion Brand  \
+        name:CharField:reL:50
+    ./manage.py add_model fashion Season  \
+        name:CharField:reL:50
+    ./manage.py add_model fashion Album looks:ManyToManyField:re:Look
+    ./manage.py add_model fashion Look  \
+        collection:ForeignKey:re:Collection:CASCADE \
+        name:CharField:reL:50 \
+        rating:SmallIntegerField:rel:0
+    ./manage.py add_model fashion View  \
+        photo:ForeignKey:re:Photo:CASCADE \
+        type:ForeignKey:re:ViewTypes:CASCADE
+    ./manage.py add_model fashion ViewTypes  \
+        name:CharField:reL:50 \
+        code:CharField:re:2
 
-    ./manage.py addmodel --detail_display id --old old_fashion Person  \
-        *_first_name**:CharField:max_length=50 \
-        *_last_name*:CharField:max_length=50
-    ./manage.py addmodel --detail_display id --list_display id --old old_fashion Brand  \
-        *_name**:CharField:max_length=50
-    ./manage.py addmodel --list_display id --old old_fashion Season  \
-        *_name**:CharField:max_length=50
-    ./manage.py addmodel --list_display id --old old_fashion Album  \
-        *_looks:ManyToManyField:Look
-    ./manage.py addmodel --list_display id --old old_fashion Look  \
-        *_collection:ForeignKey:Collection:CASCADE \
-        *_name**:CharField:max_length=50 \
-        *_rating*:SmallIntegerField:default=0
-    ./manage.py addmodel --list_display_links id --old old_fashion View  \
-        *_photo:ForeignKey:Photo:CASCADE \
-        *_type:ForeignKey:ViewTypes:CASCADE
-    ./manage.py addmodel --list_display id --old old_fashion ViewTypes  \
-        *_name**:CharField:max_length=50 \
-        *_code:CharField:max_length=2
-    ./manage.py addmodel --list_display_links id --old old_fashion Photo  \
-        *_original:ForeignKey:Photo:CASCADE:related_name=original_file \
-        *_small:ForeignKey:Photo:CASCADE:related_name=small_file \
-        *_medium:ForeignKey:Photo:CASCADE:related_name=medium_file \
-        *_large:ForeignKey:Photo:CASCADE:related_name=large_file \
-        *_thumbnail:ForeignKey:Photo:CASCADE:related_name=thumbnail_file
-    ./manage.py addmodel --list_display_links id --old old_fashion Image  \
-        *_width:PositiveIntegerField \
-        *_height:PositiveIntegerField \
-        *_file:ImageField
+    ./manage.py add_model images Image  \
+        width:PositiveIntegerField:re \
+        height:PositiveIntegerField:re \
+        file:ImageField:re
+    ./manage.py add_model images Photo  \
+        original:ForeignKey:re:Image:CASCADE:related_name=original_file \
+        small:ForeignKey:re:Image:CASCADE:related_name=small_file \
+        medium:ForeignKey:re:Image:CASCADE:related_name=medium_file \
+        large:ForeignKey:re:Image:CASCADE:related_name=large_file \
+        thumbnail:ForeignKey:re:Image:CASCADE:related_name=thumbnail_file
 
-This creates the apps models along with admin and template components.
-
-We can now enable the app with the enableapp command:
+We can now write the apps with the build command:
 
 ::
 
-    ./manage.py enableapp old_fashion
+    ./manage.py build
 
-This adds the app to the INSTALLED_APPS settings.py configuration, as well as adding the apps urls to the urls.py.
+This creates the apps models along with admin and template components. In addition, this adds the app to the INSTALLED_APPS settings.py configuration, as well as adding the apps urls to the project urls.py.
 
 From here, we continue with the usual Django development process of creating migration files and running the migrations in order to create the database schema:
 
@@ -153,5 +146,6 @@ From here, we continue with the usual Django development process of creating mig
 
     ./manage.py makemigrations
     ./manage.py migrate
+    ./manage.py createsuperuser
 
 At this point, you can contine with the usual Django development of your app by editing your models and creating templates. You may also want to edit the urls.py file to adjust which urls you want active in your app.
