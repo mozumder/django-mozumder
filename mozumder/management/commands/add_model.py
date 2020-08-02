@@ -16,12 +16,6 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
 
         parser.add_argument(
-            '--old',
-            action='store_true',
-            default=False,
-            help='Use original Django app model',
-            )
-        parser.add_argument(
             '--verbose_name',
             action='store',
             help="Model's verbose name",
@@ -30,48 +24,6 @@ class Command(BaseCommand):
             '--verbose_name_plural',
             action='store',
             help="Model's plural verbose name",
-            )
-        parser.add_argument(
-            '--list_display',
-            action='store',
-            nargs='+',
-            default = [],
-            help="Fields to be shown in list display. You can also add fields by appending an asterisk - * - to the field name.",
-            )
-        parser.add_argument(
-            '--detail_display',
-            action='store',
-            nargs='+',
-            default = [],
-            help="Fields to be shown in detail display. You can also add fields by prepending an asterisk to the field name.",
-            )
-        parser.add_argument(
-            '--list_display_links',
-            action='store',
-            nargs='+',
-            default = [],
-            help="List display fields that link to model. You can also add fields by appending two asterisks to the field name.",
-            )
-        parser.add_argument(
-            '--readonly_fields',
-            action='store',
-            nargs='+',
-            default = [],
-            help="Fields that are read only",
-            )
-        parser.add_argument(
-            '--search_fields',
-            action='store',
-            nargs='+',
-            default = [],
-            help="Search fields for admin",
-            )
-        parser.add_argument(
-            '--form_fields',
-            action='store',
-            nargs='+',
-            default = [],
-            help="Fields used in form entry",
             )
         parser.add_argument(
             'app_name',
@@ -87,7 +39,7 @@ class Command(BaseCommand):
             'field',
             action='store',
             nargs='+',
-            help="""Model fields in format: name:type:[args:...] For foreignkeys, the format is: name:type:relation:on_delete:[args:...]""",
+            help="Model fields in format: name:type:[args:...] For foreignkeys, the format is: name:type:relation:on_delete:[args:...]",
             )
             
     def handle(self, *args, **options):
@@ -99,12 +51,6 @@ class Command(BaseCommand):
         verbose_name = options['verbose_name'] if options['verbose_name'] else CamelCase_to_verbose(model_name)
         verbose_name_plural = options['verbose_name_plural'] if options['verbose_name_plural'] else verbose_name + 's'
         fields_list = options['field']
-        list_display_links = options['list_display_links']
-        list_display = options['list_display'] if options['list_display'] else options['list_display_links'].copy()
-        readonly_fields = options['readonly_fields']
-        search_fields = options['search_fields']
-        detail_display = options['detail_display']
-        form_fields = options['form_fields']
         
         # Create app
         tracked_app, app_created = TrackedApp.objects.get_or_create(name=app_name)

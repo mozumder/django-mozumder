@@ -68,6 +68,59 @@ class ModelsFile(DevelopTemplate):
     def get_filepath(self, context):
         # Subclass this as needed
         return os.path.join(os.getcwd(),context['app_name'])
+
+    def get_model_text(self, model_obj, context):
+        output = f"class {model_obj.name}(models.Model):\n"
+        fields = TrackedField.objects.filter(owner=model_obj)
+        for field in fields:
+            field_params = {}
+            field_param_pairs = []
+            if FieldTypes(field.type).label == 'ForeignKey':
+                field_param_pairs += ["'" + field.to + "'"]
+                field_params['on_delete'] = 'models.' + str(OnDelete(field.on_delete).label)
+            if FieldTypes(field.type).label == 'ManyToManyField':
+                field_param_pairs += ["'" + field.to + "'"]
+            if snake_case_to_verbose(field.name) != field.verbose_name:
+                field_param_pairs += ["_(" + field.verbose_name + ")"]
+            if field.related_name:
+                field_params['related_name'] = "'" + field.related_name + "'"
+            if field.max_length:
+                field_params['max_length'] = field.max_length
+            if field.default_bool == True:
+                field_params['default'] = True
+            if field.default_bool == False:
+                field_params['default'] = False
+            if field.default_text:
+                field_params['default'] = "'" + field.default_text + "'"
+            if field.default_smallint:
+                field_params['default'] = field.default_smallint
+            if field.auto_now == True:
+                field_params['auto_now'] = True
+            if field.auto_now_add == True:
+                field_params['auto_now_add'] = True
+            if field.null == True:
+                field_params['null'] = True
+            if field.blank == True:
+                field_params['blank'] = True
+            if field.db_index == True:
+                field_params['db_index'] = True
+            if field.primary_key == True:
+                field_params['primary_key'] = True
+            if field.unique == True:
+                field_params['unique'] = True
+            if field.unique_for_date == True:
+                field_params['unique_for_date'] = True
+            if field.unique_for_month == True:
+                field_params['unique_for_month'] = True
+            if field.unique_for_year == True:
+                field_params['unique_for_year'] = True
+            field_param_pairs += [f'{k}={v}' for k, v in field_params.items()]
+            
+            line = f"    {field.name} = models.{FieldTypes(field.type).label}({', '.join(field_param_pairs)})\n"
+            output += line
+        output += "\n"
+        return output
+
     def get_text(self, context):
 
         output = f"""from django.db import models
@@ -78,55 +131,7 @@ from django.utils.translation import gettext as _
         app_obj = TrackedApp.objects.get(name=context.app_name)
         model_objs = TrackedModel.objects.filter(owner=app_obj)
         for model_obj in model_objs:
-            output += f"class {model_obj.name}(models.Model):\n"
-            fields = TrackedField.objects.filter(owner=model_obj)
-            for field in fields:
-                field_params = {}
-                field_param_pairs = []
-                if FieldTypes(field.type).label == 'ForeignKey':
-                    field_param_pairs += ["'" + field.to + "'"]
-                    field_params['on_delete'] = 'models.' + str(OnDelete(field.on_delete).label)
-                if FieldTypes(field.type).label == 'ManyToManyField':
-                    field_param_pairs += ["'" + field.to + "'"]
-                if snake_case_to_verbose(field.name) != field.verbose_name:
-                    field_param_pairs += ["_(" + field.verbose_name + ")"]
-                if field.related_name:
-                    field_params['related_name'] = "'" + field.related_name + "'"
-                if field.max_length:
-                    field_params['max_length'] = field.max_length
-                if field.default_bool == True:
-                    field_params['default'] = True
-                if field.default_bool == False:
-                    field_params['default'] = False
-                if field.default_text:
-                    field_params['default'] = "'" + field.default_text + "'"
-                if field.default_smallint:
-                    field_params['default'] = field.default_smallint
-                if field.auto_now == True:
-                    field_params['auto_now'] = True
-                if field.auto_now_add == True:
-                    field_params['auto_now_add'] = True
-                if field.null == True:
-                    field_params['null'] = True
-                if field.blank == True:
-                    field_params['blank'] = True
-                if field.db_index == True:
-                    field_params['db_index'] = True
-                if field.primary_key == True:
-                    field_params['primary_key'] = True
-                if field.unique == True:
-                    field_params['unique'] = True
-                if field.unique_for_date == True:
-                    field_params['unique_for_date'] = True
-                if field.unique_for_month == True:
-                    field_params['unique_for_month'] = True
-                if field.unique_for_year == True:
-                    field_params['unique_for_year'] = True
-                field_param_pairs += [f'{k}={v}' for k, v in field_params.items()]
-                
-                line = f"    {field.name} = models.{FieldTypes(field.type).label}({', '.join(field_param_pairs)})\n"
-                output += line
-            output += "\n"
+            output += self.get_model_text(model_obj, context)
         return output
 
 class AdminPy(DevelopTemplate):

@@ -182,6 +182,7 @@
 		ECD7045524CBBE7B00466C61 /* name_case.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = name_case.py; sourceTree = "<group>"; };
 		ECD7045624CBE7B000466C61 /* write_models.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = write_models.py; sourceTree = "<group>"; };
 		ECD7045724CBF3B300466C61 /* add_app.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = add_app.py; sourceTree = "<group>"; };
+		ECD7045924D63BAB00466C61 /* build.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = build.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -371,6 +372,7 @@
 				ECBCB18424AC37D20097C2FA /* readcsv.py */,
 				ECD7045624CBE7B000466C61 /* write_models.py */,
 				ECD7045724CBF3B300466C61 /* add_app.py */,
+				ECD7045924D63BAB00466C61 /* build.py */,
 			);
 			path = commands;
 			sourceTree = "<group>";
