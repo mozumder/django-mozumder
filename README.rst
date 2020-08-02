@@ -88,9 +88,10 @@ And for each app, we can start to create our database models. Each model takes a
 
 ::
 
+    ./manage.py add_app fashion
     ./manage.py add_model fashion Collection  \
-        cover_photo:ForeignKey:re:Photo:CASCADE:related_name=cover_photo \
-        social_photo:ForeignKey:re:Photo:CASCADE:related_name=social_photo \
+        cover_photo:ForeignKey:re:'images.Photo':CASCADE:related_name=cover_photo \
+        social_photo:ForeignKey:re:'images.Photo':CASCADE:related_name=social_photo \
         title:CharField:rel:255 \
         author:ForeignKey:rel:Person:CASCADE \
         description:TextField:re \
@@ -115,7 +116,7 @@ And for each app, we can start to create our database models. Each model takes a
         name:CharField:reL:50 \
         rating:SmallIntegerField:rel:0
     ./manage.py add_model fashion View  \
-        photo:ForeignKey:re:Photo:CASCADE \
+        photo:ForeignKey:re:'images.Photo':CASCADE \
         type:ForeignKey:re:ViewTypes:CASCADE
     ./manage.py add_model fashion ViewTypes  \
         name:CharField:reL:50 \
