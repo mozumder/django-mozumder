@@ -81,7 +81,7 @@ class ModelsFile(DevelopTemplate):
             if FieldTypes(field.type).label == 'ManyToManyField':
                 field_param_pairs += ["'" + field.to + "'"]
             if snake_case_to_verbose(field.name) != field.verbose_name:
-                field_param_pairs += ["_(" + field.verbose_name + ")"]
+                field_param_pairs += [f"_('{field.verbose_name}')"]
             if field.related_name:
                 field_params['related_name'] = "'" + field.related_name + "'"
             if field.max_length:

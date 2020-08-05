@@ -20,11 +20,14 @@ class TrackedField(models.Model):
     )
     verbose_name = models.CharField(max_length=80, null=True, blank=True)
 
+    auto_created = models.BooleanField(null=True, blank=True)
+    serialize = models.BooleanField(null=True, blank=True)
+    primary_key = models.BooleanField(null=True, blank=True)
+
     null = models.BooleanField(null=True, blank=True)
     blank = models.BooleanField(null=True, blank=True)
     
     db_index = models.BooleanField(null=True, blank=True)
-    primary_key = models.BooleanField(null=True, blank=True)
     db_column = models.CharField(max_length=80, null=True, blank=True)
     db_tablespace = models.CharField(max_length=80, null=True, blank=True)
 

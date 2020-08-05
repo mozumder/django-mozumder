@@ -83,6 +83,11 @@ class Command(BaseCommand):
         auto_now = False
         auto_now_add = False
 
+        auto_created = False
+        serialize = True
+
+        has_primary_key = False
+
         for field in fields_list:
             field_name, field_type, field_properties, *field_params = field.split(":")
 
@@ -91,6 +96,9 @@ class Command(BaseCommand):
             field.verbose_name = snake_case_to_verbose(field_name)
 
             # Get field properties
+            if 'p' in field_properties:
+                field.primary_key = True
+                has_primary_key = True
             if '_' in field_properties:
                 field.null = True
             if '-' in field_properties:
@@ -158,5 +166,22 @@ class Command(BaseCommand):
                     if param.startswith('related_name='):
                         field.related_name = param.split('=')[1]
                     i += 1
+            elif field_type == 'ImageField' or field_type == 'FileField':
+                i = 0
+                for param in field_params:
+                    if param.startswith('upload_to='):
+                        field.upload_to = param.split('=')[1]
+                    i += 1
             field.type=FieldTypes[field_type.upper()]
             field.save()
+
+        if has_primary_key == False:
+            field, field_created = TrackedField.objects.get_or_create(
+                name='id', owner=tracked_model)
+            field.type=FieldTypes['AUTOFIELD']
+            field.auto_created = True
+            field.primary_key = True
+            field.serialize = False
+            field.verbose_name = 'ID'
+            field.save()
+

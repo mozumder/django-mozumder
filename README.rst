@@ -139,13 +139,12 @@ We can now write the apps with the build command:
 
     ./manage.py build
 
-This creates the apps models along with admin and template components. In addition, this adds the app to the INSTALLED_APPS settings.py configuration, as well as adding the apps urls to the project urls.py.
+This creates the apps models along with migrations, admin, and template components. In addition, this adds the app to the INSTALLED_APPS project settings.py configuration, as well as adding the apps urls to the project urls.py.
 
-From here, we continue with the usual Django development process of creating migration files and running the migrations in order to create the database schema:
+From here, we continue with the usual Django development process of running the migrations in order to create the database schema:
 
 ::
 
-    ./manage.py makemigrations
     ./manage.py migrate
     ./manage.py createsuperuser
 

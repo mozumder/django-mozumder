@@ -83,81 +83,155 @@ def write_app(app_obj):
         model_objs = TrackedModel.objects.filter(owner=app_obj)
         
         imports = ''
+        migration_output = """from django.db import migrations, models
+import django.db.models.deletion
+
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = [
+    ]
+
+    operations = [
+"""
         for model_obj in model_objs:
-            output = get_model(model_obj)
+            model_output, migration_model = get_model(model_obj)
+            migration_output += migration_model
             file = os.path.join(target_root,'models',model_obj.name.lower()+'.py')
-            print(f'Writing file: {file}')
+            print(f'Writing model file: {file}')
             f = open(file, "w")
-            f.write(output)
+            f.write(model_output)
             f.close()
             imports += f'from .{model_obj.name.lower()} import {model_obj.name}\n'
+        migration_output += """    ]
+"""
 
         model_package_file = os.path.join(target_root,'models','__init__.py')
-        p = open(model_package_file, "w")
-        p.write(imports)
-        p.close()
+        f = open(model_package_file, "w")
+        f.write(imports)
+        f.close()
+
+        file = os.path.join(target_root,'migrations','0001_initial.py')
+        print(f'Writing migration file: {file}')
+        f = open(file, "w")
+        f.write(migration_output)
+        f.close()
 
 
 def get_model(model_obj):
-    output = f"""from django.db import models
+    model_output = f"""from django.db import models
 from django.utils.translation import gettext as _
 
 # Create your models here
 class {model_obj.name}(models.Model):\n
 """
 
-    field_objs = TrackedField.objects.filter(owner=model_obj)
+    migration_output = f"""        migrations.CreateModel(
+            name='{model_obj.name}',
+            fields=[
+"""
+
+    field_objs = TrackedField.objects.filter(owner=model_obj, primary_key=True)
     for field_obj in field_objs:
-        output += get_field(field_obj)
-    output += "\n"
-    return output
+        model_text, migration_text = get_field(field_obj)
+        model_output += model_text
+        migration_output += migration_text
+    field_objs = TrackedField.objects.filter(owner=model_obj, primary_key=None)
+    for field_obj in field_objs:
+        model_text, migration_text = get_field(field_obj)
+        model_output += model_text
+        migration_output += migration_text
+    model_output += "\n"
+    migration_output += f"""            ],
+        ),
+"""
+    return model_output, migration_output
 
 def get_field(field):
 
-    field_params = {}
-    field_param_pairs = []
+    model_field_params = {}
+    migration_field_params = {}
+    model_field_param_pairs = []
+    migration_field_param_pairs = []
     if FieldTypes(field.type).label == 'ForeignKey':
-        field_param_pairs += ["'" + field.to + "'"]
-        field_params['on_delete'] = 'models.' + str(OnDelete(field.on_delete).label)
+        model_field_param_pairs += ["'" + field.to + "'"]
+        model_field_params['on_delete'] = 'models.' + str(OnDelete(field.on_delete).label)
+        migration_field_params['to'] = "'" + field.to + "'"
+        migration_field_params['on_delete'] = 'django.db.models.deletion.' + str(OnDelete(field.on_delete).label)
     if FieldTypes(field.type).label == 'ManyToManyField':
-        field_param_pairs += ["'" + field.to + "'"]
+        model_field_param_pairs += ["'" + field.to + "'"]
+        migration_field_params['to'] = "'" + field.to + "'"
     if snake_case_to_verbose(field.name) != field.verbose_name:
-        field_param_pairs += ["_(" + field.verbose_name + ")"]
+        model_field_param_pairs += [f"_('{field.verbose_name}')"]
+        migration_field_params['verbose_name'] = "'" + field.verbose_name + "'"
     if field.related_name:
-        field_params['related_name'] = "'" + field.related_name + "'"
+        model_field_params['related_name'] = "'" + field.related_name + "'"
+        migration_field_params['related_name'] = "'" + field.related_name + "'"
     if field.max_length:
-        field_params['max_length'] = field.max_length
+        model_field_params['max_length'] = field.max_length
+        migration_field_params['max_length'] = field.max_length
     if field.default_bool == True:
-        field_params['default'] = True
+        model_field_params['default'] = True
+        migration_field_params['default'] = True
     if field.default_bool == False:
-        field_params['default'] = False
+        model_field_params['default'] = False
+        migration_field_params['default'] = False
     if field.default_text:
-        field_params['default'] = "'" + field.default_text + "'"
+        model_field_params['default'] = "'" + field.default_text + "'"
+        migration_field_params['default'] = "'" + field.default_text + "'"
     if field.default_smallint:
-        field_params['default'] = field.default_smallint
+        model_field_params['default'] = field.default_smallint
+        migration_field_params['default'] = field.default_smallint
+    if field.auto_created == True:
+        model_field_params['auto_created'] = True
+        migration_field_params['auto_created'] = True
+    if field.serialize == False:
+        model_field_params['serialize'] = False
+        migration_field_params['serialize'] = False
     if field.auto_now == True:
-        field_params['auto_now'] = True
+        model_field_params['auto_now'] = True
+        migration_field_params['auto_now'] = True
     if field.auto_now_add == True:
-        field_params['auto_now_add'] = True
+        model_field_params['auto_now_add'] = True
+        migration_field_params['auto_now_add'] = True
     if field.null == True:
-        field_params['null'] = True
+        model_field_params['null'] = True
+        migration_field_params['null'] = True
     if field.blank == True:
-        field_params['blank'] = True
+        model_field_params['blank'] = True
+        migration_field_params['blank'] = True
     if field.db_index == True:
-        field_params['db_index'] = True
+        model_field_params['db_index'] = True
+        migration_field_params['db_index'] = True
     if field.primary_key == True:
-        field_params['primary_key'] = True
+        model_field_params['primary_key'] = True
+        migration_field_params['primary_key'] = True
     if field.unique == True:
-        field_params['unique'] = True
+        model_field_params['unique'] = True
+        migration_field_params['unique'] = True
     if field.unique_for_date == True:
-        field_params['unique_for_date'] = True
+        model_field_params['unique_for_date'] = True
+        migration_field_params['unique_for_date'] = True
     if field.unique_for_month == True:
-        field_params['unique_for_month'] = True
+        model_field_params['unique_for_month'] = True
+        migration_field_params['unique_for_month'] = True
     if field.unique_for_year == True:
-        field_params['unique_for_year'] = True
-    field_param_pairs += [f'{k}={v}' for k, v in field_params.items()]
+        model_field_params['unique_for_year'] = True
+        migration_field_params['unique_for_year'] = True
+    if FieldTypes(field.type).label == 'ImageField' or FieldTypes(field.type).label == 'FileField':
+        model_field_params['upload_to'] = "''" if field.upload_to == None else field.upload_to
+        migration_field_params['upload_to'] = "''" if field.upload_to == None else field.upload_to
+    model_field_param_pairs += [f'{k}={v}' for k, v in model_field_params.items()]
     
-    return f"    {field.name} = models.{FieldTypes(field.type).label}({', '.join(field_param_pairs)})\n"
+    if field.auto_created == True:
+        model_text = ''
+    else:
+        model_text = f"    {field.name} = models.{FieldTypes(field.type).label}({', '.join(model_field_param_pairs)})\n"
+    migration_field_param_pairs += [f'{k}={v}' for k, v in migration_field_params.items()]
+    migration_text = f"                ('{field.name}', models.{FieldTypes(field.type).label}({', '.join(migration_field_param_pairs)})),\n"
+    return model_text, migration_text
 
 
 def enable_app(app_obj):

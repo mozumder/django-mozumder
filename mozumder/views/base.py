@@ -10,12 +10,10 @@ from django.db import connection
 from django.conf import settings
 from django.utils import timezone
 from django.core.cache import cache
-from django.middleware.csrf import get_token
+from django.middleware.csrf import get_token, _compare_masked_tokens
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
-from django.middleware.csrf import (
-    get_token, _compare_salted_tokens, _unsalt_cipher_token)
 from django.apps import apps
 
 from dotmap import DotMap
@@ -135,7 +133,7 @@ class MozumderView(View,Zip):
 
         csrf_token = self.request.POST.get('csrf', '')
         csrf_cookie = get_token(self.request)
-        csrf_match = _compare_salted_tokens(csrf_token, csrf_cookie)
+        csrf_match = _compare_masked_tokens(csrf_token, csrf_cookie)
 
         if csrf_match:
 
