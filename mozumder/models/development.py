@@ -6,6 +6,8 @@ from django.contrib.auth.models import Permission
 
 class TrackedApp(models.Model):
     name = models.CharField(max_length=80)
+    def __str__(self):
+        return self.name
 
 class Choices(models.Model):
     value = models.CharField(max_length=80)
@@ -102,10 +104,14 @@ class TrackedField(models.Model):
 
     #Field: SlugField
     sllow_unicode = models.BooleanField(null=True, blank=True)
+    def __str__(self):
+        return self.name
 
 class Index(models.Model):
     fields = models.ManyToManyField(TrackedField)
     name = models.CharField(max_length=80, null=True, blank=True)
+    def __str__(self):
+        return self.name
 
 class Contraint(models.Model):
     type = models.CharField(max_length=2, choices=ConstraintType.choices)
@@ -116,10 +122,14 @@ class Contraint(models.Model):
 class Mixin(models.Model):
     name = models.CharField(max_length=80)
     code = models.TextField(null=True, blank=True)
+    def __str__(self):
+        return self.name
 
 class Arg(models.Model):
     name = models.CharField(max_length=80, null=True, blank=True)
     value = models.CharField(max_length=80, null=True, blank=True)
+    def __str__(self):
+        return self.name
 
 class Function(models.Model):
     name = models.CharField(max_length=80)
@@ -140,6 +150,8 @@ class Ordering(models.Model):
 class ExtraPermission(models.Model):
     name = models.CharField(max_length=80, null=True, blank=True)
     value = models.CharField(max_length=80, null=True, blank=True)
+    def __str__(self):
+        return self.name
 
 class TrackedModel(models.Model):
     name = models.CharField(max_length=80)
@@ -163,3 +175,5 @@ class TrackedModel(models.Model):
 
     mixins = models.ManyToManyField(Mixin)
     function = models.ManyToManyField(Function)
+    def __str__(self):
+        return self.name

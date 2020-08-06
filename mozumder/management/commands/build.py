@@ -1,5 +1,7 @@
 import os
 from django.core.management.base import BaseCommand
+from django.core import management
+
 from dotmap import DotMap
 import mozumder
 from ...models.development import *
@@ -96,31 +98,55 @@ class Migration(migrations.Migration):
 
     operations = [
 """
+        prev_models = []
+        additional_fields = []
         for model_obj in model_objs:
-            model_output, migration_model = get_model(model_obj)
+            model_output, migration_model, add_fields = get_model(model_obj, prev_models)
+            prev_models.append(model_obj)
             migration_output += migration_model
+            additional_fields += add_fields
             file = os.path.join(target_root,'models',model_obj.name.lower()+'.py')
             print(f'Writing model file: {file}')
             f = open(file, "w")
             f.write(model_output)
             f.close()
             imports += f'from .{model_obj.name.lower()} import {model_obj.name}\n'
-        migration_output += """    ]
-"""
-
         model_package_file = os.path.join(target_root,'models','__init__.py')
         f = open(model_package_file, "w")
         f.write(imports)
         f.close()
 
-        file = os.path.join(target_root,'migrations','0001_initial.py')
-        print(f'Writing migration file: {file}')
-        f = open(file, "w")
-        f.write(migration_output)
-        f.close()
+        for field in additional_fields:
+            migration_field_params = {}
+            migration_field_param_pairs = []
+            if FieldTypes(field.type).label == 'ForeignKey':
+                migration_field_params['to'] = "'" + field.to + "'"
+                migration_field_params['on_delete'] = 'django.db.models.deletion.' + str(OnDelete(field.on_delete).label)
+            if FieldTypes(field.type).label == 'ManyToManyField':
+                migration_field_params['to'] = "'" + field.to + "'"
+            migration_field_param_pairs += [f'{k}={v}' for k, v in migration_field_params.items()]
+            migration_output += f"""        migrations.AddField(
+            model_name='{field.owner.name}',
+            name='{field.name}',
+            field=models.{FieldTypes(field.type).label}({', '.join(migration_field_param_pairs)}),
+        ),
+"""
 
+        migration_output += """    ]
+"""
 
-def get_model(model_obj):
+# Disable my own migrations file generator. Use Django one.
+
+#        file = os.path.join(target_root,'migrations','0001_initial.py')
+#        print(f'Writing migration file: {file}')
+#        f = open(file, "w")
+#       f.write(migration_output)
+#        f.close()
+
+# Django Migrations generator
+        management.call_command("makemigrations", f"{app_obj.name}")
+
+def get_model(model_obj, prev_models):
     model_output = f"""from django.db import models
 from django.utils.translation import gettext as _
 
@@ -132,35 +158,49 @@ class {model_obj.name}(models.Model):\n
             name='{model_obj.name}',
             fields=[
 """
-
+    additional_fields = []
     field_objs = TrackedField.objects.filter(owner=model_obj, primary_key=True)
     for field_obj in field_objs:
-        model_text, migration_text = get_field(field_obj)
+        model_text, migration_text, addfields = get_field(field_obj, prev_models)
         model_output += model_text
         migration_output += migration_text
+        if addfields != None:
+            additional_fields.append(addfields)
     field_objs = TrackedField.objects.filter(owner=model_obj, primary_key=None)
     for field_obj in field_objs:
-        model_text, migration_text = get_field(field_obj)
+        model_text, migration_text, addfields = get_field(field_obj, prev_models)
         model_output += model_text
         migration_output += migration_text
+        if addfields != None:
+            additional_fields.append(addfields)
     model_output += "\n"
     migration_output += f"""            ],
         ),
 """
-    return model_output, migration_output
+    return model_output, migration_output, additional_fields
 
-def get_field(field):
+def get_field(field, prev_models):
 
     model_field_params = {}
     migration_field_params = {}
     model_field_param_pairs = []
     migration_field_param_pairs = []
+    addfields = None
+    migration_dependent = False
     if FieldTypes(field.type).label == 'ForeignKey':
+        model_to = TrackedModel.objects.get(name=field.to.split('.')[-1])
+        if model_to not in prev_models:
+            addfields = field
+            migration_dependent = True
         model_field_param_pairs += ["'" + field.to + "'"]
         model_field_params['on_delete'] = 'models.' + str(OnDelete(field.on_delete).label)
         migration_field_params['to'] = "'" + field.to + "'"
         migration_field_params['on_delete'] = 'django.db.models.deletion.' + str(OnDelete(field.on_delete).label)
     if FieldTypes(field.type).label == 'ManyToManyField':
+        model_to = TrackedModel.objects.get(name=field.to.split('.')[-1])
+        if model_to not in prev_models:
+            addfields = field
+            migration_dependent = True
         model_field_param_pairs += ["'" + field.to + "'"]
         migration_field_params['to'] = "'" + field.to + "'"
     if snake_case_to_verbose(field.name) != field.verbose_name:
@@ -229,9 +269,12 @@ def get_field(field):
         model_text = ''
     else:
         model_text = f"    {field.name} = models.{FieldTypes(field.type).label}({', '.join(model_field_param_pairs)})\n"
-    migration_field_param_pairs += [f'{k}={v}' for k, v in migration_field_params.items()]
-    migration_text = f"                ('{field.name}', models.{FieldTypes(field.type).label}({', '.join(migration_field_param_pairs)})),\n"
-    return model_text, migration_text
+    if migration_dependent == True:
+        migration_text = ''
+    else:
+        migration_field_param_pairs += [f'{k}={v}' for k, v in migration_field_params.items()]
+        migration_text = f"                ('{field.name}', models.{FieldTypes(field.type).label}({', '.join(migration_field_param_pairs)})),\n"
+    return model_text, migration_text, addfields
 
 
 def enable_app(app_obj):
