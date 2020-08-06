@@ -144,7 +144,7 @@ class Migration(migrations.Migration):
 #        f.close()
 
 # Django Migrations generator
-        management.call_command("makemigrations", f"{app_obj.name}")
+#        management.call_command("makemigrations", f"{app_obj.name}")
 
 def get_model(model_obj, prev_models):
     model_output = f"""from django.db import models
