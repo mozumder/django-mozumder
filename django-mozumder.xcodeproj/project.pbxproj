@@ -184,6 +184,8 @@
 		ECD7045724CBF3B300466C61 /* add_app.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = add_app.py; sourceTree = "<group>"; };
 		ECD7045924D63BAB00466C61 /* build.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = build.py; sourceTree = "<group>"; };
 		ECD7045B24DA8F8100466C61 /* models.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = models.py; sourceTree = "<group>"; };
+		ECD7045D24DCC00600466C61 /* __init__.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		ECD7045E24DCC01500466C61 /* app.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = app.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -837,6 +839,8 @@
 		ECD7045A24DA8F6700466C61 /* writers */ = {
 			isa = PBXGroup;
 			children = (
+				ECD7045D24DCC00600466C61 /* __init__.py */,
+				ECD7045E24DCC01500466C61 /* app.py */,
 				ECD7045B24DA8F8100466C61 /* models.py */,
 			);
 			path = writers;
