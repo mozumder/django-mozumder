@@ -29,14 +29,14 @@ class URLsWriter(Writer):
                     state = 'urlpatterns'
                 elif line.startswith("from django.urls import path"):
                     line += f"""from ..views import {context.model.name}ListView, \\
-    {context.model.name}AddView, {context.model.name}DetailView, {context.model.name}UpdateView, \\
+    {context.model.name}CreateView, {context.model.name}DetailView, {context.model.name}UpdateView, \\
     {context.model.name}CopyView, {context.model.name}DeleteView, search_{context.model_code_name}
 """
             elif state == 'urlpatterns':
                 if line == ']\n':
                     # GET: Read All, DELETE: Delete All, POST: Add, PATCH: Update All Field
                     output += f"    path('{context.model_code_name}/', {context.model.name}ListView.as_view(), name='{context.model_code_name}_list'),\n"
-                    output += f"    path('{context.model_code_name}/add', {context.model.name}AddView.as_view(), name='{context.model_code_name}_add'),\n"
+                    output += f"    path('{context.model_code_name}/create', {context.model.name}CreateView.as_view(), name='{context.model_code_name}_create'),\n"
                     output += f"    path('{context.model_code_name}/<int:pk>', {context.model.name}DetailView.as_view(), name='{context.model_code_name}_detail'),\n"
                     output += f"    path('{context.model_code_name}/<int:pk>/update', {context.model.name}UpdateView.as_view(), name='{context.model_code_name}_update'),\n"
                     output += f"    path('{context.model_code_name}/<int:pk>/copy', {context.model.name}CopyView.as_view(), name='{context.model_code_name}_copy'),\n"

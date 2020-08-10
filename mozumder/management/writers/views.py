@@ -23,7 +23,7 @@ class {context.model.name}DetailView(DetailView):
 class {context.model.name}ListView(ListView):
     model = {context.model.name}
 
-class {context.model.name}AddView(CreateView):
+class {context.model.name}CreateView(CreateView):
     model = {context.model.name}
     fields = {form_fields}
     template_name_suffix = '_create_form'

@@ -84,7 +84,7 @@ def write_app(app_obj):
             # Write views.py as part of module
             ViewWriter().write(context)
             views_imports += f"""from .{context['model_code_name']} import {model_obj.name}DetailView, \\
-    {model_obj.name}ListView, {model_obj.name}AddView, {model_obj.name}CopyView, \\
+    {model_obj.name}ListView, {model_obj.name}CreateView, {model_obj.name}CopyView, \\
     {model_obj.name}UpdateView, {model_obj.name}DeleteView, search_{context['model_code_name']}, \\
     {model_obj.name}JSONDetailView, {model_obj.name}JSONListView, \\
     json_search_{context['model_code_name']}
@@ -100,6 +100,7 @@ def write_app(app_obj):
             # Write Django templates
             ModelListBlock().write(context)
             ModelListPage().write(context)
+            ModelDetailBlock().write(context)
             ModelDetailPage().write(context)
             UpdateModelsListBlock().write(context)
             CreateFormBlock().write(context)

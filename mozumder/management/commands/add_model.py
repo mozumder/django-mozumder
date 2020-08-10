@@ -107,7 +107,7 @@ class Command(BaseCommand):
             if 'r' in field_properties:
                 field.show_in_detail_view = True
             if 'e' in field_properties:
-                field.show_in_edit_view = True
+                field.editable = True
             if 'l' in field_properties:
                 field.show_in_list_view = True
             if 'L' in field_properties:

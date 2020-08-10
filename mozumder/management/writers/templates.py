@@ -18,10 +18,11 @@ class ModelListBlock(TemplateWriter):
         header_row = ''
         row = ''
         list_fields = TrackedField.objects.filter(owner=context.model,show_in_list_view=True)
-        link_fields = TrackedField.objects.filter(owner=context.model,link_in_list_view=True)
+        header_row += f'<th>ID</th>'
+        row += f"""<td><a href="{{% url '{context.model_code_name}_detail' instance.id %}}">{{{{instance.id}}}}</a></td>"""
         for field in list_fields:
             header_row += f'<th>{field.name}</th>'
-            if field in link_fields:
+            if field.link_in_list_view==False:
                 row += f"""<td>{{{{instance.{field.name}}}}}</td>"""
             else:
                 row += f"""<td><a href="{{% url '{context.model_code_name}_detail' instance.id %}}">{{{{instance.{field.name}}}}}</a></td>"""
@@ -47,7 +48,7 @@ class ModelListPage(TemplateWriter):
 {{% endblock content %}}
 """
 
-class ModelDetailPage(TemplateWriter):
+class ModelDetailBlock(TemplateWriter):
     extension = '_detail_block.html'
 
     def generate(self, context):
@@ -77,7 +78,7 @@ class UpdateModelsListBlock(TemplateWriter):
 
     def generate(self, context):
         # Add model to app's models list HTML
-        return f"""<li><a href="{{% url '{context.model_code_name}_list' %}}">{context.model.verbose_name}</a> <a href="{{% url '{context.model_code_name}_add' %}}">Add</a></li>"""
+        return f"""<li><a href="{{% url '{context.model_code_name}_list' %}}">{context.model.verbose_name}</a> <a href="{{% url '{context.model_code_name}_create' %}}">Add</a></li>"""
 
 class CreateFormBlock(TemplateWriter):
     extension = '_create_form_block.html'
@@ -85,7 +86,7 @@ class CreateFormBlock(TemplateWriter):
     def generate(self, context):
         # Create Form Block
         return f"""<div>Model Create Form</div>
-<form action="{{% url '{context.model_code_name}_create' {context.model_code_name}.id %}}" method="post">
+<form action="{{% url '{context.model_code_name}_create' %}}" method="post">
     {{% csrf_token %}}
     {{{{ form }}}}
     <input type="submit" value="Submit">
@@ -196,5 +197,5 @@ class ModelsBlock(TemplateWriter):
         output = ''
         for model in models:
             model_code_name = CamelCase_to_snake_case(model.name)
-            output += f"""<li><a href="{{% url '{model_code_name}_list' %}}">{model.name}</a></li>"""
+            output += f"""<li><a href="{{% url '{model_code_name}_list' %}}">{model.name}</a><a href="{{% url '{model_code_name}_create' %}}">Add</a></li>"""
         return output
