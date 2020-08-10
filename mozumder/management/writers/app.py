@@ -1,6 +1,11 @@
 import os
 import mozumder
 from ...models.development import *
+from .models import *
+from .templates import *
+from .views import *
+from .urls import *
+from .admin import *
 from ..utilities.name_case import *
 
 def write_app(app_obj):
@@ -53,95 +58,77 @@ def write_app(app_obj):
 
         model_objs = TrackedModel.objects.filter(owner=app_obj)
         
-        imports = ''
+        # Write models.py, templates, and views.py
+        context = {}
+        context['app'] = app_obj
 
+        template_dir = os.path.join(os.getcwd(),app_name,'templates',app_name)
+        try:
+            os.mkdir(template_dir, access_rights)
+        except OSError:
+            print (f"Creation of template directory {template_dir} failed")
+        else:
+            print (f"Created template directory {template_dir}")
+
+        models_imports = ''
+        views_imports = ''
+        admin_imports = ''
         for model_obj in model_objs:
-            model_output = get_model(model_obj)
-            file = os.path.join(target_root,'models',model_obj.name.lower()+'.py')
-            print(f'Writing model file: {file}')
-            f = open(file, "w")
-            f.write(model_output)
-            f.close()
-            imports += f'from .{model_obj.name.lower()} import {model_obj.name}\n'
+            context['model'] = model_obj
+            context['model_code_name'] = CamelCase_to_snake_case(model_obj.name)
+
+            # Write models.py as part of module
+            ModelWriter().write(context)
+            models_imports += f"from .{context['model_code_name']} import {model_obj.name}\n"
+
+            # Write views.py as part of module
+            ViewWriter().write(context)
+            views_imports += f"""from .{context['model_code_name']} import {model_obj.name}DetailView, \\
+    {model_obj.name}ListView, {model_obj.name}AddView, {model_obj.name}CopyView, \\
+    {model_obj.name}UpdateView, {model_obj.name}DeleteView, search_{context['model_code_name']}, \\
+    {model_obj.name}JSONDetailView, {model_obj.name}JSONListView, \\
+    json_search_{context['model_code_name']}
+"""
+            # Write URLs for views
+            URLsWriter().update(context)
+            APIURLsWriter().update(context)
+            
+            # Write Admin
+            AdminWriter().write(context)
+            admin_imports += f"from .{context['model_code_name']} import {model_obj.name}Admin\n"
+
+            # Write Django templates
+            ModelListBlock().write(context)
+            ModelListPage().write(context)
+            ModelDetailPage().write(context)
+            UpdateModelsListBlock().write(context)
+            CreateFormBlock().write(context)
+            CreateFormPage().write(context)
+            UpdateFormBlock().write(context)
+            UpdateFormPage().write(context)
+            CopyFormBlock().write(context)
+            CopyFormPage().write(context)
+            DeleteFormBlock().write(context)
+            DeleteFormPage().write(context)
+
+        # Write apps models
+        ModelsBlock().write(context)
+
+        # Write models/__init__.py for python module
         model_package_file = os.path.join(target_root,'models','__init__.py')
         f = open(model_package_file, "w")
-        f.write(imports)
+        f.write(models_imports)
         f.close()
 
-def get_model(model_obj):
-    model_output = f"""from django.db import models
-from django.utils.translation import gettext as _
+        # Write views/__init__.py for python module
+        views_package_file = os.path.join(target_root,'views','__init__.py')
+        f = open(views_package_file, "w")
+        f.write(views_imports)
+        f.close()
 
-# Create your models here
-class {model_obj.name}(models.Model):\n
-"""
-
-    migration_output = f"""        migrations.CreateModel(
-            name='{model_obj.name}',
-            fields=[
-"""
-    field_objs = TrackedField.objects.filter(owner=model_obj)
-    for field_obj in field_objs:
-        model_output += get_field(field_obj)
-    model_output += "\n"
-    return model_output
-
-def get_field(field):
-
-    model_field_params = {}
-    model_field_param_pairs = []
-    if FieldTypes(field.type).label == 'ForeignKey':
-        model_to = TrackedModel.objects.get(name=field.to.split('.')[-1])
-        model_field_param_pairs += ["'" + field.to + "'"]
-        model_field_params['on_delete'] = 'models.' + str(OnDelete(field.on_delete).label)
-    if FieldTypes(field.type).label == 'ManyToManyField':
-        model_to = TrackedModel.objects.get(name=field.to.split('.')[-1])
-        model_field_param_pairs += ["'" + field.to + "'"]
-    if snake_case_to_verbose(field.name) != field.verbose_name:
-        model_field_param_pairs += [f"_('{field.verbose_name}')"]
-    if field.related_name:
-        model_field_params['related_name'] = "'" + field.related_name + "'"
-    if field.max_length:
-        model_field_params['max_length'] = field.max_length
-    if field.default_bool == True:
-        model_field_params['default'] = True
-    if field.default_bool == False:
-        model_field_params['default'] = False
-    if field.default_text:
-        model_field_params['default'] = "'" + field.default_text + "'"
-    if field.default_smallint:
-        model_field_params['default'] = field.default_smallint
-    if field.auto_created == True:
-        model_field_params['auto_created'] = True
-    if field.serialize == False:
-        model_field_params['serialize'] = False
-    if field.auto_now == True:
-        model_field_params['auto_now'] = True
-    if field.auto_now_add == True:
-        model_field_params['auto_now_add'] = True
-    if field.null == True:
-        model_field_params['null'] = True
-    if field.blank == True:
-        model_field_params['blank'] = True
-    if field.db_index == True:
-        model_field_params['db_index'] = True
-    if field.primary_key == True:
-        model_field_params['primary_key'] = True
-    if field.unique == True:
-        model_field_params['unique'] = True
-    if field.unique_for_date == True:
-        model_field_params['unique_for_date'] = True
-    if field.unique_for_month == True:
-        model_field_params['unique_for_month'] = True
-    if field.unique_for_year == True:
-        model_field_params['unique_for_year'] = True
-    if FieldTypes(field.type).label == 'ImageField' or FieldTypes(field.type).label == 'FileField':
-        model_field_params['upload_to'] = "''" if field.upload_to == None else field.upload_to
-    model_field_param_pairs += [f'{k}={v}' for k, v in model_field_params.items()]
-    
-    if field.auto_created == True:
-        model_text = ''
-    else:
-        model_text = f"    {field.name} = models.{FieldTypes(field.type).label}({', '.join(model_field_param_pairs)})\n"
-    return model_text
+        # Write admin/__init__.py for python module
+        admin_package_file = os.path.join(target_root,'admin','__init__.py')
+        f = open(admin_package_file, "w")
+        f.write(admin_imports)
+        f.close()
 
