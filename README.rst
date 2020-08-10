@@ -145,8 +145,10 @@ From here, we continue with the usual Django development process of creating mig
 
 ::
 
-    ./manage.py makemigrations
     ./manage.py migrate
-    ./manage.py createsuperuser
 
 At this point, you can contine with the usual Django development of your app by editing your models and creating templates. You may also want to edit the urls.py file to adjust which urls you want active in your app.
+
+::
+    ./manage.py createsuperuser
+    ./manage.py runserver
