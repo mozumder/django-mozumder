@@ -1,5 +1,5 @@
 from django.db import models
-from .. import FieldTypes, OnDelete, ConstraintType, IPAddressProtocol
+from .. import FieldTypes, OnDelete, ConstraintType, IPAddressProtocol, ViewBaseClass, DefaultMixins
 from django.contrib.auth.models import Permission
 
 # Create your models here.
@@ -119,19 +119,13 @@ class Contraint(models.Model):
     check_function = models.CharField(max_length=512, null=True, blank=True)
     name = models.CharField(max_length=80, null=True, blank=True)
 
-class Mixin(models.Model):
-    name = models.CharField(max_length=80)
-    code = models.TextField(null=True, blank=True)
-    def __str__(self):
-        return self.name
-
 class Arg(models.Model):
     name = models.CharField(max_length=80, null=True, blank=True)
     value = models.CharField(max_length=80, null=True, blank=True)
     def __str__(self):
         return self.name
 
-class Function(models.Model):
+class Method(models.Model):
     name = models.CharField(max_length=80)
     args = models.ManyToManyField(TrackedField, related_name='function_args')
     kwargs = models.ManyToManyField(TrackedField, related_name='function_kwargs')
@@ -173,7 +167,155 @@ class TrackedModel(models.Model):
     default_permissions = models.ManyToManyField(Permission)
     proxy = models.BooleanField(null=True, blank=True)
 
-    mixins = models.ManyToManyField(Mixin)
-    function = models.ManyToManyField(Function)
+    mixins = models.ManyToManyField('Mixin')
+    methods = models.ManyToManyField('Method')
     def __str__(self):
         return self.name
+
+class TrackedView(models.Model):
+    name = models.CharField(max_length=80)
+    owner = models.ForeignKey('TrackedApp',on_delete=models.CASCADE)
+    class_based_view = models.BooleanField(null=True, blank=True)
+    base_class = models.CharField(
+        max_length=2,
+        choices=ViewBaseClass.choices,
+    )
+    mixins = models.ManyToManyField('Mixin')
+    methods = models.ManyToManyField('Method')
+
+    model = models.ForeignKey('TrackedModel',on_delete=models.CASCADE, null=True, blank=True)
+    
+    # Redirect View
+    url = models.CharField(max_length=250, null=True, blank=True)
+    pattern = models.CharField(max_length=250, null=True, blank=True)
+    permanent = models.BooleanField(null=True, blank=True)
+    query_string = models.BooleanField(null=True, blank=True)
+
+    # Create/Update View
+    object = models.CharField(max_length=250, null=True, blank=True)
+    success_url = models.CharField(max_length=250, null=True, blank=True)
+
+    # Context Mixin
+    extra_context = models.TextField(null=True, blank=True)
+    
+    # Template Response mixin
+    template_name = models.CharField(max_length=250, null=True, blank=True)
+    template_engine = models.CharField(max_length=250, null=True, blank=True)
+    response_class = models.CharField(max_length=250, null=True, blank=True)
+    content_type = models.CharField(max_length=250, null=True, blank=True)
+    
+    # Single Object Mixin
+    model = models.ForeignKey('TrackedModel',on_delete=models.CASCADE, null=True, blank=True)
+    queryset = models.CharField(max_length=250, null=True, blank=True)
+    slug_field = models.ForeignKey('TrackedField', related_name='view_slug_field', on_delete=models.CASCADE)
+    slug_url_kwarg = models.CharField(max_length=250, null=True, blank=True)
+    pk_url_kwarg = models.CharField(max_length=250, null=True, blank=True)
+    context_object_name = models.CharField(max_length=250, null=True, blank=True)
+    query_pk_and_slug = models.CharField(max_length=250, null=True, blank=True)
+
+    # Single Object Template Response Mixin
+    template_name_field = models.ForeignKey('TrackedField', related_name='view_template_name_field', on_delete=models.CASCADE)
+    template_name_suffix = models.CharField(max_length=250, null=True, blank=True)
+
+    # Multiple Object Mixin
+    allow_empty = models.BooleanField(null=True, blank=True)
+    ordering = models.CharField(max_length=250, null=True, blank=True)
+    paginate_by = models.SmallIntegerField(null=True, blank=True)
+    paginate_orphans = models.SmallIntegerField(null=True, blank=True)
+    page_kwarg = models.CharField(max_length=250, null=True, blank=True)
+    paginator_class = models.CharField(max_length=250, null=True, blank=True)
+    context_object_name = models.CharField(max_length=250, null=True, blank=True)
+    
+    # Form Mixin
+    initial = models.TextField(null=True, blank=True)
+    form_class = models.CharField(max_length=250, null=True, blank=True)
+    prefix = models.CharField(max_length=250, null=True, blank=True)
+
+    # Model Form
+    fields = models.ManyToManyField(TrackedField, related_name='view_model_form_fields')
+
+    # Year/Month/Day/Week Mixin
+    year_format = models.CharField(max_length=250, null=True, blank=True)
+    year = models.CharField(max_length=250, null=True, blank=True)
+    month_format = models.CharField(max_length=250, null=True, blank=True)
+    month = models.CharField(max_length=250, null=True, blank=True)
+    day_format = models.CharField(max_length=250, null=True, blank=True)
+    day = models.CharField(max_length=250, null=True, blank=True)
+    week_format = models.CharField(max_length=250, null=True, blank=True)
+    week = models.CharField(max_length=250, null=True, blank=True)
+
+    # Date Mixin
+    date_field = models.ForeignKey('TrackedField', related_name='view_date_field', on_delete=models.CASCADE)
+    allow_future = models.BooleanField(null=True, blank=True)
+    
+    # BaseDateListView
+    allow_empty = models.BooleanField(null=True, blank=True)
+
+
+class Mixin(models.Model):
+    name = models.CharField(max_length=80)
+    owner = models.ForeignKey('TrackedApp',on_delete=models.CASCADE)
+    base_class = models.CharField(
+        max_length=2,
+        choices=DefaultMixins.choices,
+    )
+    methods = models.ManyToManyField(Method)
+    # Context Mixin
+    extra_context = models.TextField(null=True, blank=True)
+    
+    # Template Response mixin
+    template_name = models.CharField(max_length=250, null=True, blank=True)
+    template_engine = models.CharField(max_length=250, null=True, blank=True)
+    response_class = models.CharField(max_length=250, null=True, blank=True)
+    content_type = models.CharField(max_length=250, null=True, blank=True)
+    
+    # Single Object Mixin
+    model = models.ForeignKey('TrackedModel',on_delete=models.CASCADE, null=True, blank=True)
+    queryset = models.CharField(max_length=250, null=True, blank=True)
+    slug_field = models.ForeignKey('TrackedField', related_name='mixin_slug_field', on_delete=models.CASCADE)
+    slug_url_kwarg = models.CharField(max_length=250, null=True, blank=True)
+    pk_url_kwarg = models.CharField(max_length=250, null=True, blank=True)
+    context_object_name = models.CharField(max_length=250, null=True, blank=True)
+    query_pk_and_slug = models.CharField(max_length=250, null=True, blank=True)
+
+    # Single Object Template Response Mixin
+    template_name_field = models.ForeignKey('TrackedField', related_name='mixin_template_name_field', on_delete=models.CASCADE)
+    template_name_suffix = models.CharField(max_length=250, null=True, blank=True)
+
+    # Multiple Object Mixin
+    allow_empty = models.BooleanField(null=True, blank=True)
+    ordering = models.CharField(max_length=250, null=True, blank=True)
+    paginate_by = models.SmallIntegerField(null=True, blank=True)
+    paginate_orphans = models.SmallIntegerField(null=True, blank=True)
+    page_kwarg = models.CharField(max_length=250, null=True, blank=True)
+    paginator_class = models.CharField(max_length=250, null=True, blank=True)
+    context_object_name = models.CharField(max_length=250, null=True, blank=True)
+    
+    # Form Mixin
+    initial = models.TextField(null=True, blank=True)
+    form_class = models.CharField(max_length=250, null=True, blank=True)
+    prefix = models.CharField(max_length=250, null=True, blank=True)
+
+    # Model Form
+    fields = models.ManyToManyField(TrackedField, related_name='mixin_model_form_fields')
+
+    # Year/Month/Day/Week Mixin
+    year_format = models.CharField(max_length=250, null=True, blank=True)
+    year = models.CharField(max_length=250, null=True, blank=True)
+    month_format = models.CharField(max_length=250, null=True, blank=True)
+    month = models.CharField(max_length=250, null=True, blank=True)
+    day_format = models.CharField(max_length=250, null=True, blank=True)
+    day = models.CharField(max_length=250, null=True, blank=True)
+    week_format = models.CharField(max_length=250, null=True, blank=True)
+    week = models.CharField(max_length=250, null=True, blank=True)
+
+    # Date Mixin
+    date_field = models.ForeignKey('TrackedField', related_name='mixin_date_field', on_delete=models.CASCADE)
+    allow_future = models.BooleanField(null=True, blank=True)
+    
+    # BaseDateListView
+    allow_empty = models.BooleanField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
