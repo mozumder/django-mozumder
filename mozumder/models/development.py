@@ -174,7 +174,7 @@ class TrackedModel(models.Model):
 
 class TrackedView(models.Model):
     name = models.CharField(max_length=80)
-    owner = models.ForeignKey('TrackedApp',on_delete=models.CASCADE)
+    owner = models.ForeignKey('TrackedApp', on_delete=models.CASCADE)
     class_based_view = models.BooleanField(null=True, blank=True)
     base_class = models.CharField(
         max_length=2,
@@ -207,14 +207,14 @@ class TrackedView(models.Model):
     # Single Object Mixin
     model = models.ForeignKey('TrackedModel',on_delete=models.CASCADE, null=True, blank=True)
     queryset = models.CharField(max_length=250, null=True, blank=True)
-    slug_field = models.ForeignKey('TrackedField', related_name='view_slug_field', on_delete=models.CASCADE)
+    slug_field = models.ForeignKey('TrackedField', related_name='view_slug_field', on_delete=models.CASCADE,null=True, blank=True)
     slug_url_kwarg = models.CharField(max_length=250, null=True, blank=True)
     pk_url_kwarg = models.CharField(max_length=250, null=True, blank=True)
     context_object_name = models.CharField(max_length=250, null=True, blank=True)
     query_pk_and_slug = models.CharField(max_length=250, null=True, blank=True)
 
     # Single Object Template Response Mixin
-    template_name_field = models.ForeignKey('TrackedField', related_name='view_template_name_field', on_delete=models.CASCADE)
+    template_name_field = models.ForeignKey('TrackedField', related_name='view_template_name_field', on_delete=models.CASCADE, null=True, blank=True)
     template_name_suffix = models.CharField(max_length=250, null=True, blank=True)
 
     # Multiple Object Mixin
@@ -245,7 +245,7 @@ class TrackedView(models.Model):
     week = models.CharField(max_length=250, null=True, blank=True)
 
     # Date Mixin
-    date_field = models.ForeignKey('TrackedField', related_name='view_date_field', on_delete=models.CASCADE)
+    date_field = models.ForeignKey('TrackedField', related_name='view_date_field', on_delete=models.CASCADE, null=True, blank=True)
     allow_future = models.BooleanField(null=True, blank=True)
     
     # BaseDateListView
@@ -254,7 +254,7 @@ class TrackedView(models.Model):
 
 class Mixin(models.Model):
     name = models.CharField(max_length=80)
-    owner = models.ForeignKey('TrackedApp',on_delete=models.CASCADE)
+    owner = models.ForeignKey('TrackedApp', on_delete=models.CASCADE)
     base_class = models.CharField(
         max_length=2,
         choices=DefaultMixins.choices,
@@ -272,14 +272,14 @@ class Mixin(models.Model):
     # Single Object Mixin
     model = models.ForeignKey('TrackedModel',on_delete=models.CASCADE, null=True, blank=True)
     queryset = models.CharField(max_length=250, null=True, blank=True)
-    slug_field = models.ForeignKey('TrackedField', related_name='mixin_slug_field', on_delete=models.CASCADE)
+    slug_field = models.ForeignKey('TrackedField', related_name='mixin_slug_field', on_delete=models.CASCADE,null=True, blank=True)
     slug_url_kwarg = models.CharField(max_length=250, null=True, blank=True)
     pk_url_kwarg = models.CharField(max_length=250, null=True, blank=True)
     context_object_name = models.CharField(max_length=250, null=True, blank=True)
     query_pk_and_slug = models.CharField(max_length=250, null=True, blank=True)
 
     # Single Object Template Response Mixin
-    template_name_field = models.ForeignKey('TrackedField', related_name='mixin_template_name_field', on_delete=models.CASCADE)
+    template_name_field = models.ForeignKey('TrackedField', related_name='mixin_template_name_field', on_delete=models.CASCADE, null=True, blank=True)
     template_name_suffix = models.CharField(max_length=250, null=True, blank=True)
 
     # Multiple Object Mixin
@@ -310,7 +310,7 @@ class Mixin(models.Model):
     week = models.CharField(max_length=250, null=True, blank=True)
 
     # Date Mixin
-    date_field = models.ForeignKey('TrackedField', related_name='mixin_date_field', on_delete=models.CASCADE)
+    date_field = models.ForeignKey('TrackedField', related_name='mixin_date_field', on_delete=models.CASCADE, null=True, blank=True)
     allow_future = models.BooleanField(null=True, blank=True)
     
     # BaseDateListView

@@ -5,7 +5,7 @@ from django.conf import settings
 
 import mozumder
 from ...models.development import *
-from ... import FieldTypes, OnDelete
+from ... import FieldTypes, OnDelete, ViewBaseClass
 from ..utilities.modelwriter import *
 from ..utilities.name_case import *
 
@@ -185,3 +185,77 @@ class Command(BaseCommand):
             field.verbose_name = 'ID'
             field.save()
 
+        # Build default views for this model
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'{model_name}DetailView', owner=tracked_app)
+        view.class_based_view = True
+        view.base_class = ViewBaseClass['DETAILVIEW']
+        view.model = tracked_model
+        view.save()
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'{model_name}ListView', owner=tracked_app)
+        view.class_based_view = True
+        view.base_class = ViewBaseClass['LISTVIEW']
+        view.model = tracked_model
+        view.save()
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'{model_name}CreateView', owner=tracked_app)
+        view.class_based_view = True
+        view.base_class = ViewBaseClass['CREATEVIEW']
+        view.model = tracked_model
+        view.template_name_suffix = '_create_form'
+        view.save()
+        view.fields.add(*TrackedField.objects.filter(owner=tracked_model))
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'{model_name}CreateView', owner=tracked_app)
+        view.class_based_view = True
+        view.base_class = ViewBaseClass['CREATEVIEW']
+        view.model = tracked_model
+        view.template_name_suffix = '_copy_form'
+        view.save()
+        view.fields.add(*TrackedField.objects.filter(owner=tracked_model))
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'{model_name}UpdateView', owner=tracked_app)
+        view.class_based_view = True
+        view.base_class = ViewBaseClass['UPDATEVIEW']
+        view.model = tracked_model
+        view.template_name_suffix = '_create_form'
+        view.save()
+        view.fields.add(*TrackedField.objects.filter(owner=tracked_model))
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'{model_name}DeleteView', owner=tracked_app)
+        view.class_based_view = True
+        view.base_class = ViewBaseClass['DELETEVIEW']
+        view.model = tracked_model
+        view.template_name_suffix = '_create_form'
+        view.success_url = f"reverse_lazy('{model_code_name}_list')"
+        view.save()
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'search_{model_code_name}', owner=tracked_app)
+        view.class_based_view = False
+        view.save()
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'json_search_{model_code_name}', owner=tracked_app)
+        view.class_based_view = False
+        view.save()
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'{model_name}JSONDetailView', owner=tracked_app)
+        view.class_based_view = True
+        view.base_class = ViewBaseClass['DETAILVIEW']
+        view.model = tracked_model
+        view.save()
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'{model_name}JSONListView', owner=tracked_app)
+        view.class_based_view = True
+        view.base_class = ViewBaseClass['LISTVIEW']
+        view.model = tracked_model
+        view.save()
