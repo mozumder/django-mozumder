@@ -152,3 +152,4 @@ At this point, you can contine with the usual Django development of your app by 
 ::
     ./manage.py createsuperuser
     ./manage.py runserver
+

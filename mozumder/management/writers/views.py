@@ -2,6 +2,7 @@ import os
 from .base import Writer
 from ...models.development import *
 from ..utilities.name_case import *
+from ... import ViewBaseClass, DefaultMixins
 
 class ViewWriter(Writer):
     sub_directory = 'views'
@@ -9,49 +10,39 @@ class ViewWriter(Writer):
 
     def generate(self, context):
         # Write views.py file
-        editable_fields = TrackedField.objects.filter(owner=context.model,editable=True)
-        form_fields = [field.name for field in editable_fields]
+
+        view_code = ''
+        base_classes = {}
         
-        return f"""from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, FormView, \\
-    UpdateView, DeleteView
-from ..models import {context.model.name}
-
-class {context.model.name}DetailView(DetailView):
-    model = {context.model.name}
-
-class {context.model.name}ListView(ListView):
-    model = {context.model.name}
-
-class {context.model.name}CreateView(CreateView):
-    model = {context.model.name}
-    fields = {form_fields}
-    template_name_suffix = '_create_form'
-
-class {context.model.name}CopyView(UpdateView):
-    model = {context.model.name}
-    fields = {form_fields}
-    template_name_suffix = '_copy_form'
-
-class {context.model.name}UpdateView(UpdateView):
-    model = {context.model.name}
-    fields = {form_fields}
-    template_name_suffix = '_update_form'
-
-class {context.model.name}DeleteView(DeleteView):
-    model = {context.model.name}
-    template_name_suffix = '_delete_form'
-    success_url = reverse_lazy('{context.model_code_name}_list')
-
-def search_{context.model_code_name}():
+        view_objs = TrackedView.objects.filter(model=context.model)
+        for view_obj in view_objs:
+            if view_obj.class_based_view == True:
+                base_class = ViewBaseClass(view_obj.base_class).label
+                base_classes[base_class] = ''
+                view_code += f"class {view_obj.name}({base_class}):\n"
+                if view_obj.model:
+                    view_code += f"    model = {context.model.name}\n"
+                fields = view_obj.fields.all()
+                if fields:
+                    form_fields = [field.name for field in fields]
+                    view_code += f"    fields = {form_fields}\n"
+                if view_obj.template_name_suffix:
+                    view_code += f"    template_name_suffix = {view_obj.template_name_suffix}\n"
+                if view_obj.success_url:
+                    view_code += f"    success_url = {view_obj.success_url}\n"
+                view_code += "\n"
+            else:
+                view_code += f"""def {view_obj.name}():
     pass
 
-class {context.model.name}JSONDetailView(DetailView):
-    model = {context.model.name}
-
-class {context.model.name}JSONListView(ListView):
-    model = {context.model.name}
-
-def json_search_{context.model_code_name}():
-    pass
 """
+
+        output = "from django.urls import reverse_lazy\n"
+        if base_classes.keys():
+            generic_views_imports = ', '.join([str(k) for k in base_classes.keys()])
+            output += f"from django.views.generic import {generic_views_imports}\n"
+        if hasattr(context,'model'):
+            output += f"from ..models import {context.model.name}\n"
+        output += view_code
+
+        return output

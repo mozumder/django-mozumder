@@ -1,42 +1,6 @@
 import os
 from dotmap import DotMap
 
-# The following are the operations that are built by default for
-# every model:
-#
-# Read One Item
-# Read All
-# Read Filter/Exclude
-# Read Stubs List
-# Search Items
-# Sort Items
-# Reorder Items
-# Add One Item
-# Insert One Item
-# Add Multiple Items
-# Duplicate Item
-# Update Item
-# Update All
-# Update Filter/Exclude
-# Validate Item
-# Delete Item
-# Delete All
-# Delete Filter/Exclude
-# Search Through Field
-# Add Item to Field
-# Add Multiple Items to Field
-# Increment Field
-# Decrement Field
-# Validate Field
-# Duplicate Items to Field
-# Delete Item from Field
-# Delete All Items from Field
-# Delete Multiple Items from Field
-# Operation on View
-#
-# Enable operations you need by uncommenting out the operation in
-# the urls.py file
-
 class Writer:
     """Need to set self.extension and get_source when subclassing
     """

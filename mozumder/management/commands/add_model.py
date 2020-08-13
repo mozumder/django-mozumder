@@ -185,12 +185,50 @@ class Command(BaseCommand):
             field.verbose_name = 'ID'
             field.save()
 
+# The following are the operations that are built by default for
+# every model:
+#
+# Read One Item
+# Read All
+# Read Filter/Exclude
+# Read Stubs List
+# Search Items
+# Sort Items
+# Reorder Items
+# Add One Item
+# Insert One Item
+# Add Multiple Items
+# Duplicate Item
+# Update Item
+# Update All
+# Update Filter/Exclude
+# Validate Item
+# Delete Item
+# Delete All
+# Delete Filter/Exclude
+# Search Through Field
+# Add Item to Field
+# Add Multiple Items to Field
+# Increment Field
+# Decrement Field
+# Validate Field
+# Duplicate Items to Field
+# Delete Item from Field
+# Delete All Items from Field
+# Delete Multiple Items from Field
+# Operation on View
+#
+# Enable operations you need by uncommenting out the operation in
+# the urls.py file
+
         # Build default views for this model
         view, view_created = TrackedView.objects.get_or_create(
                 name=f'{model_name}DetailView', owner=tracked_app)
         view.class_based_view = True
         view.base_class = ViewBaseClass['DETAILVIEW']
         view.model = tracked_model
+        view.url = f"'{model_name}/<int:pk>'"
+        view.url_name = f"'{model_code_name}_detail'"
         view.save()
 
         view, view_created = TrackedView.objects.get_or_create(
@@ -198,6 +236,8 @@ class Command(BaseCommand):
         view.class_based_view = True
         view.base_class = ViewBaseClass['LISTVIEW']
         view.model = tracked_model
+        view.url = f"'{model_name}/'"
+        view.url_name = f"'{model_code_name}_list'"
         view.save()
 
         view, view_created = TrackedView.objects.get_or_create(
@@ -205,16 +245,20 @@ class Command(BaseCommand):
         view.class_based_view = True
         view.base_class = ViewBaseClass['CREATEVIEW']
         view.model = tracked_model
-        view.template_name_suffix = '_create_form'
+        view.template_name_suffix = "'_create_form'"
+        view.url = f"'{model_name}/create'"
+        view.url_name = f"'{model_code_name}_create'"
         view.save()
         view.fields.add(*TrackedField.objects.filter(owner=tracked_model))
 
         view, view_created = TrackedView.objects.get_or_create(
-                name=f'{model_name}CreateView', owner=tracked_app)
+                name=f'{model_name}CopyView', owner=tracked_app)
         view.class_based_view = True
         view.base_class = ViewBaseClass['CREATEVIEW']
         view.model = tracked_model
-        view.template_name_suffix = '_copy_form'
+        view.template_name_suffix = "'_copy_form'"
+        view.url = f"'{model_name}/copy'"
+        view.url_name = f"'{model_code_name}_copy'"
         view.save()
         view.fields.add(*TrackedField.objects.filter(owner=tracked_model))
 
@@ -223,7 +267,9 @@ class Command(BaseCommand):
         view.class_based_view = True
         view.base_class = ViewBaseClass['UPDATEVIEW']
         view.model = tracked_model
-        view.template_name_suffix = '_create_form'
+        view.template_name_suffix = "'_create_form'"
+        view.url = f"'{model_name}/<int:pk>/update'"
+        view.url_name = f"'{model_code_name}_update'"
         view.save()
         view.fields.add(*TrackedField.objects.filter(owner=tracked_model))
 
@@ -232,18 +278,18 @@ class Command(BaseCommand):
         view.class_based_view = True
         view.base_class = ViewBaseClass['DELETEVIEW']
         view.model = tracked_model
-        view.template_name_suffix = '_create_form'
+        view.template_name_suffix = "'_create_form'"
         view.success_url = f"reverse_lazy('{model_code_name}_list')"
+        view.url = f"'{model_name}/<int:pk>/delete'"
+        view.url_name = f"'{model_code_name}_delete'"
         view.save()
 
         view, view_created = TrackedView.objects.get_or_create(
                 name=f'search_{model_code_name}', owner=tracked_app)
         view.class_based_view = False
-        view.save()
-
-        view, view_created = TrackedView.objects.get_or_create(
-                name=f'json_search_{model_code_name}', owner=tracked_app)
-        view.class_based_view = False
+        view.model = tracked_model
+        view.url = f"'{model_name}/search'"
+        view.url_name = f"'json_search_{model_code_name}'"
         view.save()
 
         view, view_created = TrackedView.objects.get_or_create(
@@ -251,6 +297,9 @@ class Command(BaseCommand):
         view.class_based_view = True
         view.base_class = ViewBaseClass['DETAILVIEW']
         view.model = tracked_model
+        view.url = f"'detail/{model_name}/<int:pk>'"
+        view.url_name = f"'json_{model_code_name}_detail'"
+        view.api_url = True
         view.save()
 
         view, view_created = TrackedView.objects.get_or_create(
@@ -258,4 +307,17 @@ class Command(BaseCommand):
         view.class_based_view = True
         view.base_class = ViewBaseClass['LISTVIEW']
         view.model = tracked_model
+        view.url = f"'list/{model_name}'"
+        view.url_name = f"'json_{model_code_name}_list'"
+        view.api_url = True
         view.save()
+
+        view, view_created = TrackedView.objects.get_or_create(
+                name=f'json_search_{model_code_name}', owner=tracked_app)
+        view.class_based_view = False
+        view.model = tracked_model
+        view.url = f"'search/{model_name}'"
+        view.url_name = f"'search_{model_code_name}'"
+        view.api_url = True
+        view.save()
+

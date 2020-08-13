@@ -180,6 +180,10 @@ class TrackedView(models.Model):
         max_length=2,
         choices=ViewBaseClass.choices,
     )
+    url = models.CharField(max_length=250)
+    url_name = models.CharField(max_length=250)
+    api_url = models.BooleanField(default=False)
+
     mixins = models.ManyToManyField('Mixin')
     methods = models.ManyToManyField('Method')
 

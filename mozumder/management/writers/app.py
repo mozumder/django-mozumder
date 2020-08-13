@@ -7,6 +7,7 @@ from .views import *
 from .urls import *
 from .admin import *
 from ..utilities.name_case import *
+from shutil import copyfile
 
 def write_app(app_obj):
         app_name = app_obj.name
@@ -83,12 +84,10 @@ def write_app(app_obj):
 
             # Write views.py as part of module
             ViewWriter().write(context)
-            views_imports += f"""from .{context['model_code_name']} import {model_obj.name}DetailView, \\
-    {model_obj.name}ListView, {model_obj.name}CreateView, {model_obj.name}CopyView, \\
-    {model_obj.name}UpdateView, {model_obj.name}DeleteView, search_{context['model_code_name']}, \\
-    {model_obj.name}JSONDetailView, {model_obj.name}JSONListView, \\
-    json_search_{context['model_code_name']}
-"""
+            view_objs = TrackedView.objects.filter(model=model_obj)
+            views_imports_list = ', '.join([str(view_obj.name) for view_obj in view_objs])
+            views_imports += f"from .{context['model_code_name']} import {views_imports_list}\n"
+
             # Write URLs for views
             URLsWriter().update(context)
             APIURLsWriter().update(context)
