@@ -96,6 +96,7 @@ Options are set from a list of single character switches for each field:
 
     p: Field is model's primary key
     r: Has a detail view
+    s: Is model's name (__str__)
     e: Editable field
     l: Is shown in list view
     L: Is shown in list view with a hyperlink to detail view
@@ -134,6 +135,10 @@ With this, let's create our apps add some models.
 ::
 
     ./manage.py add_app fashion
+    ./manage.py add_model --abstract --order order fashion Ordered  \
+        order:PositiveSmallIntegerField:re:0
+    ./manage.py add_model --abstract fashion Named  \
+        name:CharField:re-s:255
     ./manage.py add_model fashion Collection  \
         cover_photo:ForeignKey:re:'images.Photo':CASCADE:related_name=cover_photo \
         social_photo:ForeignKey:re:'images.Photo':CASCADE:related_name=social_photo \
@@ -166,7 +171,7 @@ With this, let's create our apps add some models.
     ./manage.py add_model fashion ViewTypes  \
         name:CharField:reL:50 \
         code:CharField:re:2
-
+    ./manage.py add_app images
     ./manage.py add_model images Image  \
         width:PositiveIntegerField:re \
         height:PositiveIntegerField:re \
