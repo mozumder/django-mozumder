@@ -96,7 +96,7 @@ class Command(BaseCommand):
             field.verbose_name = snake_case_to_verbose(field_name)
 
             # Get field properties
-            if 'p' in field_properties:
+            if 'k' in field_properties:
                 field.primary_key = True
                 has_primary_key = True
             if '_' in field_properties:
@@ -115,8 +115,6 @@ class Command(BaseCommand):
                 field.link_in_list_view = True
             if 'i' in field_properties:
                 field.db_index = True
-            if 'k' in field_properties:
-                field.primary_key = True
             if 'U' in field_properties:
                 field.unique = True
             if 'D' in field_properties:

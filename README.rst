@@ -84,7 +84,48 @@ In here, let's create a couple of Django apps:
     ./manage.py add_app images
 
 
-And for each app, we can start to create our database models. Each model takes a list of field arguments:
+And for each app, we can start to create our database models. Each model takes a list of field arguments. Each field argument is divided up as:
+
+::
+    name:type:options:[unamed properties[:...][:named properties[:...]]]
+
+Options are single character options for each field:
+
+::
+    p: Field is model's primary key
+    r: Has a detail view
+    e: Editable field
+    l: Is shown in list view
+    L: Is shown in list view with a hyperlink to detail view
+    _: Allow null values in database
+    -: Allow null values in database and forms
+    i: Create a database index for the field
+    U: Field is Unique
+    D: Field is Unique for Date
+    M: Field is Unique for Month
+    Y: Field is Unique for Year
+    a: Auto now
+    A: Auto now add
+
+Depending on field type, there may be required properties or [optional] unnamed properties:
+
+::
+    BooleanField::[default_bool]
+    CharField::max_length:[default_text]
+    BinaryField::max_length
+    TextField::[max_length]
+    SmallIntegerField::[default_smallint]
+    BigIntegerField::[default_bigint]
+    DateTimeField::[default_datetime]
+    ForeignKey::to:on_delete:[related_name]
+    ForeignKey::to:[related_name]
+
+Finally, named properties can be given for any of Django's model field properties, in the form of:
+
+::
+   :key=value
+
+With this, let's create our apps add some models.
 
 ::
 
@@ -133,7 +174,7 @@ And for each app, we can start to create our database models. Each model takes a
         large:ForeignKey:re:Image:CASCADE:related_name=large_file \
         thumbnail:ForeignKey:re:Image:CASCADE:related_name=thumbnail_file
 
-We can now write the apps with the build command:
+We can now generate the apps with the build command:
 
 ::
 
