@@ -90,7 +90,7 @@ And for each app, we can start to create our database models. Each model takes a
 
     name:type:options:[unamed properties[:...][:named properties[:...]]]
 
-Options are single character options for each field:
+Options are set from a list of single character switches for each field:
 
 ::
 
