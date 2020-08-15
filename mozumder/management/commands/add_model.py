@@ -11,7 +11,39 @@ from ..utilities.name_case import *
 
 class Command(BaseCommand):
 
-    help = 'Add a new model to an app.'
+    help = """Add a new model to an app. Models takes a list of field arguments. Each field argument is divided up as:
+
+    name:type:options:[unamed properties[:...][:named properties[:...]]]
+
+Options are set from a list of single character switches for each field:
+
+    p: Field is model's primary key
+    r: Has a detail view
+    e: Editable field
+    l: Is shown in list view
+    L: Is shown in list view with a hyperlink to detail view
+    _: Allow null values in database
+    -: Allow null values in database and forms
+    i: Create a database index for the field
+    U: Field is Unique
+    D: Field is Unique for Date
+    M: Field is Unique for Month
+    Y: Field is Unique for Year
+    a: Auto now
+    A: Auto now add
+
+Depending on field type, there may be required properties or [optional] unnamed properties:
+
+    BooleanField::[default_bool]
+    CharField::max_length:[default_text]
+    BinaryField::max_length
+    TextField::[max_length]
+    SmallIntegerField::[default_smallint]
+    BigIntegerField::[default_bigint]
+    DateTimeField::[default_datetime]
+    ForeignKey::to:on_delete:[related_name]
+    ForeignKey::to:[related_name]
+"""
     
     def add_arguments(self, parser):
 
