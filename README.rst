@@ -87,11 +87,13 @@ In here, let's create a couple of Django apps:
 And for each app, we can start to create our database models. Each model takes a list of field arguments. Each field argument is divided up as:
 
 ::
+
     name:type:options:[unamed properties[:...][:named properties[:...]]]
 
 Options are single character options for each field:
 
 ::
+
     p: Field is model's primary key
     r: Has a detail view
     e: Editable field
@@ -110,6 +112,7 @@ Options are single character options for each field:
 Depending on field type, there may be required properties or [optional] unnamed properties:
 
 ::
+
     BooleanField::[default_bool]
     CharField::max_length:[default_text]
     BinaryField::max_length
@@ -123,7 +126,8 @@ Depending on field type, there may be required properties or [optional] unnamed 
 Finally, named properties can be given for any of Django's model field properties, in the form of:
 
 ::
-   :key=value
+
+   key=value
 
 With this, let's create our apps add some models.
 
@@ -180,6 +184,7 @@ We can now generate the apps with the build command:
 
     ./manage.py build
 
+
 This creates the apps models along with admin and template components. In addition, this adds the app to the INSTALLED_APPS settings.py configuration, as well as adding the apps urls to the project urls.py.
 
 From here, we continue with the usual Django development process of creating migration files and running the migrations in order to create the database schema:
@@ -188,9 +193,11 @@ From here, we continue with the usual Django development process of creating mig
 
     ./manage.py migrate
 
+
 At this point, you can contine with the usual Django development of your app by editing your models and creating templates. You may also want to edit the urls.py file to adjust which urls you want active in your app.
 
 ::
+
     ./manage.py createsuperuser
     ./manage.py runserver
 
