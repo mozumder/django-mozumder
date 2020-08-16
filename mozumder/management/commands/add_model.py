@@ -48,6 +48,112 @@ Depending on field type, there may be required properties or [optional] unnamed 
     def add_arguments(self, parser):
 
         parser.add_argument(
+            '--abstract',
+            action='store_true',
+            default=None,
+            help="Abstract model",
+            )
+        parser.add_argument(
+            '--app_label',
+            action='store',
+            default=None,
+            help="If a model is defined outside of an application in INSTALLED_APPS, it must declare which app it belongs to. If you want to represent a model with the format app_label.object_name or app_label.model_name you can use model._meta.label or model._meta.label_lower respectively.",
+            )
+        parser.add_argument(
+            '--base_manager_name',
+            action='store',
+            default=None,
+            help="The attribute name of the manager, for example, 'objects', to use for the model’s _base_manager.",
+            )
+        parser.add_argument(
+            '--db_table',
+            action='store',
+            default=None,
+            help="The name of the database table to use for the model",
+            )
+        parser.add_argument(
+            '--db_tablespace',
+            action='store',
+            default=None,
+            help="The name of the database tablespace to use for this model. The default is the project’s DEFAULT_TABLESPACE setting, if set. If the backend doesn’t support tablespaces, this option is ignored.",
+            )
+        parser.add_argument(
+            '--default_manager_name',
+            action='store',
+            default=None,
+            help="The name of the manager to use for the model’s _default_manager.",
+            )
+        parser.add_argument(
+            '--default_related_name',
+            action='store',
+            default=None,
+            help="""The name that will be used by default for the relation from a related object back to this one. The default is <model_name>_set.
+
+This option also sets related_query_name.
+
+As the reverse name for a field should be unique, be careful if you intend to subclass your model. To work around name collisions, part of the name should contain '%(app_label)s' and '%(model_name)s', which are replaced respectively by the name of the application the model is in, and the name of the model, both lowercased. See the paragraph on related names for abstract models.""",
+            )
+        parser.add_argument(
+            '--get_latest_by',
+            action='store',
+            default=None,
+            help="Model's Meta 'get_latest_by' fields, separted by colons. Underscore in front of field name indicates descending. Underscore after field name indicates nulls last. The name of a field or a list of field names in the model, typically DateField, DateTimeField, or IntegerField. This specifies the default field(s) to use in your model Manager’s latest() and earliest() methods.",
+            )
+        parser.add_argument(
+            '--managed',
+            action='store_true',
+            default=None,
+            help="""Defaults to True, meaning Django will create the appropriate database tables in migrate or as part of migrations and remove them as part of a flush management command. That is, Django manages the database tables’ lifecycles.
+
+If False, no database table creation, modification, or deletion operations will be performed for this model. This is useful if the model represents an existing table or a database view that has been created by some other means. This is the only difference when managed=False. All other aspects of model handling are exactly the same as normal. This includes
+
+Adding an automatic primary key field to the model if you don’t declare it. To avoid confusion for later code readers, it’s recommended to specify all the columns from the database table you are modeling when using unmanaged models.
+
+If a model with managed=False contains a ManyToManyField that points to another unmanaged model, then the intermediate table for the many-to-many join will also not be created. However, the intermediary table between one managed and one unmanaged model will be created.
+
+If you need to change this default behavior, create the intermediary table as an explicit model (with managed set as needed) and use the ManyToManyField.through attribute to make the relation use your custom model.
+
+For tests involving models with managed=False, it’s up to you to ensure the correct tables are created as part of the test setup.
+
+If you’re interested in changing the Python-level behavior of a model class, you could use managed=False and create a copy of an existing model. However, there’s a better approach for that situation: Proxy models.""",
+            )
+        parser.add_argument(
+            '--order_with_respect_to',
+            action='store',
+            default=None,
+            help="Makes this object orderable with respect to the given field, usually a ForeignKey. This can be used to make related objects orderable with respect to a parent object. When order_with_respect_to is set, two additional methods are provided to retrieve and to set the order of the related objects: get_RELATED_order() and set_RELATED_order(), where RELATED is the lowercased model name. The related objects also get two methods, get_next_in_order() and get_previous_in_order(), which can be used to access those objects in their proper order. ",
+            )
+        parser.add_argument(
+            '--ordering',
+            action='store',
+            default=None,
+            help="Model's Meta 'ordering' fields, separted by colons. Underscore in front of field name indicates descending. Underscore after field name indicates nulls last. The default ordering for the object, for use when obtaining lists of objects.",
+            )
+        parser.add_argument(
+            '--permissions',
+            action='store',
+            default=None,
+            help="Model's Meta 'permissions' fields, with tuples separted by colons. Each tuple is separated by double-colons.",
+            )
+        parser.add_argument(
+            '--default_permissions',
+            action='store',
+            default=None,
+            help="Model's Meta 'default_permissions' fields, with permissions separted by colons. Defaults to ('add', 'change', 'delete', 'view'). You may customize this list, for example, by setting this to an empty list if your app doesn’t require any of the default permissions. It must be specified on the model before the model is created by migrate in order to prevent any omitted permissions from being created.",
+            )
+        parser.add_argument(
+            '--proxy',
+            action='store_true',
+            default=None,
+            help="If proxy = True, a model which subclasses another model will be treated as a proxy model.",
+            )
+        parser.add_argument(
+            '--select_on_save',
+            action='store_true',
+            default=None,
+            help="Determines if Django will use the pre-1.6 django.db.models.Model.save() algorithm. The old algorithm uses SELECT to determine if there is an existing row to be updated. The new algorithm tries an UPDATE directly. In some rare cases the UPDATE of an existing row isn’t visible to Django. An example is the PostgreSQL ON UPDATE trigger which returns NULL. In such cases the new algorithm will end up doing an INSERT even when a row exists in the database. Usually there is no need to set this attribute. The default is False.",
+            )
+        parser.add_argument(
             '--verbose_name',
             action='store',
             help="Model's verbose name",
@@ -80,8 +186,6 @@ Depending on field type, there may be required properties or [optional] unnamed 
         app_name = options['app_name']
         model_name = options['model_name']
         model_code_name = CamelCase_to_snake_case(model_name)
-        verbose_name = options['verbose_name'] if options['verbose_name'] else CamelCase_to_verbose(model_name)
-        verbose_name_plural = options['verbose_name_plural'] if options['verbose_name_plural'] else verbose_name + 's'
         fields_list = options['field']
         
         # Create app
@@ -89,10 +193,7 @@ Depending on field type, there may be required properties or [optional] unnamed 
         tracked_app.save()
 
         # Create model
-        tracked_model, model_crated = TrackedModel.objects.get_or_create(owner=tracked_app, name=model_name)
-        tracked_model.verbose_name = verbose_name
-        tracked_model.verbose_name_plural = verbose_name_plural
-        tracked_model.save()
+        tracked_model, model_created = TrackedModel.objects.get_or_create(owner=tracked_app, name=model_name)
 
         # Build models lists
         show_in_detail_view = False
@@ -214,6 +315,86 @@ Depending on field type, there may be required properties or [optional] unnamed 
             field.serialize = False
             field.verbose_name = 'ID'
             field.save()
+            
+        # Model meta options
+        if options['abstract']:
+            tracked_model.abstract = True
+        if options['app_label']:
+            tracked_model.app_label = options['app_label']
+        if options['base_manager_name']:
+            tracked_model.base_manager_name = options['base_manager_name']
+        if options['db_table']:
+            tracked_model.db_table = options['db_table']
+        if options['db_tablespace']:
+            tracked_model.db_tablespace = options['db_tablespace']
+        if options['default_manager_name']:
+            tracked_model.default_manager_name = options['default_manager_name']
+        if options['default_related_name']:
+            tracked_model.default_related_name = options['default_related_name']
+        if options['get_latest_by']:
+            get_latest_bys = options['get_latest_by'].split(':')
+            number = 0
+            for field_name in get_latest_bys:
+                descending = False
+                nulls_last = False
+                if field_name[0] == '_':
+                    descending = True
+                    field_name = field_name[1:]
+                if field_name[-1] == '_':
+                    nulls_last = True
+                    field_name = field_name[:-1]
+                field = TrackedField.objects.get(name=field_name, owner=tracked_model)
+                get_latest_by = Latest.objects.create(latest_field=field, latest_model=tracked_model, number=number, descending=descending, nulls_last=nulls_last)
+                get_latest_by.save()
+                number+=1
+        if options['managed']:
+            tracked_model.managed = options['managed']
+        if options['order_with_respect_to']:
+            tracked_model.order_with_respect_to = options['order_with_respect_to']
+        if options['ordering']:
+            orders = options['ordering'].split(':')
+            number = 0
+            for field_name in orders:
+                descending = False
+                nulls_last = False
+                if field_name[0] == '_':
+                    descending = True
+                    field_name = field_name[1:]
+                if field_name[-1] == '_':
+                    nulls_last = True
+                    field_name = field_name[:-1]
+                field = TrackedField.objects.get(name=field_name, owner=tracked_model)
+                order = Ordering.objects.create(target_field=field, source=tracked_model, number=number, descending=descending, nulls_last=nulls_last)
+                order.save()
+                number+=1
+        if options['permissions']:
+            permissions = options['permissions'].split('::')
+            number = 0
+            for pair in permissions:
+                permission_code, human_readable_permission_name = pair.split(':')
+                extra_permission = ExtraPermission.objects.create(permission_code=f"'{permission_code}'", human_readable_permission_name=f"'{human_readable_permission_name}'")
+                extra_permission.save()
+                tracked_model.permissions.add(extra_permission)
+                number+=1
+
+        if options['default_permissions']:
+            default_permissions = options['default_permissions'].split(':')
+        else:
+            default_permissions = ('add', 'change', 'delete', 'view')
+        for permission_code in default_permissions:
+            default_permission, created = DefaultPermission.objects.get_or_create(permission_code=permission_code)
+            tracked_model.default_permissions.add(default_permission)
+        if options['proxy']:
+            tracked_model.proxy = options['proxy']
+        if options['select_on_save']:
+            tracked_model.select_on_save = options['select_on_save']
+
+
+        if options['verbose_name']:
+            tracked_model.verbose_name = options['verbose_name']
+        if options['verbose_name_plural']:
+            tracked_model.verbose_name_plural = options['verbose_name_plural']
+        tracked_model.save()
 
 # The following are the operations that are built by default for
 # every model:

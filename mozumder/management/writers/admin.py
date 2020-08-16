@@ -6,6 +6,9 @@ from ..utilities.name_case import *
 class AdminWriter(Writer):
     sub_directory = 'admin'
     extension = '.py'
+    def get_filename(self, context):
+        # Subclass this as needed. This function defines the file name.
+        return f"{context['model_code_name']}{self.extension}"
 
     def generate(self, context):
         # Write admin.py file

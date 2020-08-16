@@ -134,38 +134,55 @@ class Method(models.Model):
 class Latest(models.Model):
     latest_field = models.ForeignKey('TrackedField', on_delete=models.CASCADE)
     latest_model = models.ForeignKey('TrackedModel', on_delete=models.CASCADE)
+    number = models.SmallIntegerField(default=0)
     descending = models.BooleanField(default=False)
+    nulls_last = models.BooleanField(default=False)
+    class Meta:
+        ordering = ['number']
+    def __str__(self):
+        return f"{self.latest_field}:{self.latest_model}:{self.number}:{self.descending}:{self.nulls_last}"
 
 class Ordering(models.Model):
     target_field = models.ForeignKey('TrackedField', on_delete=models.CASCADE)
     source = models.ForeignKey('TrackedModel', related_name='source_ordering_model', on_delete=models.CASCADE)
+    number = models.SmallIntegerField(default=0)
     descending = models.BooleanField(default=False)
+    nulls_last = models.BooleanField(default=False)
+    class Meta:
+        ordering = ['number']
+    def __str__(self):
+        return f"{self.target_field}:{self.source}:{self.number}:{self.descending}:{self.nulls_last}"
 
 class ExtraPermission(models.Model):
-    name = models.CharField(max_length=80, null=True, blank=True)
-    value = models.CharField(max_length=80, null=True, blank=True)
+    permission_code = models.CharField(max_length=80, unique=True, null=True, blank=True)
+    human_readable_permission_name = models.CharField(max_length=80, null=True, blank=True)
     def __str__(self):
         return self.name
+class DefaultPermission(models.Model):
+    permission_code = models.CharField(max_length=80, unique=True, null=True, blank=True)
+    def __str__(self):
+        return self.permission_code
 
 class TrackedModel(models.Model):
     name = models.CharField(max_length=80)
     owner = models.ForeignKey('TrackedApp',on_delete=models.CASCADE)
     verbose_name = models.CharField(max_length=80)
     verbose_name_plural = models.CharField(max_length=80)
-    abstract = models.BooleanField(null=True, blank=True)
+    abstract = models.BooleanField(default=False)
     app_label = models.CharField(max_length=80, null=True, blank=True)
     base_manager_name = models.CharField(max_length=80, null=True, blank=True)
     db_table = models.CharField(max_length=80, null=True, blank=True)
     db_tablespace = models.CharField(max_length=80, null=True, blank=True)
     default_manager_name = models.CharField(max_length=80, null=True, blank=True)
     default_related_name = models.CharField(max_length=80, null=True, blank=True)
-    get_latest_by = models.ManyToManyField('TrackedField', related_name='latest_fields', through='latest', through_fields=('latest_model','latest_field'))
+    get_latest_by = models.ManyToManyField('TrackedField', related_name='latest_fields', through='Latest', through_fields=('latest_model','latest_field'))
     managed = models.BooleanField(null=True, blank=True)
     order_with_respect_to = models.ForeignKey('TrackedField', related_name='ordered_with_respect_to_field', on_delete=models.SET_NULL, null=True, blank=True)
-    ordering = models.ManyToManyField('TrackedField',through='ordering',related_name='ordering_fields', through_fields=('source','target_field'))
+    ordering = models.ManyToManyField('TrackedField',through='Ordering',related_name='ordering_fields', through_fields=('source','target_field'))
     permissions = models.ManyToManyField('ExtraPermission')
-    default_permissions = models.ManyToManyField(Permission)
+    default_permissions = models.ManyToManyField('DefaultPermission')
     proxy = models.BooleanField(null=True, blank=True)
+    select_on_save = models.BooleanField(null=True, blank=True)
 
     mixins = models.ManyToManyField('Mixin')
     methods = models.ManyToManyField('Method')

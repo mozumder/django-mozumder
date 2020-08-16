@@ -5,6 +5,9 @@ from ..utilities.name_case import *
 
 class TemplateWriter(Writer):
     sub_directory = 'templates'
+    def get_filename(self, context):
+        # Subclass this as needed. This function defines the file name.
+        return f"{context['model_code_name']}{self.extension}"
 
     def get_filepath(self, context):
         # Subclass this as needed. This function defines the file path.

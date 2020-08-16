@@ -8,7 +8,7 @@ from .urls import *
 from .admin import *
 from ..utilities.name_case import *
 from shutil import copyfile
-
+        
 def write_app(app_obj):
         app_name = app_obj.name
         access_rights = 0o755
@@ -57,7 +57,6 @@ def write_app(app_obj):
                     target_filename = os.path.join(target_path, name)
                     copyfile(source_filename, target_filename)
 
-        model_objs = TrackedModel.objects.filter(owner=app_obj)
         
         # Write models.py, templates, and views.py
         context = {}
@@ -74,6 +73,13 @@ def write_app(app_obj):
         models_imports = ''
         views_imports = ''
         admin_imports = ''
+        model_objs = TrackedModel.objects.filter(owner=app_obj, abstract=True)
+        if model_objs:
+            context['models'] = model_objs
+            MetaModelsWriter().write(context)
+            models_imports += f"from .meta import *\n"
+
+        model_objs = TrackedModel.objects.filter(owner=app_obj, abstract=False)
         for model_obj in model_objs:
             context['model'] = model_obj
             context['model_code_name'] = CamelCase_to_snake_case(model_obj.name)

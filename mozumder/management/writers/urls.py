@@ -6,11 +6,8 @@ from ...models.development import *
 
 class URLsWriter(Writer):
     sub_directory = 'urls'
+    filename = '__init__'
     extension = '.py'
-    
-    def get_filename(self, context):
-        # Subclass this as needed. This function defines the file name.
-        return f"__init__{self.extension}"
 
     def update(self, context_dict):
         # Write urls.py file
