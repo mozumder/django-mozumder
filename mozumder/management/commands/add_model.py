@@ -97,7 +97,7 @@ As the reverse name for a field should be unique, be careful if you intend to su
             '--get_latest_by',
             action='store',
             default=None,
-            help="Model's Meta 'get_latest_by' fields, separted by colons. Underscore in front of field name indicates descending. Underscore after field name indicates nulls last. The name of a field or a list of field names in the model, typically DateField, DateTimeField, or IntegerField. This specifies the default field(s) to use in your model Manager’s latest() and earliest() methods.",
+            help="Model's Meta 'get_latest_by' fields, seperated by colons. Underscore in front of field name indicates descending. Underscore after field name indicates nulls last. The name of a field or a list of field names in the model, typically DateField, DateTimeField, or IntegerField. This specifies the default field(s) to use in your model Manager’s latest() and earliest() methods.",
             )
         parser.add_argument(
             '--managed',
@@ -127,19 +127,19 @@ If you’re interested in changing the Python-level behavior of a model class, y
             '--ordering',
             action='store',
             default=None,
-            help="Model's Meta 'ordering' fields, separted by colons. Underscore in front of field name indicates descending. Underscore after field name indicates nulls last. The default ordering for the object, for use when obtaining lists of objects.",
+            help="Model's Meta 'ordering' fields, seperated by colons. Underscore in front of field name indicates descending. Underscore after field name indicates nulls last. The default ordering for the object, for use when obtaining lists of objects.",
             )
         parser.add_argument(
             '--permissions',
             action='store',
             default=None,
-            help="Model's Meta 'permissions' fields, with tuples separted by colons. Each tuple is separated by double-colons.",
+            help="Model's Meta 'permissions' fields, with tuples separted by colons. Each tuple is separated by a forward slash.",
             )
         parser.add_argument(
             '--default_permissions',
             action='store',
             default=None,
-            help="Model's Meta 'default_permissions' fields, with permissions separted by colons. Defaults to ('add', 'change', 'delete', 'view'). You may customize this list, for example, by setting this to an empty list if your app doesn’t require any of the default permissions. It must be specified on the model before the model is created by migrate in order to prevent any omitted permissions from being created.",
+            help="Model's Meta 'default_permissions' fields, with permissions seperated by colons. Defaults to ('add', 'change', 'delete', 'view'). You may customize this list, for example, by setting this to an empty list if your app doesn’t require any of the default permissions. It must be specified on the model before the model is created by migrate in order to prevent any omitted permissions from being created.",
             )
         parser.add_argument(
             '--proxy',
@@ -153,6 +153,13 @@ If you’re interested in changing the Python-level behavior of a model class, y
             default=None,
             help="Determines if Django will use the pre-1.6 django.db.models.Model.save() algorithm. The old algorithm uses SELECT to determine if there is an existing row to be updated. The new algorithm tries an UPDATE directly. In some rare cases the UPDATE of an existing row isn’t visible to Django. An example is the PostgreSQL ON UPDATE trigger which returns NULL. In such cases the new algorithm will end up doing an INSERT even when a row exists in the database. Usually there is no need to set this attribute. The default is False.",
             )
+        parser.add_argument(
+            '--indexes',
+            action='store',
+            default=None,
+            help="Model's Meta 'indexes' fields, with tuples seperated by colons, with the first element of each tuple being the index name. Each tuple is separated by a forward slash.",
+            )
+
         parser.add_argument(
             '--verbose_name',
             action='store',
@@ -368,7 +375,7 @@ If you’re interested in changing the Python-level behavior of a model class, y
                 order.save()
                 number+=1
         if options['permissions']:
-            permissions = options['permissions'].split('::')
+            permissions = options['permissions'].split('/')
             number = 0
             for pair in permissions:
                 permission_code, human_readable_permission_name = pair.split(':')
@@ -389,6 +396,17 @@ If you’re interested in changing the Python-level behavior of a model class, y
         if options['select_on_save']:
             tracked_model.select_on_save = options['select_on_save']
 
+        if options['indexes']:
+            indexes = options['indexes'].split('/')
+            for index in indexes:
+                index_name, *index_fields = index.split(':')
+                # Create a new index object, even if name isn't unique
+                index_obj = Index.objects.create(name=index_name, owner=tracked_model)
+                index_obj.save()
+                for field_name in index_fields:
+                    field = TrackedField.objects.get(name=field_name, owner=tracked_model)
+                    index_obj.fields.add(field)
+                tracked_model.indexes.add(index_obj)
 
         if options['verbose_name']:
             tracked_model.verbose_name = options['verbose_name']

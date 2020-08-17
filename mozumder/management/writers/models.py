@@ -126,7 +126,21 @@ def get_meta(model_obj):
         meta.append('proxy = True')
     if model_obj.select_on_save == True:
         meta.append('select_on_save = True')
-    
+
+    indexes = model_obj.indexes.all()
+    if indexes:
+        indexes_list = []
+        for index in indexes:
+            fields = index.fields.all()
+            if index.name:
+                indexes_list.append( f"models.Index(fields={[field.name for field in fields]}, name='{index.name}')")
+            else:
+                indexes_list.append( f"models.Index(fields={[field.name for field in fields]})")
+        # Separate indexes_string because f-string expression part cannot include a backslash
+        indexes_string = ', \n            '.join(indexes_list)
+        meta.append(f"indexes = [{indexes_string}]")
+
+
     if model_obj.verbose_name != '':
         meta.append(f"verbose_name = {model_obj.verbose_name}")
     if model_obj.verbose_name_plural != '':

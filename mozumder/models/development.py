@@ -110,6 +110,7 @@ class TrackedField(models.Model):
 class Index(models.Model):
     fields = models.ManyToManyField(TrackedField)
     name = models.CharField(max_length=80, null=True, blank=True)
+    owner = models.ForeignKey('TrackedModel', on_delete=models.CASCADE)
     def __str__(self):
         return self.name
 
@@ -183,7 +184,7 @@ class TrackedModel(models.Model):
     default_permissions = models.ManyToManyField('DefaultPermission')
     proxy = models.BooleanField(null=True, blank=True)
     select_on_save = models.BooleanField(null=True, blank=True)
-
+    indexes = models.ManyToManyField('Index')
     mixins = models.ManyToManyField('Mixin')
     methods = models.ManyToManyField('Method')
     def __str__(self):
