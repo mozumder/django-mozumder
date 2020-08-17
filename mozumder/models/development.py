@@ -108,17 +108,26 @@ class TrackedField(models.Model):
         return self.name
 
 class Index(models.Model):
-    fields = models.ManyToManyField(TrackedField)
     name = models.CharField(max_length=80, null=True, blank=True)
+    fields = models.ManyToManyField(TrackedField)
     owner = models.ForeignKey('TrackedModel', on_delete=models.CASCADE)
     def __str__(self):
         return self.name
 
-class Contraint(models.Model):
+class Query(models.Model):
+    params = models.CharField(max_length=512, null=True, blank=True)
+    def __str__(self):
+        return self.params
+
+class Constraint(models.Model):
+    name = models.CharField(max_length=80)
+    owner = models.ForeignKey('TrackedModel', on_delete=models.CASCADE)
     type = models.CharField(max_length=2, choices=ConstraintType.choices)
-    unique_fields = models.ManyToManyField('TrackedField')
-    check_function = models.CharField(max_length=512, null=True, blank=True)
-    name = models.CharField(max_length=80, null=True, blank=True)
+    fields = models.ManyToManyField('TrackedField')
+    q = models.ForeignKey('Query', on_delete=models.CASCADE, null=True, blank=True)
+    deferrable = models.BooleanField(default=False)
+    def __str__(self):
+        return self.name
 
 class Arg(models.Model):
     name = models.CharField(max_length=80, null=True, blank=True)
@@ -185,6 +194,7 @@ class TrackedModel(models.Model):
     proxy = models.BooleanField(null=True, blank=True)
     select_on_save = models.BooleanField(null=True, blank=True)
     indexes = models.ManyToManyField('Index')
+    constraints = models.ManyToManyField('Constraint')
     mixins = models.ManyToManyField('Mixin')
     methods = models.ManyToManyField('Method')
     def __str__(self):

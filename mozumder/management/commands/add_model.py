@@ -5,7 +5,7 @@ from django.conf import settings
 
 import mozumder
 from ...models.development import *
-from ... import FieldTypes, OnDelete, ViewBaseClass
+from ... import FieldTypes, OnDelete, ViewBaseClass, ConstraintType
 from ..utilities.modelwriter import *
 from ..utilities.name_case import *
 
@@ -158,6 +158,18 @@ If you’re interested in changing the Python-level behavior of a model class, y
             action='store',
             default=None,
             help="Model's Meta 'indexes' fields, with tuples seperated by colons, with the first element of each tuple being the index name. Each tuple is separated by a forward slash.",
+            )
+        parser.add_argument(
+            '--uniques',
+            action='store',
+            default=None,
+            help="Model's Unique constraints, with tuples seperated by colons, with the first element of each tuple being the unique constraint name. Each tuple is separated by a forward slash.",
+            )
+        parser.add_argument(
+            '--checks',
+            action='store',
+            default=None,
+            help="Model's Check constraints, with tuples seperated by colons, with the first element of each tuple being the check constraint name and the second element of the tuple is the Q parameters in quotes. Each tuple is separated by a forward slash.",
             )
 
         parser.add_argument(
@@ -407,6 +419,40 @@ If you’re interested in changing the Python-level behavior of a model class, y
                     field = TrackedField.objects.get(name=field_name, owner=tracked_model)
                     index_obj.fields.add(field)
                 tracked_model.indexes.add(index_obj)
+
+        if options['uniques']:
+            uniques = options['uniques'].split('/')
+            for unique in uniques:
+                unique_name, unique_condition, *unique_fields = unique.split(':')
+                # Create a new index object, even if name isn't unique
+                if unique_name[-1] == "*":
+                    unique_name = unique_name[:-1]
+                    deferrable = True
+                else:
+                    deferrable = False
+                constraint_obj = Constraint.objects.create(name=unique_name, owner=tracked_model)
+                constraint_obj.deferrable = deferrable
+                if unique_condition:
+                    q_obj = Query.objects.create(params=unique_condition)
+                    constraint_obj.q = q_obj
+                constraint_obj.type = ConstraintType.UNIQUECONSTRAINT
+                constraint_obj.save()
+                for field_name in unique_fields:
+                    field = TrackedField.objects.get(name=field_name, owner=tracked_model)
+                    constraint_obj.fields.add(field)
+                tracked_model.constraints.add(constraint_obj)
+
+        if options['checks']:
+            checks = options['checks'].split('/')
+            for check in checks:
+                check_name, check_query = check.split(':')
+                # Create a new index object, even if name isn't unique
+                constraint_obj = Constraint.objects.create(name=check_name, owner=tracked_model)
+                constraint_obj.type = ConstraintType.CHECKCONSTRAINT
+                q_obj = Query.objects.create(params=check_query)
+                constraint_obj.q = q_obj
+                constraint_obj.save()
+                tracked_model.constraints.add(constraint_obj)
 
         if options['verbose_name']:
             tracked_model.verbose_name = options['verbose_name']

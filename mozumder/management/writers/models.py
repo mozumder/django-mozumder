@@ -2,6 +2,7 @@ import os
 from .base import Writer
 from ...models.development import *
 from ..utilities.name_case import *
+from ... import ConstraintType
 
 class ModelWriter(Writer):
     sub_directory = 'models'
@@ -14,7 +15,7 @@ class ModelWriter(Writer):
         # Write models.py file
         output = f"""from django.db import models
 from django.utils.translation import gettext as _
-from django.db.models import F
+from django.db.models import F, Q, CheckConstraint, UniqueConstraint, Deferrable
 
 # Create your models here
 class {context.model.name}(models.Model):
@@ -40,7 +41,7 @@ class MetaModelsWriter(Writer):
         # Write models.py file
         output = f"""from django.db import models
 from django.utils.translation import gettext as _
-from django.db.models import F
+from django.db.models import F, Q, CheckConstraint, UniqueConstraint, Deferrable
 
 # Create your models here
 """
@@ -139,6 +140,31 @@ def get_meta(model_obj):
         # Separate indexes_string because f-string expression part cannot include a backslash
         indexes_string = ', \n            '.join(indexes_list)
         meta.append(f"indexes = [{indexes_string}]")
+
+    constraints = model_obj.constraints.all()
+    if constraints:
+        constraints_list = []
+        for constraint in constraints:
+            fields = constraint.fields.all()
+            params_list = []
+            if constraint.name:
+                params_list.append(f"name='{constraint.name}'")
+            if constraint.type == ConstraintType.CHECKCONSTRAINT:
+                if constraint.q:
+                    params_list.append(f"check=Q({constraint.q.params})")
+                params = ', '.join(params_list)
+                constraints_list.append( f"CheckConstraint({params})")
+            elif constraint.type == ConstraintType.UNIQUECONSTRAINT:
+                params_list.append(f"fields={[field.name for field in fields]}")
+                if constraint.q:
+                    params_list.append(f"condition=Q({constraint.q.params})")
+                if constraint.deferrable:
+                    params_list.append(f"deferrable=Deferrable.DEFERRED")
+                params = ', '.join(params_list)
+                constraints_list.append( f"UniqueConstraint({params})")
+        # Separate indexes_string because f-string expression part cannot include a backslash
+        constraints_string = ', \n            '.join(constraints_list)
+        meta.append(f"constraints = [{constraints_string}]")
 
 
     if model_obj.verbose_name != '':
